@@ -36,8 +36,7 @@ document.addEventListener('alpine:init', () => {
     async _open() {
       this.step              = 'form';
       this.addrText          = '';
-      const isDisc           = r.category?.name?.toLowerCase() === 'disc golf';
-      this.insureEnabled     = !isDisc;
+      this.insureEnabled     = true;
       this.insuredAmount     = '100';
       this.rates             = [];
       this.purchaseResult    = null;
@@ -63,6 +62,9 @@ document.addEventListener('alpine:init', () => {
       const dw      = Alpine.store('dw');
       const r       = dw.records.find(x => x.id === dw.activeRecordId);
       if (!r) return;
+
+      const isDisc       = r.category?.name?.toLowerCase() === 'disc golf';
+      this.insureEnabled = !isDisc;
 
       const listing  = dw.activeListing(r);
       const siteName = listing?.site?.name;
