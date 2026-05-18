@@ -1,0 +1,63 @@
+{
+  "item_name": "Donner Ultimate Comp Compressor Pedal",
+  "slug": "donner-ultimate-comp",
+  "created": "2026-05-18",
+  "phases": {
+    "intake": { "done": true, "data": {
+      "name": "Donner Ultimate Comp Compressor Pedal",
+      "category": "Music Gear > Effects Pedals",
+      "platform": "Reverb",
+      "condition": "Used, excellent condition",
+      "includes": "pedal only, no power supply",
+      "notes": ""
+    }},
+    "gap_analysis": { "done": true, "data": {
+      "lot_id": null,
+      "lot_name": null,
+      "shipping": "Free shipping",
+      "notes": "No lot. Reverb listing."
+    }},
+    "comp_terms": { "done": true, "data": {
+      "terms": ["Donner Ultimate Comp compressor pedal", "Donner compressor guitar pedal"]
+    }},
+    "comp_data": { "done": true, "data": {
+      "file": "docs/listing-sessions/donner-ultimate-comp/comps.txt",
+      "pool_size": "Strong Reverb pool. Used Excellent $18-25, tight cluster $19-21."
+    }},
+    "pricing": { "done": true, "data": {
+      "floor": 15,
+      "midpoint": 20,
+      "ceiling": 25,
+      "price": 25,
+      "min_offer": 18,
+      "confidence": "high",
+      "notes": "Top of used Excellent range. Justified by condition. New is $40-46."
+    }},
+    "copy": { "done": true, "data": {
+      "title": "Donner Ultimate Comp Mini Compressor Pedal - Used Excellent",
+      "description": "The Donner Ultimate Comp is a two-mode analog compressor in a mini housing. It covers the two most common comp applications: optical style for smooth transparent squish, and hard knee for more aggressive peak limiting. True bypass, runs on standard 9V. It does what it says, sounds good, and takes up almost no board space. Pedal only, no power supply.\n\nBrand | Donner\nModel | Ultimate Comp\nType | Analog compressor\nModes | 2 (optical, hard knee)\nBypass | True bypass\nPower | 9V DC (not included)\nCondition | Used, excellent condition\nIncludes | Pedal only\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+      "condition_field": "Used, excellent condition. Fully functional, no issues. Pedal only, no power supply included."
+    }},
+    "metadata": { "done": true, "data": {
+      "category": "Music Gear > Effects Pedals",
+      "condition": "Used - Excellent",
+      "price": 25,
+      "min_offer": 18,
+      "format": "Fixed Price",
+      "duration": "GTC",
+      "shipping": "Free shipping",
+      "returns": "No returns",
+      "sku": "DW-donner-ultimate-comp",
+      "lot_id": null,
+      "lot_name": null,
+      "item_specifics": {
+        "Brand": "Donner",
+        "Model": "Ultimate Comp",
+        "Type": "Compressor",
+        "Bypass": "True Bypass",
+        "Power": "9V DC"
+      }
+    }},
+    "listing": { "done": false, "data": null }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "item_name": "Rollo Thermal Label Printer X1038 With Power Supply",
+  "slug": "rollo-x1038-label-printer",
+  "created": "2026-05-18",
+  "phases": {
+    "intake": { "done": true, "data": {
+      "name": "Rollo Thermal Label Printer X1038 With Power Supply",
+      "category": "Electronics > Printers",
+      "platform": "eBay",
+      "condition": "Used, fully functional, great condition",
+      "includes": "printer, power supply, USB cable, ~50 label starter pack",
+      "notes": "Upgraded to Zebra ZD420, no longer needed"
+    }},
+    "gap_analysis": { "done": true, "data": {
+      "lot_id": null,
+      "lot_name": null,
+      "shipping": "Free shipping, USPS Priority or similar",
+      "notes": "No lot. USB-B connection (not USB-C)."
+    }},
+    "comp_terms": { "done": true, "data": {
+      "terms": [
+        "Rollo X1038 thermal label printer",
+        "Rollo label printer used",
+        "Rollo X1038"
+      ]
+    }},
+    "comp_data": { "done": true, "data": {
+      "file": "docs/listing-sessions/rollo-x1038-label-printer/comps.txt",
+      "pool_size": "40+ Pre-Owned sold, last 30 days"
+    }},
+    "pricing": { "done": true, "data": {
+      "floor": 75,
+      "midpoint": 100,
+      "ceiling": 135,
+      "price": 100,
+      "min_offer": 75,
+      "confidence": "high",
+      "notes": "Deep pool, fresh comps. $100 free shipping lands at median for complete unit with PSU."
+    }},
+    "copy": { "done": true, "data": {
+      "title": "Rollo X1038 Thermal Label Printer 4x6 USB With Power Supply + Labels Included",
+      "description": "I upgraded to a Zebra ZD420 and this Rollo is looking for a new home. It's a solid, no-nonsense label printer that works exactly as advertised. Fully tested and working, great condition.\n\nPrinter | Rollo X1038 Direct Thermal\nConnection | USB-B\nPrint Width | 4x6\nCondition | Used, fully functional, great cosmetic condition\nIncludes | Power supply, USB cable, ~50 label starter pack\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+      "condition_field": "Used, fully functional. Tested working. Includes original power supply, USB cable, and approximately 50 thermal labels to get started. Great condition cosmetically — no major scratches or damage. Upgraded to a Zebra, no longer needed."
+    }},
+    "metadata": { "done": true, "data": {
+      "category": "Electronics > Printers",
+      "ebay_category_id": "1245",
+      "ebay_condition_id": "3000",
+      "condition": "Used",
+      "price": 100,
+      "min_offer": 75,
+      "format": "Fixed Price",
+      "duration": "GTC",
+      "shipping": "Free shipping",
+      "returns": "No returns",
+      "sku": "DW-rollo-x1038-label-printer",
+      "lot_id": null,
+      "lot_name": null,
+      "item_specifics": {
+        "Brand": "Rollo",
+        "Model": "X1038",
+        "MPN": "X1038",
+        "Type": "Label Printer",
+        "Technology": "Thermal",
+        "Output Type": "Black & White",
+        "Input Type": "Monochrome",
+        "Supported Paper Size": "4 inch wide",
+        "Maximum Resolution": "203 x 203 DPI",
+        "Connectivity": "Cable",
+        "Color": "Gray",
+        "Country of Origin": "China",
+        "Product Line": "Rollo Thermal Label Printer",
+        "Features": "Portable",
+        "Item Length": "8\"",
+        "Item Height": "3.5\"",
+        "Item Width": "3\""
+      }
+    }},
+    "listing": { "done": true, "data": { "file": "docs/listing-sessions/rollo-x1038-label-printer/listing.md", "listingId": "168384727153", "url": "https://ebay.com/itm/168384727153" } }
+  }
+}

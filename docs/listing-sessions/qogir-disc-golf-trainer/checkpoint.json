@@ -1,0 +1,63 @@
+{
+  "item_name": "Qogir Disc Golf Resistance Trainer",
+  "slug": "qogir-disc-golf-trainer",
+  "created": "2026-05-18",
+  "phases": {
+    "intake": { "done": true, "data": {
+      "name": "Qogir Disc Golf Resistance Trainer",
+      "category": "Sporting Goods > Disc Golf > Accessories",
+      "platform": "eBay",
+      "condition": "Opened, never used",
+      "includes": "trainer disc, resistance bands (3 levels), door/tree anchor strap",
+      "notes": "Bought Amazon 2022 for $25, opened, never used"
+    }},
+    "gap_analysis": { "done": true, "data": {
+      "lot_id": 9,
+      "lot_name": "Disc Golf",
+      "shipping": "Free shipping",
+      "notes": ""
+    }},
+    "comp_terms": { "done": true, "data": {
+      "terms": ["Qogir disc golf resistance trainer", "disc golf resistance trainer"]
+    }},
+    "comp_data": { "done": true, "data": {
+      "file": "docs/listing-sessions/qogir-disc-golf-trainer/comps.txt",
+      "pool_size": "1 direct comp (QOGIR Brand New $64.62 Apr 2026); remainder noise"
+    }},
+    "pricing": { "done": true, "data": {
+      "floor": 15,
+      "midpoint": 20,
+      "ceiling": 25,
+      "price": 20,
+      "min_offer": 15,
+      "confidence": "low — 1 comp, thin market",
+      "notes": "Amazon new ~$30. Priced below new to move. $20 free shipping is the play."
+    }},
+    "copy": { "done": true, "data": {
+      "title": "Qogir Disc Golf Resistance Trainer Band System Opened Never Used",
+      "description": "Disc golf is a game of muscle memory, and the Qogir resistance trainer is built to develop exactly that. You anchor the strap to a door or tree, grab the trainer disc, and work through your backhand or forehand motion against resistance bands. Three resistance levels let you progress as your muscles adapt. The softer grippy disc feels closer to a real disc golf disc than the hard plastic on competing trainers. I bought it, set it aside, and never made time for it. Opened and fully intact, never used.\n\nBrand | Qogir\nType | Disc golf resistance band trainer\nResistance Levels | 3 (light, medium, heavy)\nAnchor | Door frame or tree strap included\nTrains | Backhand and forehand throwing motion\nBest For | Building arm speed, form correction, muscle memory\nCondition | Opened, never used, all components present\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+      "condition_field": "Opened but never used. All components present. Bought new on Amazon, sat in storage. No damage."
+    }},
+    "metadata": { "done": true, "data": {
+      "category": "Sporting Goods > Disc Golf > Accessories",
+      "ebay_category_id": "184360",
+      "ebay_condition_id": "NEW_OTHER",
+      "condition": "Like New",
+      "price": 20,
+      "min_offer": 15,
+      "format": "Fixed Price",
+      "duration": "GTC",
+      "shipping": "Free shipping",
+      "returns": "No returns",
+      "sku": "DW-qogir-disc-golf-trainer",
+      "lot_id": 9,
+      "lot_name": "Disc Golf",
+      "item_specifics": {
+        "Brand": "Qogir",
+        "Type": "Resistance Trainer",
+        "Sport": "Disc Golf"
+      }
+    }},
+    "listing": { "done": true, "data": { "file": "docs/listing-sessions/qogir-disc-golf-trainer/listing.md", "listingId": "168384756001", "url": "https://ebay.com/itm/168384756001" } }
+  }
+}

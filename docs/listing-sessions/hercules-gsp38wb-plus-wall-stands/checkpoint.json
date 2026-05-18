@@ -1,0 +1,62 @@
+{
+  "item_name": "Hercules GSP38WB PLUS Wall Guitar Hangers - Pair",
+  "slug": "hercules-gsp38wb-plus-wall-stands",
+  "created": "2026-05-18",
+  "phases": {
+    "intake": { "done": true, "data": {
+      "name": "Set of 2 Hercules Stands GSP38WB PLUS Wall Guitar Hangers",
+      "category": "Music Gear > Guitar Accessories",
+      "platform": "Reverb",
+      "condition": "Used, excellent condition",
+      "includes": "2 hangers, no box",
+      "notes": "Wood base, short arm"
+    }},
+    "gap_analysis": { "done": true, "data": {
+      "lot_id": null,
+      "lot_name": null,
+      "shipping": "Free shipping",
+      "notes": "No lot. Reverb listing."
+    }},
+    "comp_terms": { "done": true, "data": {
+      "terms": ["Hercules GSP38WB Plus wall guitar stand", "Hercules wall mount guitar stand wood base"]
+    }},
+    "comp_data": { "done": true, "data": {
+      "file": "docs/listing-sessions/hercules-gsp38wb-plus-wall-stands/comps.txt",
+      "pool_size": "Good pool. Used singles $17-25 Reverb, $20-25 eBay. 2-pack comps $28-40."
+    }},
+    "pricing": { "done": true, "data": {
+      "floor": 20,
+      "midpoint": 30,
+      "ceiling": 40,
+      "price": 30,
+      "min_offer": 22,
+      "confidence": "high",
+      "notes": "Pair priced at $30 free shipping. Below cost of two new units (~$40-50), above low-ball 3-pack comps."
+    }},
+    "copy": { "done": true, "data": {
+      "title": "Hercules GSP38WB PLUS Wall Guitar Hangers Wood Base Short Arm - Pair",
+      "description": "Hercules makes some of the best wall hangers in the business, and the GSP38WB PLUS is their bread and butter model. The auto-grip yoke locks onto the guitar as you hang it and releases when you lift it off, no fumbling with levers. Wood base plate gives it a cleaner look than the steel base models. These are used but in excellent condition, ready to mount.\n\nBrand | Hercules\nModel | GSP38WB PLUS\nQuantity | 2 hangers\nYoke | Auto-grip, swivels to accommodate any headstock angle\nBase | Short arm, wood base plate\nFits | Guitar, bass, most stringed instruments\nCondition | Used, excellent condition\nIncludes | Mounting hardware not guaranteed, buyer should have their own screws\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+      "condition_field": "Used, excellent condition. Both hangers fully functional, auto-grip mechanism works correctly. No box."
+    }},
+    "metadata": { "done": true, "data": {
+      "category": "Music Gear > Guitar Accessories",
+      "condition": "Used - Excellent",
+      "price": 30,
+      "min_offer": 22,
+      "format": "Fixed Price",
+      "duration": "GTC",
+      "shipping": "Free shipping",
+      "returns": "No returns",
+      "sku": "DW-hercules-gsp38wb-plus-wall-stands",
+      "lot_id": null,
+      "lot_name": null,
+      "item_specifics": {
+        "Brand": "Hercules",
+        "Model": "GSP38WB PLUS",
+        "Type": "Wall Guitar Hanger",
+        "Quantity": "2"
+      }
+    }},
+    "listing": { "done": false, "data": null }
+  }
+}

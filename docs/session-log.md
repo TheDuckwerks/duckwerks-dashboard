@@ -1,6 +1,16 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-05-18 — Listing session: 4 items (2 eBay, 2 Reverb)
+
+- Listed Rollo X1038 thermal label printer on eBay — $100, free shipping (https://ebay.com/itm/168384727153)
+- Listed Qogir disc golf resistance trainer on eBay — $20, Disc Golf lot (https://ebay.com/itm/168384756001)
+- Wrote Reverb listing for Hercules GSP38WB PLUS wall hangers pair — $30
+- Wrote Reverb listing for Donner Ultimate Comp compressor pedal — $25
+- Created docs/ebay-category-map.json with Electronics > Printers (1245) and Disc Golf Accessories (184360)
+- Learned condition enum format: Inventory API uses strings (USED_EXCELLENT, NEW_OTHER) not numeric IDs
+- v2.0.28 → v2.0.29
+
 ### 2026-05-16 — Insurance toggle in label modal; disc golf defaults uninsured
 
 - Added INSURE checkbox to label modal; unchecked = no insurance field sent to EasyPost at all

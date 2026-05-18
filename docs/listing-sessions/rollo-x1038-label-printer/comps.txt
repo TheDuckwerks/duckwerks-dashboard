@@ -1,0 +1,39 @@
+COMP RESEARCH: Rollo X1038 thermal label printer (Pre-Owned, with PSU)
+============================================================
+
+The Rollo X1038 pre-owned market is deep and active with 40+ sold comps in the last 30 days. Core market for complete units (PSU + cables included) sits between $90–$115 landed, median ~$100. Floor for incomplete units (no PSU/cables) is $65–$70 landed. Ceiling for units with extras (holder, extra label rolls, original box) reaches $130–$140. Recommended list at $100 free shipping for a complete, great-condition unit with bonus labels.
+
+────────────────────────────────────────────────────────────
+
+title,condition,end_date,sold_price,shipping,total_landed,notes
+Rollo X1038 Label Printer Direct Thermal High Speed Printer Used TESTED,Pre-Owned,May 18 2026,89.98,5.99,95.97,duplicate pair collapsed
+Rollo X1038 Thermal Label Printer 4x6 Commercial Grade Power Cable USB Tested,Pre-Owned,Apr 22 2026,79.78,10.52,90.30,
+Rollo X1038 Thermal Label Printer 4x6 Shipping + Rollo Holder + Extras - Tested,Pre-Owned,May 18 2026,119.99,11.16,131.15,includes holder + extras — ceiling ref
+ROLLO X1038 Label Printer Thermal High Speed Printer (works),Pre-Owned,May 18 2026,69.99,12.00,81.99,
+Read Rollo X1038 Direct Thermal Shipping Label Printer No Cables No Power Supply,Pre-Owned,May 18 2026,59.99,9.99,69.98,no PSU — floor ref
+Rollo X1038 thermal Label Printer with Power Supply and Cables,Pre-Owned,May 17 2026,55.00,8.61,63.61,low — possible condition issue
+Rollo X1038 Label Printer (Power Cable + Supply Included),Pre-Owned,May 17 2026,60.00,10.43,70.43,
+Rollo X1038 USB Thermal Shipping Label Printer Commercial Grade 4x6 - Tested,Pre-Owned,May 17 2026,119.00,14.72,133.72,ceiling
+Rollo X1038 Thermal Label Printer USB Barely Used with Cables and 400+ Labels,Pre-Owned,May 16 2026,125.00,8.56,133.56,400+ labels included — ceiling
+Rollo Thermal Label Printer X1038 w/ Power Supply and USB Cable,Pre-Owned,May 16 2026,104.98,0.00,104.98,
+Rollo X1038 Thermal Label Printer 4x6 Direct w/ Charger & USB - CLEAN TESTED,Pre-Owned,May 16 2026,109.77,15.23,125.00,
+Rollo Thermal Label Printer X1038 w/ Power Supply and USB Cable - Works!,Pre-Owned,May 15 2026,99.50,0.00,99.50,
+Rollo Thermal Label Printer X1038 With Power Supply and USB Cable - Tested,Pre-Owned,May 14 2026,89.99,9.99,99.98,
+Rollo X1038 Direct Thermal Shipping Label Printer,Pre-Owned,May 13 2026,64.95,0.00,64.95,no cables noted
+Rollo Thermal Label Printer X1038 With Power/USB Cables 1 Label Roll & Holder,Pre-Owned,May 13 2026,110.00,29.95,139.95,holder + label roll — ceiling
+Rollo X1038 Label Printer Direct Thermal High Speed Printer Includes Cords,Pre-Owned,May 12 2026,109.99,0.00,109.99,
+Rollo X1038 Thermal Label Printer High Speed 4x6 Cables Working USB,Pre-Owned,May 11 2026,94.99,0.00,94.99,
+Rollo X1038 Thermal Label Printer X1038 Tested Working USB Shipping eBay 4x6,Pre-Owned,May 10 2026,83.33,14.31,97.64,
+Rollo X1038 Thermal Label Printer High Speed 4x6 W/ All Cables & Box - Excellent,Pre-Owned,May 10 2026,129.00,9.06,138.06,original box — ceiling
+Rollo Thermal Label Printer X1038 Tested Working USB Shipping eBay 4x6,Pre-Owned,May 10 2026,89.95,14.31,104.26,
+Rollo X1038 Thermal Shipping Label Printer Grey Black Tested & Working CORDED,Pre-Owned,May 10 2026,79.99,0.00,79.99,
+Rollo Thermal Label Printer - Working With No Issues,Pre-Owned,May 9 2026,75.00,10.52,85.52,
+Rollo X1038 Thermal Label Printer with Original Box & Accessories + Label Holder,Pre-Owned,May 8 2026,79.95,19.95,99.90,box + holder
+Rollo Thermal Label Printer X1038 High Speed Commercial Shipping Desktop,Pre-Owned,May 8 2026,99.99,0.00,99.99,
+Rollo Thermal Label Printer X1038 With Power/USB Cables 2 Rolls Labels & Holder,Pre-Owned,May 8 2026,99.95,12.34,112.29,2 rolls + holder
+Rollo X1038 4x6 Thermal Shipping Label Printer Grey/Black Tested & Working 24v,Pre-Owned,May 8 2026,84.95,9.06,94.01,
+Rollo Thermal Label Printer X1038 With Power Supply Self Tested,Pre-Owned,May 7 2026,69.00,0.00,69.00,
+Rollo Logistics Direct Thermal Shipping Label Printer X1038 ROLLO-QR Model,Pre-Owned,May 7 2026,80.00,7.02,87.02,
+Rollo Thermal Label Printer w/ Power Supply and USB Cable - Works! BARELY USED,Pre-Owned,May 7 2026,100.00,15.00,115.00,barely used claim
+Rollo Thermal Label Printer High Speed 4x6 Model X1038,Pre-Owned,May 7 2026,109.99,11.68,121.67,
+Rollo X1038 Label Printer Direct Thermal High Speed Printer Used TESTED,Pre-Owned,Apr 27 2026,91.00,6.72,97.72,

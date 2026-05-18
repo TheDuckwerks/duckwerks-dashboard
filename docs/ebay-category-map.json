@@ -1,0 +1,23 @@
+{
+  "categories": {
+    "Sporting Goods > Disc Golf > Accessories": {
+      "ebay_category_id": "184360",
+      "conditions": {
+        "New": "NEW",
+        "New - Open Box": "NEW_OTHER",
+        "Used - Excellent": "USED_EXCELLENT",
+        "Used - Good": "USED_GOOD",
+        "For Parts": "FOR_PARTS_OR_NOT_WORKING"
+      }
+    },
+    "Electronics > Printers": {
+      "ebay_category_id": "1245",
+      "conditions": {
+        "Used - Excellent": "USED_EXCELLENT",
+        "Used - Good": "USED_GOOD",
+        "Used - Acceptable": "USED_ACCEPTABLE",
+        "For Parts": "FOR_PARTS_OR_NOT_WORKING"
+      }
+    }
+  }
+}

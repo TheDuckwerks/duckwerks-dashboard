@@ -1,0 +1,9 @@
+COMP RESEARCH: Qogir disc golf resistance trainer
+============================================================
+
+Thin market — 1 direct comp found (QOGIR Brand New, $64.62 landed, Apr 2026). Remaining results are unrelated golf swing trainers, disc golf bags, and accessories. That single comp appears to be a reseller markup well above Amazon retail (~$30 new). Priced at $20 free shipping — below Amazon new, positioned to move.
+
+────────────────────────────────────────────────────────────
+
+title,condition,end_date,sold_price,shipping,total_landed,notes
+QOGIR Resistance Trainer for Disc Golf Practice Backhand or Forehand Throws,Brand New,Apr 16 2026,64.62,0.00,64.62,only direct comp — likely reseller markup above Amazon retail
