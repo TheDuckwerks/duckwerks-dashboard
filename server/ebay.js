@@ -231,7 +231,7 @@ router.post('/traffic', async (req, res) => {
       // Build URL manually — URLSearchParams encodes [ ] { } which eBay rejects
       const url = `${EBAY_API}/sell/analytics/v1/traffic_report`
         + `?dimension=LISTING`
-        + `&metric=LISTING_VIEWS_TOTAL,LISTING_IMPRESSION_TOTAL,CLICK_THROUGH_RATE`
+        + `&metric=LISTING_VIEWS_TOTAL,TOTAL_IMPRESSION_TOTAL,CLICK_THROUGH_RATE`
         + `&filter=marketplace_ids:{EBAY_US},date_range:[${fmt(start)}..${fmt(end)}],listing_ids:{${idList}}`;
       const response = await fetch(url, { headers });
       const data     = await response.json();
@@ -248,7 +248,7 @@ router.post('/traffic', async (req, res) => {
         };
         listings[lid] = {
           views:       get('LISTING_VIEWS_TOTAL'),
-          impressions: get('LISTING_IMPRESSION_TOTAL'),
+          impressions: get('TOTAL_IMPRESSION_TOTAL'),
           ctr:         get('CLICK_THROUGH_RATE'),
         };
       }
