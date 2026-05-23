@@ -31,6 +31,8 @@ document.addEventListener('alpine:init', () => {
     shippingProvider: 'EASYPOST',
     hostname:         '',
     environment:      '',
+    trafficMap:       {},   // { [legacyListingId]: { views, impressions, ctr } } — session cache
+    trafficLoading:   false,
 
     // ── Init ──────────────────────────────────────────────────────────────────
     async init() {
