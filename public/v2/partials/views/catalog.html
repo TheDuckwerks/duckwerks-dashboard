@@ -195,7 +195,31 @@
         </template>
         <template x-if="!inventoryLoading && inventory.length > 0">
           <div>
-            <template x-for="row in inventory" :key="row.sku">
+            <!-- Sort bar -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+              <template x-for="col in [
+                {key:'sku',label:'SKU'},
+                {key:'location',label:'LOC'},
+                {key:'manufacturer',label:'MFG'},
+                {key:'mold',label:'MOLD'},
+                {key:'title',label:'TITLE'},
+                {key:'price',label:'PRICE'},
+                {key:'views',label:'VIEWS'},
+                {key:'impressions',label:'IMP'},
+                {key:'ctr',label:'CTR'}
+              ]" :key="col.key">
+                <button @click="invSortBy(col.key)"
+                  :style="invSortKey === col.key ? 'border-color:var(--blue);color:var(--blue)' : ''"
+                  style="font:700 9px/1 var(--mono);letter-spacing:.08em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+                  x-text="col.label + invSortGlyph(col.key)"></button>
+              </template>
+              <span x-show="$store.dw.trafficLoading"
+                    style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--muted);padding:3px 0">
+                LOADING TRAFFIC...
+              </span>
+            </div>
+
+            <template x-for="row in sortedInventory" :key="row.sku">
               <div style="border-bottom:1px solid var(--border)">
 
                 <!-- Summary row -->
@@ -203,8 +227,9 @@
                      :style="ebayQueue.includes(row.sku) ? 'border-left:2px solid var(--blue);padding-left:8px' : ebayBatchResults[row.sku]?.ok ? 'border-left:2px solid var(--green);padding-left:8px' : ebayBatchResults[row.sku]?.error ? 'border-left:2px solid var(--red);padding-left:8px' : ''">
                   <div style="display:flex;gap:16px;align-items:baseline;min-width:0">
                     <span style="font:700 11px/1 var(--mono);flex-shrink:0" x-text="row.sku"></span>
-                    <span style="font-size:11px;color:var(--muted);flex-shrink:0" x-text="row.category || '—'"></span>
                     <span style="font-size:11px;color:var(--muted);flex-shrink:0" x-text="row.location || '—'"></span>
+                    <span style="font-size:11px;color:var(--muted);flex-shrink:0" x-text="row.metadata?.manufacturer || '—'"></span>
+                    <span style="font-size:11px;color:var(--muted);flex-shrink:0" x-text="row.metadata?.mold || '—'"></span>
                     <!-- inline price edit -->
                     <span x-show="priceEditSku !== row.sku"
                           class="price-cell"
@@ -235,6 +260,22 @@
                       </button>
                     </span>
                     <span style="font-size:11px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="inventoryDisplayTitle(row)"></span>
+                    <template x-if="row.ebay_listing_id">
+                      <span style="display:flex;gap:10px;flex-shrink:0">
+                        <span style="font-size:11px;color:var(--muted)">
+                          <span style="font:700 9px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3)">V </span><span x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : ($store.dw.trafficMap[row.ebay_listing_id]?.views ?? '—')"></span>
+                        </span>
+                        <span style="font-size:11px;color:var(--muted)">
+                          <span style="font:700 9px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3)">IMP </span><span x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : ($store.dw.trafficMap[row.ebay_listing_id]?.impressions ?? '—')"></span>
+                        </span>
+                        <span style="font-size:11px;color:var(--muted)">
+                          <span style="font:700 9px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3)">CTR </span><span x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : ($store.dw.trafficMap[row.ebay_listing_id] ? Math.round($store.dw.trafficMap[row.ebay_listing_id].ctr * 100) + '%' : '—')"></span>
+                        </span>
+                      </span>
+                    </template>
+                    <template x-if="!row.ebay_listing_id">
+                      <span style="font-size:11px;color:var(--ink-3);flex-shrink:0">not listed</span>
+                    </template>
                     <span x-show="ebayQueue.includes(row.sku)" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--blue);flex-shrink:0">QUEUED</span>
                     <a x-show="ebayBatchResults[row.sku]?.ok" :href="ebayBatchResults[row.sku]?.url" target="_blank"
                        style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--green);flex-shrink:0;text-decoration:none">UPDATED →</a>
