@@ -195,40 +195,23 @@
         </template>
         <template x-if="!inventoryLoading && inventory.length > 0">
           <div>
-            <table class="tb" style="table-layout:fixed">
-              <colgroup>
-                <col style="width:80px">   <!-- SKU -->
-                <col style="width:36px">   <!-- LOC -->
-                <col style="width:100px">  <!-- MFG -->
-                <col style="width:110px">  <!-- MOLD -->
-                <col>                      <!-- TITLE (flex) -->
-                <col style="width:72px">   <!-- PRICE -->
-                <col style="width:52px">   <!-- VIEWS -->
-                <col style="width:60px">   <!-- IMP -->
-                <col style="width:48px">   <!-- CTR -->
-                <col style="width:170px">  <!-- ACTIONS -->
-              </colgroup>
+            <table class="tb">
               <thead>
                 <tr>
-                  <th class="sortable" :class="{'sort-active': invSortKey==='sku'}"    @click="invSortBy('sku')"          >SKU<span x-text="invSortGlyph('sku')"></span></th>
-                  <th class="sortable" :class="{'sort-active': invSortKey==='location'}" @click="invSortBy('location')"   >LOC<span x-text="invSortGlyph('location')"></span></th>
-                  <th class="sortable" :class="{'sort-active': invSortKey==='manufacturer'}" @click="invSortBy('manufacturer')">Mfg<span x-text="invSortGlyph('manufacturer')"></span></th>
-                  <th class="sortable" :class="{'sort-active': invSortKey==='mold'}"   @click="invSortBy('mold')"         >Mold<span x-text="invSortGlyph('mold')"></span></th>
-                  <th class="sortable" :class="{'sort-active': invSortKey==='title'}"  @click="invSortBy('title')"        >Title<span x-text="invSortGlyph('title')"></span></th>
-                  <th class="sortable r" :class="{'sort-active': invSortKey==='price'}" @click="invSortBy('price')"       >Price<span x-text="invSortGlyph('price')"></span></th>
-                  <th class="sortable r" :class="{'sort-active': invSortKey==='views'}" @click="invSortBy('views')"
-                      :style="$store.dw.trafficLoading ? 'color:var(--muted)' : ''">Views<span x-text="invSortGlyph('views')"></span></th>
-                  <th class="sortable r" :class="{'sort-active': invSortKey==='impressions'}" @click="invSortBy('impressions')"
-                      :style="$store.dw.trafficLoading ? 'color:var(--muted)' : ''">Imp<span x-text="invSortGlyph('impressions')"></span></th>
-                  <th class="sortable r" :class="{'sort-active': invSortKey==='ctr'}"  @click="invSortBy('ctr')"
-                      :style="$store.dw.trafficLoading ? 'color:var(--muted)' : ''">CTR<span x-text="invSortGlyph('ctr')"></span></th>
-                  <th></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='sku'}"           @click="invSortBy('sku')"          style="width:80px">SKU<span x-text="invSortGlyph('sku')"></span></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='location'}"      @click="invSortBy('location')"     style="width:40px">Loc<span x-text="invSortGlyph('location')"></span></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='manufacturer'}"  @click="invSortBy('manufacturer')" style="width:90px">Mfg<span x-text="invSortGlyph('manufacturer')"></span></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='mold'}"          @click="invSortBy('mold')"         style="width:110px">Mold<span x-text="invSortGlyph('mold')"></span></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='title'}"         @click="invSortBy('title')"        >Title<span x-text="invSortGlyph('title')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='price'}"       @click="invSortBy('price')"        style="width:64px">Price<span x-text="invSortGlyph('price')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='views'}"       @click="invSortBy('views')"        style="width:54px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">Views<span x-text="invSortGlyph('views')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='impressions'}" @click="invSortBy('impressions')"  style="width:54px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">Imp<span x-text="invSortGlyph('impressions')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='ctr'}"         @click="invSortBy('ctr')"          style="width:44px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">CTR<span x-text="invSortGlyph('ctr')"></span></th>
+                  <th style="width:170px"></th>
                 </tr>
               </thead>
               <tbody>
             <template x-for="row in sortedInventory" :key="row.sku">
-              <template x-if="true"><!-- wrapper needed for multiple tr per row -->
-              <tbody>
                 <!-- Summary row -->
                 <tr :style="ebayQueue.includes(row.sku) ? 'border-left:2px solid var(--blue)' : ebayBatchResults[row.sku]?.ok ? 'border-left:2px solid var(--green)' : ebayBatchResults[row.sku]?.error ? 'border-left:2px solid var(--red)' : ''">
                   <td style="font:700 11px/1 var(--mono);white-space:nowrap" x-text="row.sku"></td>
@@ -368,10 +351,8 @@
                   </tr>
                 </template>
 
-              </tbody><!-- /per-row tbody -->
-              </template><!-- /x-if wrapper -->
             </template><!-- /x-for -->
-              </tbody><!-- close outer tbody from thead -->
+              </tbody>
             </table>
           </div>
         </template>
