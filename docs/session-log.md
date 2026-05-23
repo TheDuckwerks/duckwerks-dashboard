@@ -1,6 +1,15 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-05-23 — Sortable DG inventory with analytics columns
+
+- Added sortable table to catalog page inventory section (SKU, Loc, Mfg, Mold, Title, Price, Views, Imp, CTR)
+- Traffic data (views/impressions/CTR) fetched from eBay on catalog page load, cached in shared `Alpine.store('dw').trafficMap` so analytics page reuses it without a second fetch
+- `GET /api/inventory` now returns `ebay_listing_id` via LEFT JOIN on items/listings
+- Analytics view writes traffic fetch into shared store
+- Rewrote inventory list from flex divs to `table.tb` matching items view style; header sort clicks replace old sort-button bar
+- v2.0.30 → v2.0.31
+
 ### 2026-05-23 — Fix analytics impressions metric
 
 - Analytics page was showing `LISTING_IMPRESSION_TOTAL` (organic search only) instead of `TOTAL_IMPRESSION_TOTAL` (includes promoted listings)
