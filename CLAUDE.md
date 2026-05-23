@@ -41,6 +41,18 @@ The production server is an Intel NUC at `fedora.local`. Claude has SSH access a
 - **Database:** `/home/geoff/projects/duckwerksdash/data/duckwerks.db` — this is the source of truth. The local `data/duckwerks.db` is stale and useless. Never query it.
 - **Scripts that touch the DB must run on the NUC**, not locally. SSH in and run them there.
 
+## Direct Data Operations
+
+When making data changes — bulk or otherwise — the default flow is:
+1. Show the rows that will be affected (SELECT first)
+2. State what the UPDATE will do and wait for confirmation
+3. Execute, then verify
+
+**Use the API routes** when a route exists and the change is small (one or a few records).  
+**Use `sqlite3` directly** for bulk updates, migrations, or when no route fits — never `node -e` inline scripts (better-sqlite3 never calls db.close(), so the process hangs).
+
+If the right approach isn't clear, sort it out before running anything. This applies even when bypass permissions are on — production data changes always get a confirmation step.
+
 ## Dev vs Production
 
 > **Every commit must be followed immediately by `git push origin main` and `bash scripts/deploy-nuc.sh`. A commit alone is invisible to Geoff. Do not tell Geoff to check anything until deploy-nuc.sh has confirmed the restart.**
@@ -73,7 +85,7 @@ The production server is an Intel NUC at `fedora.local`. Claude has SSH access a
 - `server/ebay-client.js` — shared eBay API plumbing (headers, policies, EPS upload, inventory item PUT/GET, offer upsert/update/publish)
 - `server/ebay-builders.js` — disc payload builder (`buildDiscPayload`), description renderers; add new category builders here
 - `server/ebay-listings.js` — eBay listing routes (`/api/ebay/bulk-list`, `bulk-update`, `bulk-preview`, `bulk-photos`, `list-item`, `update-item`); thin handlers only
-- `server/inventory.js` — local inventory CRUD (`GET /api/inventory`, `GET /api/inventory/:sku`, `PATCH /api/inventory/:sku`)
+- `server/inventory.js` — local inventory CRUD (`GET /api/inventory`, `GET /api/inventory/:sku`, `PATCH /api/inventory/:sku`); `GET /api/inventory` LEFT JOINs items+listings to return `ebay_listing_id` per row
 - `scripts/deploy-nuc.sh` — pull + PM2 restart on the NUC; run after every push. SSH: `ssh geoff@fedora.local`, project at `/home/geoff/projects/duckwerksdash`
 - `scripts/bulk-list-discs.js` — bulk eBay lister; idempotent (safe to re-run)
 - `scripts/README.md` — index of all active scripts with usage examples
@@ -87,9 +99,11 @@ The production server is an Intel NUC at `fedora.local`. Claude has SSH access a
 - `public/v2/partials/modals/` — modal HTML partials (item, add, lot, label, shipping)
 - `public/v2/js/config.js` — constants: `CAT_BADGE`, `CAT_COLOR`, `SITE_FEES`, `APP_VERSION`
 - `public/v2/js/notifications.js` — browser push notification module: permission, 5-min order poller, delta tracking; test page at `/push-test`
-- `public/v2/js/store.js` — `Alpine.store('dw')` — all data, helpers, modal state
+- `public/v2/js/store.js` — `Alpine.store('dw')` — all data, helpers, modal state; includes `trafficMap: {}` (session cache of `{ [legacyListingId]: { views, impressions, ctr } }`) and `trafficLoading: bool` — populated by whichever view loads first (analytics or catalog)
 - `public/v2/js/sidebar.js` — search + nav state
 - `public/v2/js/views/` — Alpine component definitions for each view
+  - `analytics.js` — fetches eBay traffic via `POST /api/ebay/traffic`; uses `TOTAL_IMPRESSION_TOTAL` (includes promoted); writes result into `$store.dw.trafficMap` for sharing
+  - `catalog.js` — DG intake form + inventory list; `loadTraffic()` reads `trafficMap` if already populated, otherwise fetches and writes it; `sortedInventory` getter sorts by any column incl. traffic metrics
 - `public/v2/js/modals/` — Alpine component definitions for each modal (item, add, lot, label, shipping)
 
 > Full endpoint docs + env vars + schema: `docs/claude/api-reference.md`
@@ -110,6 +124,8 @@ The production server is an Intel NUC at `fedora.local`. Claude has SSH access a
 - Use `AND col IS NULL` (or equivalent) on UPDATE statements to make writes idempotent
 
 ## Gotchas
+
+**eBay traffic API metric** — use `TOTAL_IMPRESSION_TOTAL` (includes promoted listing impressions), not `LISTING_IMPRESSION_TOTAL` (organic only). The Seller Hub UI shows the total; the API will mislead you with the organic-only metric if you pick the wrong key.
 
 **Alpine modal pattern** — every modal overlay needs three things on its root div or it will be permanently visible and break the entire UI:
 ```html
