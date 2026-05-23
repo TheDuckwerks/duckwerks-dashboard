@@ -153,6 +153,7 @@ document.addEventListener('alpine:init', () => {
 
         // ebayTraffic.listings: { [legacyListingId]: { views, impressions, ctr } }
         const ebayMap = ebayTraffic.listings || {};
+        Object.assign(Alpine.store('dw').trafficMap, ebayMap);
 
         // watchCount map: legacyItemId → count (null until eBay App Check approved)
         const watchMap = {};
