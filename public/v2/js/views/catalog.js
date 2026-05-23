@@ -1,4 +1,9 @@
 // ── Catalog Intake View ────────────────────────────────────────────────────────
+function _traffic(row) {
+  const lid = row.ebay_listing_id;
+  return lid ? (Alpine.store('dw').trafficMap[lid] || null) : null;
+}
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('catalogView', () => ({
     // form state
@@ -47,6 +52,8 @@ document.addEventListener('alpine:init', () => {
     ebayBatchRunning: false,
     ebayBatchResults: {},  // sku -> { ok, url, error }
     ebayBatchProgress: { done: 0, total: 0 },
+    invSortKey: 'sku',
+    invSortDir: 'asc',
 
     TYPES:  ['Distance Driver', 'Fairway Driver', 'Midrange Disc', 'Putting Disc'],
     COLORS: [
@@ -58,6 +65,29 @@ document.addEventListener('alpine:init', () => {
       if (!this.manufacturerQuery) return this.manufacturers;
       const q = this.manufacturerQuery.toLowerCase();
       return this.manufacturers.filter(m => m.toLowerCase().includes(q));
+    },
+
+    get sortedInventory() {
+      const dir = this.invSortDir === 'asc' ? 1 : -1;
+      return [...this.inventory].sort((a, b) => {
+        let av, bv;
+        const k = this.invSortKey;
+        if (k === 'sku') {
+          const an = parseInt((a.sku || '').replace(/^DWG-0*/i, ''), 10);
+          const bn = parseInt((b.sku || '').replace(/^DWG-0*/i, ''), 10);
+          return dir * (an - bn);
+        }
+        if (k === 'location')     { av = a.location || ''; bv = b.location || ''; }
+        if (k === 'manufacturer') { av = a.metadata?.manufacturer || ''; bv = b.metadata?.manufacturer || ''; }
+        if (k === 'mold')         { av = a.metadata?.mold || '';         bv = b.metadata?.mold || ''; }
+        if (k === 'title')        { av = this.inventoryDisplayTitle(a);  bv = this.inventoryDisplayTitle(b); }
+        if (k === 'price')        { return dir * ((a.metadata?.listPrice || 0) - (b.metadata?.listPrice || 0)); }
+        if (k === 'views')        { return dir * ((_traffic(a)?.views ?? -1) - (_traffic(b)?.views ?? -1)); }
+        if (k === 'impressions')  { return dir * ((_traffic(a)?.impressions ?? -1) - (_traffic(b)?.impressions ?? -1)); }
+        if (k === 'ctr')          { return dir * ((_traffic(a)?.ctr ?? -1) - (_traffic(b)?.ctr ?? -1)); }
+        if (av === undefined) return 0;
+        return dir * av.localeCompare(bv);
+      });
     },
 
     selectManufacturer(m) {
@@ -233,10 +263,30 @@ document.addEventListener('alpine:init', () => {
         const res  = await fetch(url);
         const data = await res.json();
         this.inventory = data.inventory || [];
+        this.loadTraffic();
       } catch (e) {
         this.inventoryErr = e.message;
       }
       this.inventoryLoading = false;
+    },
+
+    async loadTraffic() {
+      const dw = Alpine.store('dw');
+      if (Object.keys(dw.trafficMap).length > 0) return;
+      const ids = this.inventory.map(r => r.ebay_listing_id).filter(Boolean);
+      if (!ids.length) return;
+      dw.trafficLoading = true;
+      try {
+        const data = await fetch('/api/ebay/traffic', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ listingIds: ids }),
+        }).then(r => r.json());
+        Object.assign(dw.trafficMap, data.listings || {});
+      } catch (e) {
+        console.warn('[catalog] traffic fetch failed:', e.message);
+      }
+      dw.trafficLoading = false;
     },
 
     startEdit(row) {
@@ -249,6 +299,20 @@ document.addEventListener('alpine:init', () => {
       this.editingSku   = null;
       this.editLocation = '';
       this.editPairs    = [];
+    },
+
+    invSortBy(key) {
+      if (this.invSortKey === key) {
+        this.invSortDir = this.invSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.invSortKey = key;
+        this.invSortDir = key === 'sku' ? 'asc' : 'desc';
+      }
+    },
+
+    invSortGlyph(key) {
+      if (this.invSortKey !== key) return '';
+      return this.invSortDir === 'asc' ? ' ↑' : ' ↓';
     },
 
     async saveEdit() {
