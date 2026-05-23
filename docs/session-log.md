@@ -1,6 +1,13 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-05-23 — Fix analytics impressions metric
+
+- Analytics page was showing `LISTING_IMPRESSION_TOTAL` (organic search only) instead of `TOTAL_IMPRESSION_TOTAL` (includes promoted listings)
+- Discovered by comparing API data against eBay Seller Hub — towel showed 357 vs 2,272 impressions
+- One-line fix in `server/ebay.js` traffic route
+- v2.0.29 → v2.0.30
+
 ### 2026-05-18 — Listing session: 4 items (2 eBay, 2 Reverb)
 
 - Listed Rollo X1038 thermal label printer on eBay — $100, free shipping (https://ebay.com/itm/168384727153)
