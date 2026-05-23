@@ -195,42 +195,55 @@
         </template>
         <template x-if="!inventoryLoading && inventory.length > 0">
           <div>
-            <!-- Sort bar -->
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-              <template x-for="col in [
-                {key:'sku',label:'SKU'},
-                {key:'location',label:'LOC'},
-                {key:'manufacturer',label:'MFG'},
-                {key:'mold',label:'MOLD'},
-                {key:'title',label:'TITLE'},
-                {key:'price',label:'PRICE'},
-                {key:'views',label:'VIEWS'},
-                {key:'impressions',label:'IMP'},
-                {key:'ctr',label:'CTR'}
-              ]" :key="col.key">
-                <button @click="invSortBy(col.key)"
-                  :style="invSortKey === col.key ? 'border-color:var(--blue);color:var(--blue)' : ''"
-                  style="font:700 9px/1 var(--mono);letter-spacing:.08em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
-                  x-text="col.label + invSortGlyph(col.key)"></button>
-              </template>
-              <span x-show="$store.dw.trafficLoading"
-                    style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--muted);padding:3px 0">
-                LOADING TRAFFIC...
-              </span>
-            </div>
-
+            <table class="tb" style="table-layout:fixed">
+              <colgroup>
+                <col style="width:80px">   <!-- SKU -->
+                <col style="width:36px">   <!-- LOC -->
+                <col style="width:100px">  <!-- MFG -->
+                <col style="width:110px">  <!-- MOLD -->
+                <col>                      <!-- TITLE (flex) -->
+                <col style="width:72px">   <!-- PRICE -->
+                <col style="width:52px">   <!-- VIEWS -->
+                <col style="width:60px">   <!-- IMP -->
+                <col style="width:48px">   <!-- CTR -->
+                <col style="width:170px">  <!-- ACTIONS -->
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='sku'}"    @click="invSortBy('sku')"          >SKU<span x-text="invSortGlyph('sku')"></span></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='location'}" @click="invSortBy('location')"   >LOC<span x-text="invSortGlyph('location')"></span></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='manufacturer'}" @click="invSortBy('manufacturer')">Mfg<span x-text="invSortGlyph('manufacturer')"></span></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='mold'}"   @click="invSortBy('mold')"         >Mold<span x-text="invSortGlyph('mold')"></span></th>
+                  <th class="sortable" :class="{'sort-active': invSortKey==='title'}"  @click="invSortBy('title')"        >Title<span x-text="invSortGlyph('title')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='price'}" @click="invSortBy('price')"       >Price<span x-text="invSortGlyph('price')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='views'}" @click="invSortBy('views')"
+                      :style="$store.dw.trafficLoading ? 'color:var(--muted)' : ''">Views<span x-text="invSortGlyph('views')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='impressions'}" @click="invSortBy('impressions')"
+                      :style="$store.dw.trafficLoading ? 'color:var(--muted)' : ''">Imp<span x-text="invSortGlyph('impressions')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='ctr'}"  @click="invSortBy('ctr')"
+                      :style="$store.dw.trafficLoading ? 'color:var(--muted)' : ''">CTR<span x-text="invSortGlyph('ctr')"></span></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
             <template x-for="row in sortedInventory" :key="row.sku">
-              <div style="border-bottom:1px solid var(--border)">
-
+              <template x-if="true"><!-- wrapper needed for multiple tr per row -->
+              <tbody>
                 <!-- Summary row -->
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0"
-                     :style="ebayQueue.includes(row.sku) ? 'border-left:2px solid var(--blue);padding-left:8px' : ebayBatchResults[row.sku]?.ok ? 'border-left:2px solid var(--green);padding-left:8px' : ebayBatchResults[row.sku]?.error ? 'border-left:2px solid var(--red);padding-left:8px' : ''">
-                  <div style="display:flex;gap:16px;align-items:baseline;min-width:0">
-                    <span style="font:700 11px/1 var(--mono);flex-shrink:0" x-text="row.sku"></span>
-                    <span style="font-size:11px;color:var(--muted);flex-shrink:0" x-text="row.location || '—'"></span>
-                    <span style="font-size:11px;color:var(--muted);flex-shrink:0" x-text="row.metadata?.manufacturer || '—'"></span>
-                    <span style="font-size:11px;color:var(--muted);flex-shrink:0" x-text="row.metadata?.mold || '—'"></span>
-                    <!-- inline price edit -->
+                <tr :style="ebayQueue.includes(row.sku) ? 'border-left:2px solid var(--blue)' : ebayBatchResults[row.sku]?.ok ? 'border-left:2px solid var(--green)' : ebayBatchResults[row.sku]?.error ? 'border-left:2px solid var(--red)' : ''">
+                  <td style="font:700 11px/1 var(--mono);white-space:nowrap" x-text="row.sku"></td>
+                  <td style="font-size:11px;color:var(--muted)" x-text="row.location || '—'"></td>
+                  <td style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="row.metadata?.manufacturer || '—'"></td>
+                  <td style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="row.metadata?.mold || '—'"></td>
+                  <td style="font-size:11px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                    <span x-text="inventoryDisplayTitle(row)"></span>
+                    <span x-show="ebayQueue.includes(row.sku)" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--blue);margin-left:6px">QUEUED</span>
+                    <a x-show="ebayBatchResults[row.sku]?.ok" :href="ebayBatchResults[row.sku]?.url" target="_blank"
+                       style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--green);margin-left:6px;text-decoration:none">UPDATED →</a>
+                    <span x-show="ebayBatchResults[row.sku]?.error" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--red);margin-left:6px" x-text="ebayBatchResults[row.sku]?.error"></span>
+                  </td>
+                  <!-- PRICE: inline edit -->
+                  <td class="r">
                     <span x-show="priceEditSku !== row.sku"
                           class="price-cell"
                           tabindex="0"
@@ -239,15 +252,15 @@
                           @keydown="if(/^\d$/.test($event.key)){ $event.preventDefault(); startPriceEdit(row, $event.key) }"
                           @click="startPriceEdit(row)"
                           :style="row.metadata?.listPrice ? 'color:var(--ink-1)' : 'color:var(--muted)'"
-                          style="font-size:11px;flex-shrink:0;cursor:pointer;outline:none;border-bottom:1px dotted var(--ink-3)"
+                          style="font-size:11px;cursor:pointer;outline:none;border-bottom:1px dotted var(--ink-3)"
                           x-text="row.metadata?.listPrice ? '$' + row.metadata.listPrice : '—'"></span>
-                    <span x-show="priceEditSku === row.sku" style="display:flex;gap:4px;align-items:center;flex-shrink:0">
+                    <span x-show="priceEditSku === row.sku" style="display:flex;gap:4px;align-items:center;justify-content:flex-end">
                       <input type="number" min="0" step="1"
                              x-model.number="priceEditVal"
                              :id="'price-input-' + row.sku"
                              @keydown.enter.prevent="focusPriceQueue(row.sku)"
                              @keydown.escape="cancelPriceEdit()"
-                             style="font-size:11px;width:60px;padding:1px 4px;border:1px solid var(--blue);background:var(--bg);color:var(--ink-1)">
+                             style="font-size:11px;width:54px;padding:1px 4px;border:1px solid var(--blue);background:var(--bg);color:var(--ink-1)">
                       <button :id="'price-queue-' + row.sku"
                               @click="savePriceEdit(row)"
                               @keydown.tab.prevent="savePriceEditAndAdvance(row, $event)"
@@ -259,117 +272,107 @@
                         ✕
                       </button>
                     </span>
-                    <span style="font-size:11px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="inventoryDisplayTitle(row)"></span>
-                    <template x-if="row.ebay_listing_id">
-                      <span style="display:flex;gap:10px;flex-shrink:0">
-                        <span style="font-size:11px;color:var(--muted)">
-                          <span style="font:700 9px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3)">V </span><span x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : ($store.dw.trafficMap[row.ebay_listing_id]?.views ?? '—')"></span>
-                        </span>
-                        <span style="font-size:11px;color:var(--muted)">
-                          <span style="font:700 9px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3)">IMP </span><span x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : ($store.dw.trafficMap[row.ebay_listing_id]?.impressions ?? '—')"></span>
-                        </span>
-                        <span style="font-size:11px;color:var(--muted)">
-                          <span style="font:700 9px/1 var(--mono);letter-spacing:.06em;color:var(--ink-3)">CTR </span><span x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : ($store.dw.trafficMap[row.ebay_listing_id] ? Math.round($store.dw.trafficMap[row.ebay_listing_id].ctr * 100) + '%' : '—')"></span>
-                        </span>
-                      </span>
-                    </template>
-                    <template x-if="!row.ebay_listing_id">
-                      <span style="font-size:11px;color:var(--ink-3);flex-shrink:0">not listed</span>
-                    </template>
-                    <span x-show="ebayQueue.includes(row.sku)" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--blue);flex-shrink:0">QUEUED</span>
-                    <a x-show="ebayBatchResults[row.sku]?.ok" :href="ebayBatchResults[row.sku]?.url" target="_blank"
-                       style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--green);flex-shrink:0;text-decoration:none">UPDATED →</a>
-                    <span x-show="ebayBatchResults[row.sku]?.error" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--red);flex-shrink:0" x-text="ebayBatchResults[row.sku]?.error"></span>
-                  </div>
-                  <div style="display:flex;gap:6px;flex-shrink:0">
-                    <button @click="ebayPreviewDisc(row)"
-                      x-show="!ebayPreview[row.sku]"
-                      style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--blue);color:var(--blue);cursor:pointer">
-                      UPDATE EBAY
-                    </button>
-                    <button @click="editingSku === row.sku ? cancelEdit() : startEdit(row)"
-                      style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
-                      x-text="editingSku === row.sku ? '✕ CLOSE' : 'EDIT'"></button>
-                  </div>
-                </div>
+                  </td>
+                  <!-- TRAFFIC cols -->
+                  <td class="r num" x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : (row.ebay_listing_id ? ($store.dw.trafficMap[row.ebay_listing_id]?.views ?? '—') : '—')"></td>
+                  <td class="r num" x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : (row.ebay_listing_id ? ($store.dw.trafficMap[row.ebay_listing_id]?.impressions ?? '—') : '—')"></td>
+                  <td class="r num" x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : (row.ebay_listing_id && $store.dw.trafficMap[row.ebay_listing_id] ? Math.round($store.dw.trafficMap[row.ebay_listing_id].ctr * 100) + '%' : '—')"></td>
+                  <!-- ACTIONS -->
+                  <td style="white-space:nowrap">
+                    <div style="display:flex;gap:6px;justify-content:flex-end">
+                      <button @click="ebayPreviewDisc(row)"
+                        x-show="!ebayPreview[row.sku]"
+                        style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--blue);color:var(--blue);cursor:pointer">
+                        UPDATE EBAY
+                      </button>
+                      <button @click="editingSku === row.sku ? cancelEdit() : startEdit(row)"
+                        style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+                        x-text="editingSku === row.sku ? '✕ CLOSE' : 'EDIT'"></button>
+                    </div>
+                  </td>
+                </tr>
 
                 <!-- eBay preview panel -->
                 <template x-if="ebayPreview[row.sku]">
-                  <div style="padding:10px 0 14px;border-top:1px solid var(--border)">
-                    <template x-if="ebayPreview[row.sku] === 'loading'">
-                      <span style="font-size:11px;color:var(--muted);font:700 10px/1 var(--mono);letter-spacing:.08em">FETCHING PREVIEW...</span>
-                    </template>
-                    <template x-if="ebayPreview[row.sku] !== 'loading'">
-                      <div style="display:grid;gap:6px">
-                        <template x-if="ebayPreview[row.sku].error">
-                          <span style="font-size:11px;color:var(--red)" x-text="ebayPreview[row.sku].error"></span>
-                        </template>
-                        <template x-if="!ebayPreview[row.sku].error">
-                          <div style="display:grid;gap:4px">
-                            <div style="font-size:11px"><span style="color:var(--muted);font:700 10px/1 var(--mono)">TITLE </span><span x-text="ebayPreview[row.sku].title"></span></div>
-                            <div style="font-size:11px"><span style="color:var(--muted);font:700 10px/1 var(--mono)">PRICE </span><span x-text="'$' + ebayPreview[row.sku].price"></span><span style="color:var(--muted)"> (auto-decline $<span x-text="ebayPreview[row.sku].autoDecline"></span>)</span></div>
+                  <tr>
+                    <td colspan="10" style="padding:10px 10px 14px;border-top:1px solid var(--border)">
+                      <template x-if="ebayPreview[row.sku] === 'loading'">
+                        <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">FETCHING PREVIEW...</span>
+                      </template>
+                      <template x-if="ebayPreview[row.sku] !== 'loading'">
+                        <div style="display:grid;gap:6px">
+                          <template x-if="ebayPreview[row.sku].error">
+                            <span style="font-size:11px;color:var(--red)" x-text="ebayPreview[row.sku].error"></span>
+                          </template>
+                          <template x-if="!ebayPreview[row.sku].error">
+                            <div style="display:grid;gap:4px">
+                              <div style="font-size:11px"><span style="color:var(--muted);font:700 10px/1 var(--mono)">TITLE </span><span x-text="ebayPreview[row.sku].title"></span></div>
+                              <div style="font-size:11px"><span style="color:var(--muted);font:700 10px/1 var(--mono)">PRICE </span><span x-text="'$' + ebayPreview[row.sku].price"></span><span style="color:var(--muted)"> (auto-decline $<span x-text="ebayPreview[row.sku].autoDecline"></span>)</span></div>
+                            </div>
+                          </template>
+                          <template x-if="ebayPreview[row.sku].result">
+                            <div style="font-size:11px;padding:4px 0;display:flex;align-items:center;gap:8px">
+                              <span :style="ebayPreview[row.sku].result === 'updated' ? 'color:var(--green)' : 'color:var(--red)'"
+                                    x-text="ebayPreview[row.sku].result === 'updated' ? 'POSTED TO EBAY' : ebayPreview[row.sku].result"></span>
+                              <template x-if="ebayPreview[row.sku].result === 'updated' && ebayPreview[row.sku].url">
+                                <a :href="ebayPreview[row.sku].url" target="_blank"
+                                   style="font:700 9px/1 var(--mono);letter-spacing:.1em;color:var(--blue);text-decoration:none">VIEW →</a>
+                              </template>
+                            </div>
+                          </template>
+                          <div style="display:flex;gap:8px;margin-top:4px">
+                            <button @click="ebayConfirmUpdate(row)" :disabled="ebayUpdating[row.sku] || !!ebayPreview[row.sku].error || !!ebayPreview[row.sku].result"
+                              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer"
+                              x-text="ebayUpdating[row.sku] ? 'POSTING TO EBAY...' : 'CONFIRM'"></button>
+                            <button @click="ebayCancelPreview(row.sku)"
+                              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer">
+                              CANCEL
+                            </button>
                           </div>
-                        </template>
-                        <template x-if="ebayPreview[row.sku].result">
-                          <div style="font-size:11px;padding:4px 0;display:flex;align-items:center;gap:8px">
-                            <span :style="ebayPreview[row.sku].result === 'updated' ? 'color:var(--green)' : 'color:var(--red)'"
-                                  x-text="ebayPreview[row.sku].result === 'updated' ? 'POSTED TO EBAY' : ebayPreview[row.sku].result"></span>
-                            <template x-if="ebayPreview[row.sku].result === 'updated' && ebayPreview[row.sku].url">
-                              <a :href="ebayPreview[row.sku].url" target="_blank"
-                                 style="font:700 9px/1 var(--mono);letter-spacing:.1em;color:var(--blue);text-decoration:none">VIEW →</a>
-                            </template>
+                        </div>
+                      </template>
+                    </td>
+                  </tr>
+                </template>
+
+                <!-- Edit panel -->
+                <template x-if="editingSku === row.sku">
+                  <tr>
+                    <td colspan="10" style="padding:12px 10px 16px">
+                      <div style="display:grid;gap:6px">
+                        <div style="display:grid;grid-template-columns:160px 1fr;gap:8px;align-items:center">
+                          <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">location</span>
+                          <input type="text" x-model="editLocation"
+                            style="font-size:12px;padding:3px 6px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:100%"
+                            @keydown.escape="cancelEdit()">
+                        </div>
+                        <template x-for="(pair, idx) in editPairs" :key="idx">
+                          <div style="display:grid;grid-template-columns:160px 1fr;gap:8px;align-items:center">
+                            <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)" x-text="pair.key"></span>
+                            <input type="text" x-model="editPairs[idx].value"
+                              style="font-size:12px;padding:3px 6px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:100%"
+                              @keydown.escape="cancelEdit()">
                           </div>
                         </template>
                         <div style="display:flex;gap:8px;margin-top:4px">
-                          <button @click="ebayConfirmUpdate(row)" :disabled="ebayUpdating[row.sku] || !!ebayPreview[row.sku].error || !!ebayPreview[row.sku].result"
+                          <button @click="saveEdit()" :disabled="editSaving"
                             style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer"
-                            x-text="ebayUpdating[row.sku] ? 'POSTING TO EBAY...' : 'CONFIRM'"></button>
-                          <button @click="ebayCancelPreview(row.sku)"
+                            x-text="editSaving ? '...' : 'SAVE'"></button>
+                          <button @click="cancelEdit()"
                             style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer">
                             CANCEL
                           </button>
                         </div>
                       </div>
-                    </template>
-                  </div>
+                    </td>
+                  </tr>
                 </template>
 
-                <!-- Edit panel -->
-                <template x-if="editingSku === row.sku">
-                  <div style="padding:12px 0 16px;display:grid;gap:6px">
-
-                    <!-- location (top-level field) -->
-                    <div style="display:grid;grid-template-columns:160px 1fr;gap:8px;align-items:center">
-                      <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">location</span>
-                      <input type="text" x-model="editLocation"
-                        style="font-size:12px;padding:3px 6px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:100%"
-                        @keydown.escape="cancelEdit()">
-                    </div>
-
-                    <!-- metadata k/v pairs -->
-                    <template x-for="(pair, idx) in editPairs" :key="idx">
-                      <div style="display:grid;grid-template-columns:160px 1fr;gap:8px;align-items:center">
-                        <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)" x-text="pair.key"></span>
-                        <input type="text" x-model="editPairs[idx].value"
-                          style="font-size:12px;padding:3px 6px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:100%"
-                          @keydown.escape="cancelEdit()">
-                      </div>
-                    </template>
-
-                    <div style="display:flex;gap:8px;margin-top:4px">
-                      <button @click="saveEdit()" :disabled="editSaving"
-                        style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer"
-                        x-text="editSaving ? '...' : 'SAVE'"></button>
-                      <button @click="cancelEdit()"
-                        style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer">
-                        CANCEL
-                      </button>
-                    </div>
-                  </div>
-                </template>
-
-              </div>
-            </template>
+              </tbody><!-- /per-row tbody -->
+              </template><!-- /x-if wrapper -->
+            </template><!-- /x-for -->
+              </tbody><!-- close outer tbody from thead -->
+            </table>
           </div>
         </template>
       </div>

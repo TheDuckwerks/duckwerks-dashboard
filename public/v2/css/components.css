@@ -868,6 +868,10 @@ table.tb td { padding: 9px 10px; border-bottom: 1px solid #141414; vertical-alig
 table.tb tbody tr:hover { background: #111; }
 table.tb tbody tr:last-child td { border-bottom: none; }
 table.tb td.r { text-align: right; }
+table.tb th.r { text-align: right; }
+table.tb th.sortable { cursor: pointer; user-select: none; }
+table.tb th.sortable:hover { color: var(--ink-2); }
+table.tb th.sort-active { color: var(--ink-1); }
 table.tb td.nm { color: var(--ink); font-weight: 500; }
 table.tb td.date { color: var(--ink-3); font: 500 11px/1 var(--mono); white-space: nowrap; letter-spacing: .04em; }
 table.tb td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--ink-2); }
