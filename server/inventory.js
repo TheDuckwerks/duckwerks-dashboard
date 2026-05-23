@@ -4,7 +4,14 @@ const db                  = require('./db');
 const { normalizeBlob }   = require('./inventory-schemas');
 
 const getBySku = db.prepare('SELECT * FROM inventory WHERE sku = ?');
-const listAll  = db.prepare('SELECT * FROM inventory ORDER BY created_at DESC');
+const listAll  = db.prepare(`
+  SELECT inv.*,
+         l.platform_listing_id AS ebay_listing_id
+  FROM   inventory inv
+  LEFT JOIN items it   ON it.sku = inv.sku
+  LEFT JOIN listings l ON l.item_id = it.id AND l.status = 'active'
+  ORDER BY inv.created_at DESC
+`);
 const upsert   = db.prepare(`
   INSERT INTO inventory (sku, location, category, status, metadata)
   VALUES (@sku, @location, @category, @status, @metadata)
