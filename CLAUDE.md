@@ -1,10 +1,21 @@
 # Duckwerks Dashboard — Claude Code Guide
 
-> **Source of truth:** This file is the authoritative reference for all sessions.
-> Update it at the end of every session with any structural changes made.
+> **🚧 WIP — mid doc-split.** This CLAUDE is being refactored toward the org doc standard (`~/projects/CLAUDE.md`): **CLAUDE = how we work** · **README = what it is / tools / facts** · **GOTCHAS = footguns**. Right now it still inlines facts and gotchas that belong in the other two — that's known, not drift. The high-level first pass (from the Gator seat) set the paradigm and seeded GOTCHAS; the deep consolidation happens from dash's own seat (the `docs/claude-md-review-notes.md` notes feed it).
+>
+> **How we work on dash — the operating rules.** Keep this file thin; depth lives in the docs it points to. Update it when a *rule* changes.
+>
+> **Orientation — which doc holds what:**
+> - **README.md** — project facts (stack, schema, commands, workflow). Read first when cold.
+> - **GOTCHAS.md** — dated war-stories by subsystem. Grep mid-task; don't read cover-to-cover. *(Seeded; CLAUDE's inline Gotchas section still migrating into it.)*
+> - **CLAUDE.md** (this file) — operating rules. Points to the above; doesn't restate them.
+> - **`docs/`** — specs, plans, session-log, the `docs/claude/` reference pair (api-reference, frontend-reference).
 
 ## Project Overview
-Personal resale inventory dashboard for Geoff Goss (Duckwerks Music). Tracks disc golf, music gear, comics, and gaming items sold on eBay and Reverb. Built with Alpine.js, served by a local Express server, backed by SQLite.
+The CMS/analytics/comp tool for Geoff's resale business (Duckwerks Music) — the inventory, listing, order, and shipping engine behind his eBay and Reverb selling. (Who Geoff is: the global persona at `~/.claude/persona.md` — this file doesn't restate it.)
+
+**What it's actually for right now:** a sell-down engine, not a collector's catalog. Geoff is windowing a long-accumulated collection down to what he throws/keeps — music gear, tech, comics, doodads already moved; the 400+ disc-golf collection now the active vertical (down to ~50 throwers + ~50 true keepers). So disc-golf intake/listing is the current focus because it's the big remaining lot — but DG is just the active *vertical*, the same way the tool handles a pedal, a comic, or a console. Build category logic to generalize, not to enshrine discs.
+
+Built with Alpine.js, served by a local Express server, backed by SQLite.
 
 ## Stack
 - **Frontend:** `public/v2/` — Alpine.js, modular JS files, no build step
@@ -28,7 +39,7 @@ npm start   # starts Express on http://localhost:3000
 - Session files live in `docs/listing-sessions/<slug>/` (checkpoint.json, comps.txt, listing.md)
 
 ## Version Control
-- GitHub: https://github.com/ringleader3/duckwerksdash (private)
+- GitHub: https://github.com/TheDuckwerks/duckwerksdash (private)
 - Commit after any meaningful session of changes
 - Never commit `.env`, `node_modules/`, `*.pdf`, `test.html`, `comic-reselling-project.md`, `data/duckwerks.db`
 
@@ -187,14 +198,14 @@ At the end of every session:
 5. Push to origin
 6. Run `bash scripts/deploy-nuc.sh`
 
-**Memory vs. CLAUDE.md:** Project knowledge — infra, data model, schemas, file roles, NUC access, workflows — belongs in CLAUDE.md, not memory. Memory is only for cross-project behavioral preferences Geoff has expressed (communication style, how he likes to collaborate). When in doubt, put it in CLAUDE.md.
+**Where knowledge goes (four surfaces — memory is sunset).** Don't use memory; it's dead org-wide (see global `~/.claude/CLAUDE.md`). Durable knowledge lives in one of: **README** (project facts — stack, schema, file roles, workflows), **GOTCHAS.md** (dated war-stories by subsystem), this **CLAUDE.md** (how we work — operating rules only), or the **tracker** (GH Issues — backlog). Keep this CLAUDE thin: it points to the others, it doesn't restate them. Cross-project behavioral preferences and who-Geoff-is live in the global layer, not here.
 
 Tell Geoff what was updated in CLAUDE.md and session-log.md — one line each.
 
 ---
 
 ## Bug & Enhancement Tracking
-GitHub Issues on `ringleader3/duckwerksdash`.
+GitHub Issues on `TheDuckwerks/duckwerksdash`.
 - **Reference issues in commits** with `ref #N` — never `fix #N` or `closes #N` (auto-closes)
 - **Never close issues** — only Geoff closes after confirming in browser
 - Work P1 bugs → P1 enhancements → P2s
