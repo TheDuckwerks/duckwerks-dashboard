@@ -4,6 +4,8 @@
 >
 > **How we work on dash — the operating rules.** Keep this file thin; depth lives in the docs it points to. Update it when a *rule* changes.
 >
+> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `~/projects/duckwerks-ops/`). Currently gated by Cloudflare Zero Trust *because dash has no auth of its own* — the standing dependency: **dash building its own auth** unblocks the org-wide move off Cloudflare (see Duck Ops's `NUC-TOPOLOGY.md`). Org map: `~/projects/_workspace/INVENTORY.md`.
+>
 > **Orientation — which doc holds what:**
 > - **README.md** — project facts (stack, schema, commands, workflow). Read first when cold.
 > - **GOTCHAS.md** — dated war-stories by subsystem. Grep mid-task; don't read cover-to-cover. *(Seeded; CLAUDE's inline Gotchas section still migrating into it.)*
