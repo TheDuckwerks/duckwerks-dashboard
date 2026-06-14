@@ -68,6 +68,8 @@ If the right approach isn't clear, sort it out before running anything. This app
 
 ## Dev vs Production
 
+> **⚠️ DEPLOY IS IN TRANSITION (org reorg).** The git-pull-based `deploy-nuc.sh` flow below is the **current** mechanism but it's being **retired** — Duck Ops is building the org-wide rsync-artifact deploy standard (build on Mac → rsync immutable artifact → PM2; no git on the NUC). Dash will get a migration spec from Duck Ops when the standard is ready (Duck Ops `duckwerks-ops` issues #3/#4). **Until then:** the old flow still works, keep using it for now — but do NOT entrench it / build new tooling around `deploy-nuc.sh`, and expect it to change. (Dash's next real deploy change = the Duck Ops reconcile + re-release.)
+
 > **Every commit must be followed immediately by `git push origin main` and `bash scripts/deploy-nuc.sh`. A commit alone is invisible to Geoff. Do not tell Geoff to check anything until deploy-nuc.sh has confirmed the restart.**
 
 - **Default: ship to production.** Fix it, commit, push, deploy, tell Geoff to refresh `dash.duckwerks.com`. That is the normal flow for every bug fix, tweak, and feature.
