@@ -4,7 +4,7 @@
     {
       "label": "Deploy to NUC",
       "type": "shell",
-      "command": "/Users/geoff/projects/duckwerks-dashboard/scripts/deploy-nuc.sh",
+      "command": "/Users/Shared/duckwerks/projects/duckwerks-dashboard/scripts/deploy-nuc.sh",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
