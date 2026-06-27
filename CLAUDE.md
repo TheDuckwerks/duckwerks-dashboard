@@ -4,7 +4,7 @@
 >
 > **How we work on dash — the operating rules.** Keep this file thin; depth lives in the docs it points to. Update it when a *rule* changes.
 >
-> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `~/projects/duckwerks-ops/`). Currently gated by Cloudflare Zero Trust *because dash has no auth of its own* — the standing dependency: **dash building its own auth** unblocks the org-wide move off Cloudflare (see Duck Ops's `NUC-TOPOLOGY.md`). Org map: `~/projects/_workspace/INVENTORY.md`.
+> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Currently gated by Cloudflare Zero Trust *because dash has no auth of its own* — the standing dependency: **dash building its own auth** unblocks the org-wide move off Cloudflare (see Duck Ops's `NUC-TOPOLOGY.md`). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
 >
 > **Orientation — which doc holds what:**
 > - **README.md** — project facts (stack, schema, commands, workflow). Read first when cold.
@@ -13,7 +13,7 @@
 > - **`docs/`** — specs, plans, session-log, the `docs/claude/` reference pair (api-reference, frontend-reference).
 
 ## Project Overview
-The CMS/analytics/comp tool for Geoff's resale business (Duckwerks Music) — the inventory, listing, order, and shipping engine behind his eBay and Reverb selling. (Who Geoff is: the global persona at `~/.claude/persona.md` — this file doesn't restate it.)
+The CMS/analytics/comp tool for Geoff's resale business (Duckwerks Music) — the inventory, listing, order, and shipping engine behind his eBay and Reverb selling. (Who Geoff is: the global persona at `/Users/Shared/duckwerks/config/persona.md` — this file doesn't restate it.)
 
 **What it's actually for right now:** a sell-down engine, not a collector's catalog. Geoff is windowing a long-accumulated collection down to what he throws/keeps — music gear, tech, comics, doodads already moved; the 400+ disc-golf collection now the active vertical (down to ~50 throwers + ~50 true keepers). So disc-golf intake/listing is the current focus because it's the big remaining lot — but DG is just the active *vertical*, the same way the tool handles a pedal, a comic, or a console. Build category logic to generalize, not to enshrine discs.
 
@@ -202,7 +202,7 @@ At the end of every session:
 5. Push to origin
 6. Run `bash scripts/deploy-nuc.sh`
 
-**Where knowledge goes (four surfaces — memory is sunset).** Don't use memory; it's dead org-wide (see global `~/.claude/CLAUDE.md`). Durable knowledge lives in one of: **README** (project facts — stack, schema, file roles, workflows), **GOTCHAS.md** (dated war-stories by subsystem), this **CLAUDE.md** (how we work — operating rules only), or the **tracker** (GH Issues — backlog). Keep this CLAUDE thin: it points to the others, it doesn't restate them. Cross-project behavioral preferences and who-Geoff-is live in the global layer, not here.
+**Where knowledge goes (four surfaces — memory is sunset).** Don't use memory; it's dead org-wide (see global `/Users/Shared/duckwerks/config/CLAUDE.md`). Durable knowledge lives in one of: **README** (project facts — stack, schema, file roles, workflows), **GOTCHAS.md** (dated war-stories by subsystem), this **CLAUDE.md** (how we work — operating rules only), or the **tracker** (GH Issues — backlog). Keep this CLAUDE thin: it points to the others, it doesn't restate them. Cross-project behavioral preferences and who-Geoff-is live in the global layer, not here.
 
 Tell Geoff what was updated in CLAUDE.md and session-log.md — one line each.
 
