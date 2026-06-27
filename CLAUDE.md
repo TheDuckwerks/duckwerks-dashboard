@@ -1,6 +1,6 @@
 # Duckwerks Dashboard — Claude Code Guide
 
-> **🚧 WIP — mid doc-split.** This CLAUDE is being refactored toward the org doc standard (`~/projects/CLAUDE.md`): **CLAUDE = how we work** · **README = what it is / tools / facts** · **GOTCHAS = footguns**. Right now it still inlines facts and gotchas that belong in the other two — that's known, not drift. The high-level first pass (from the Gator seat) set the paradigm and seeded GOTCHAS; the deep consolidation happens from dash's own seat (the `docs/claude-md-review-notes.md` notes feed it).
+> **🚧 WIP — mid doc-split.** This CLAUDE is being refactored toward the org doc standard (`/Users/Shared/duckwerks/gator/CLAUDE.md`): **CLAUDE = how we work** · **README = what it is / tools / facts** · **GOTCHAS = footguns**. Right now it still inlines facts and gotchas that belong in the other two — that's known, not drift. The high-level first pass (from the Gator seat) set the paradigm and seeded GOTCHAS; the deep consolidation happens from dash's own seat (the `docs/claude-md-review-notes.md` notes feed it).
 >
 > **How we work on dash — the operating rules.** Keep this file thin; depth lives in the docs it points to. Update it when a *rule* changes.
 >
@@ -106,7 +106,7 @@ If the right approach isn't clear, sort it out before running anything. This app
 - `scripts/README.md` — index of all active scripts with usage examples
 - `data/ebay-tokens.json` — eBay OAuth tokens (never commit)
 
-> `scripts/archive-grabber/` was extracted to its own repo (`~/projects/archive-grabber`) per issue #118.
+> `scripts/archive-grabber/` was extracted out of dashboard per issue #118; it now lives under `/Users/Shared/duckwerks/projects/duckwerks-media/archive-grabber/`.
 
 **Frontend**
 - `public/v2/index.html` — app shell with `<!-- partial: views/foo -->` and `<!-- partial: modals/foo -->` comment placeholders; server assembles the final HTML at request time by inlining partials (see `server.js` `assembleHTML()`)
