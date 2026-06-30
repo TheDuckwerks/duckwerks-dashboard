@@ -1,6 +1,17 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-06-30 — Deploy migration onto the Duck Ops standard; Dash named
+
+Continuation of the 06-29 session, into the org/ops collaboration.
+
+- **Named the seat:** I'm **Dash** (for Dashiell Hammett, Pinkerton op turned detective novelist). Codified in CLAUDE with the sibling seats (Gator/Hunter/Beardy).
+- **Printing docs fixed to current reality:** api-reference still described the old `PRINT_SERVER_URL` Mac-print-server proxy; the code moved to direct ZPL-over-raw-TCP to the Zebra ZD420D (`ZEBRA_PRINTER_IP:9100`, EasyPost ZPL, PDF fallback). Rollo is gone (sold).
+- **Deploy migration (with Beardy/Duck Ops):** wrote a deploy-consumer brief (`docs/deploy-requirements.md`) as the NUC's biggest consumer. Surfaced the load-bearing catch — `better-sqlite3` is native, so "build on Mac → rsync node_modules" breaks (macOS-arm64 binary won't run on Linux-x64); resolved to `npm ci` on the NUC into the new release dir (atomic-swap preserves immutability, better-sqlite3 ships prebuilts). Beardy executed the cutover: state externalized to `/srv/duckwerks/dash/{data,dg-photos,.env}`, `scripts/deploy.sh` + `ecosystem.config.js` in the repo, `docs/deploy.md` is the live procedure.
+- **Reconciled dash's docs to the cutover:** `db.sh` repointed to the /srv DB (was the retired /home/geoff checkout), CLAUDE deploy rules rewritten for `./scripts/deploy.sh` + the artifact model, codebase-map/docs-index/gitignore updated, package-lock root version synced for `npm ci`.
+- **Topology call:** dash stays on Cloudflare ZT (no auth build); see the 06-29 entry below.
+- Tickets: #133 tracks the dash adoption tail (verify token refresh, first real Mac deploy, retire old checkout). #132 parks a close-out skill. #123-131 closed.
+
 ### 2026-06-29 — Topology decision: dash stays on ZT, no auth build
 
 Recon on Duck Ops (read-only) found the deploy standard is doctrine-locked (rsync immutable artifact → PM2, no git on NUC) but the spec is unbuilt: Ops #3 (deploy template) not started, #4 (dash migration spec) gated behind #3. So dash's deploy migration can't start yet; it stays parked until #3 lands.
