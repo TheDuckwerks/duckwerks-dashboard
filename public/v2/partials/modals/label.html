@@ -5,6 +5,8 @@
         <div>
           <div class="modal-title" x-text="itemName"></div>
           <div x-show="itemSku" style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:2px" x-text="itemSku"></div>
+          <div x-show="shipItems.length > 1" style="font-size:11px;color:var(--ebay);letter-spacing:.05em;margin-top:4px"
+            x-text="`one label · ${shipItems.length} items: ${shipItems.join(', ')}`"></div>
         </div>
         <button class="modal-close" @click="$store.dw.closeModal()">✕</button>
       </div>
@@ -189,23 +191,27 @@
               style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
               PACKING SLIP
             </button>
-            <button x-show="ebayOrderId && purchaseResult?.trackingNumber"
+            <button x-show="orderGroups.length && purchaseResult?.trackingNumber"
               @click="markShippedEbay()"
               :disabled="ebayShipMsg === 'Notifying eBay...' || ebayShipMsg === '✓ buyer notified'"
               :style="ebayShipMsg === '✓ buyer notified' ? 'background:var(--surface);border:1px solid var(--green);color:var(--green);cursor:default' : 'background:transparent;border:1px solid var(--ebay);color:var(--ebay);cursor:pointer'"
-              x-text="ebayShipMsg === 'Notifying eBay...' ? 'NOTIFYING...' : ebayShipMsg === '✓ buyer notified' ? '✓ SHIPPED ON EBAY' : 'MARK SHIPPED ON EBAY'"
+              x-text="ebayShipMsg === 'Notifying eBay...' ? 'NOTIFYING...' : ebayShipMsg === '✓ buyer notified' ? (orderGroups.length > 1 ? '✓ ALL SHIPPED ON EBAY' : '✓ SHIPPED ON EBAY') : (orderGroups.length > 1 ? `MARK ${orderGroups.length} SHIPPED ON EBAY` : 'MARK SHIPPED ON EBAY')"
               style="padding:10px 24px;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px">
             </button>
-            <button x-show="ebayOrderId && ebayShipMsg !== '✓ buyer notified'"
-              @click="window.open(`https://www.ebay.com/sh/ord/details?orderid=${ebayOrderId}`, '_blank')"
-              style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
-              ORDER DETAILS
-            </button>
-            <button x-show="ebayOrderId"
-              @click="window.open(`https://www.ebay.com/sh/ord/prt?module=PACKING_SLIP_MODULE&orderId=${ebayOrderId}`, '_blank')"
-              style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
-              PACKING SLIP
-            </button>
+            <template x-for="(g, gi) in orderGroups" :key="g.orderId">
+              <span style="display:contents">
+                <button x-show="ebayShipMsg !== '✓ buyer notified'"
+                  @click="window.open(`https://www.ebay.com/sh/ord/details?orderid=${g.orderId}`, '_blank')"
+                  x-text="orderGroups.length > 1 ? `ORDER DETAILS ${gi + 1}` : 'ORDER DETAILS'"
+                  style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
+                </button>
+                <button
+                  @click="window.open(`https://www.ebay.com/sh/ord/prt?module=PACKING_SLIP_MODULE&orderId=${g.orderId}`, '_blank')"
+                  x-text="orderGroups.length > 1 ? `PACKING SLIP ${gi + 1}` : 'PACKING SLIP'"
+                  style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
+                </button>
+              </span>
+            </template>
             <span x-show="saveMsg && !saveMsg.startsWith('✓')" x-text="saveMsg"
               style="color:var(--red);font-size:12px;letter-spacing:1px"></span>
             <span x-show="reverbShipMsg && reverbShipMsg !== 'Notifying Reverb...' && reverbShipMsg !== '✓ buyer notified'"

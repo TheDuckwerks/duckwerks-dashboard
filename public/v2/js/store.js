@@ -18,6 +18,7 @@ document.addEventListener('alpine:init', () => {
     activeEbayOrderId:     null,
     activeEbayLineItemIds: [],
     activeEbayOrderRecs:   [],
+    activeEbayOrderGroups: [],  // combine-ship: [{ orderId, recs[], lineItemIds[] }]; empty = single-order ship
     activeReverbOrderNum: null,
     activeLotName:    null,
     previousModal:    null,

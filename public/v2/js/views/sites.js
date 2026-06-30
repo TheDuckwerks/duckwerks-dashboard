@@ -9,6 +9,7 @@ document.addEventListener('alpine:init', () => {
     ebayOrdersErr:   '',
     reverbOrdersErr: '',
     locations:       {},
+    orderSel:        {},   // combine-ship selection: { [orderId]: true }
 
     // ── Listings ──────────────────────────────────────────────────────────────
     listingsLoading:  false,
@@ -50,6 +51,7 @@ document.addEventListener('alpine:init', () => {
       this.ordersLoading   = true;
       this.ebayOrders      = [];
       this.reverbOrders    = [];
+      this.orderSel        = {};
       this.ebayOrdersErr   = '';
       this.reverbOrdersErr = '';
       const [ebay, reverb] = await Promise.allSettled([
@@ -139,6 +141,51 @@ document.addEventListener('alpine:init', () => {
 
     ebayBuyerName(order) {
       return order.buyer?.buyerRegistrationAddress?.fullName || order.orderId;
+    },
+
+    // ── Combine ship (eBay only) ───────────────────────────────────────────────
+
+    toggleOrderSel(orderId) {
+      this.orderSel = { ...this.orderSel, [orderId]: !this.orderSel[orderId] };
+    },
+
+    get selectedEbayOrders() {
+      return this.ebayOrders.filter(e => this.orderSel[e.order.orderId]);
+    },
+
+    // normalized shipping-address key — combine is one label, so addresses must match
+    _ebayAddrKey(order) {
+      const a = order.fulfillmentStartInstructions?.[0]?.shippingStep?.shipTo;
+      const c = a?.contactAddress || {};
+      return [a?.fullName, c.addressLine1, c.postalCode]
+        .map(x => (x || '').trim().toLowerCase()).join('|');
+    },
+
+    get combineReady() {
+      const sel = this.selectedEbayOrders;
+      if (sel.length < 2) return false;
+      return new Set(sel.map(e => this._ebayAddrKey(e.order))).size === 1;
+    },
+
+    get combineBlockedReason() {
+      const sel = this.selectedEbayOrders;
+      if (sel.length < 2) return '';
+      return new Set(sel.map(e => this._ebayAddrKey(e.order))).size > 1
+        ? 'orders ship to different addresses' : '';
+    },
+
+    combineSelectedEbay() {
+      const dw  = Alpine.store('dw');
+      const sel = this.selectedEbayOrders;
+      if (sel.length < 2 || !this.combineReady) return;
+      dw.activeEbayOrderGroups = sel.map(e => ({
+        orderId:     e.order.orderId,
+        lineItemIds: e.items.map(i => i.lineItem.lineItemId),
+        recs:        e.items.filter(i => i.rec).map(i => i.rec),
+      }));
+      dw.previousView = 'sites';
+      const primaryRec = dw.activeEbayOrderGroups[0].recs[0];
+      if (primaryRec) dw.openModal('label', primaryRec.id);
     },
 
     // ── Listings ──────────────────────────────────────────────────────────────

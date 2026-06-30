@@ -1,6 +1,15 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-06-29 — Combine same-buyer eBay orders into one shipment
+
+- One buyer placing multiple separate eBay orders can now be shipped on a single label (issue #123). Sites page: checkbox per eBay order, "COMBINE & SHIP (N)" bar at 2+ checked, gated to same shipping address.
+- Generalized the label modal from "one order, N line items" to "N order-groups, one label." The old single-order and multi-item-in-one-order paths now flow through the same loop. `markShippedEbay` loops every group's order ID, so each order gets tracking pushed (kills the manual Seller-Hub paste).
+- Shipping cost now **evenly amortized** across all records (was: all-on-primary, $0 secondaries) — applies to combine and the existing multi-item path.
+- Packing slips: combine mode renders one per order (PACKING SLIP 1/2/3), reusing the existing per-order eBay print-page button. Modal header gains a "one label · N items" summary.
+- Spec: `docs/superpowers/specs/2026-06-29-combine-orders-shipping-design.md`
+- v2.0.31 → v2.0.32
+
 ### 2026-05-23 — Sortable DG inventory with analytics columns
 
 - Added sortable table to catalog page inventory section (SKU, Loc, Mfg, Mold, Title, Price, Views, Imp, CTR)

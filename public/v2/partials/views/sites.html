@@ -28,6 +28,11 @@
               <div x-show="!ebayOrdersErr && ebayOrders.length === 0" style="color:var(--muted);font-size:11px;letter-spacing:1px">nothing to ship on eBay</div>
               <template x-for="entry in ebayOrders" :key="entry.order.orderId">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+                  <div style="display:flex;align-items:flex-start;gap:10px">
+                    <input type="checkbox" :checked="orderSel[entry.order.orderId]"
+                      @change="toggleOrderSel(entry.order.orderId)"
+                      title="select to combine with another order"
+                      style="margin-top:2px;cursor:pointer;flex-shrink:0">
                   <div>
                     <div style="font-size:12px;font-weight:700;letter-spacing:.05em" x-text="ebayBuyerName(entry.order)"></div>
                     <template x-for="item in entry.items" :key="item.lineItem.lineItemId">
@@ -45,12 +50,23 @@
                     </template>
                     <div style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:.05em" x-text="'Order ' + entry.order.orderId"></div>
                   </div>
+                  </div>
                   <button @click="openEbayShip(entry)"
                     style="padding:5px 14px;background:var(--blue);color:#fff;border:none;font:700 10px/1 var(--mono);letter-spacing:.12em;cursor:pointer;flex-shrink:0;margin-left:16px">
                     SHIP
                   </button>
                 </div>
               </template>
+              <!-- Combine bar: appears once 2+ orders are checked -->
+              <div x-show="selectedEbayOrders.length >= 2" style="display:flex;align-items:center;gap:14px;padding:10px 0 0">
+                <button @click="combineSelectedEbay()" :disabled="!combineReady"
+                  :style="combineReady ? 'background:var(--blue);color:#fff;cursor:pointer' : 'background:var(--ink-4);color:var(--muted);cursor:not-allowed'"
+                  style="padding:5px 14px;border:none;font:700 10px/1 var(--mono);letter-spacing:.12em;flex-shrink:0"
+                  x-text="`COMBINE & SHIP (${selectedEbayOrders.length})`">
+                </button>
+                <span x-show="combineBlockedReason" x-text="combineBlockedReason"
+                  style="font-size:10px;color:var(--red);letter-spacing:.05em"></span>
+              </div>
             </div>
 
             <!-- Reverb block -->

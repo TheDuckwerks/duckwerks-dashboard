@@ -19,11 +19,7 @@ document.addEventListener('alpine:init', () => {
     saveMsg:        '',
     savingShip:     false,
     reverbShipMsg:  '',   // separate from saveMsg so it isn't overwritten by saveShipping()
-    ebayOrderId:      null,
-    ebayLineItemId:   null,
-    ebayLineItemIds:   [],
-    ebayLineItemPrices: [],
-    ebayOrderRecs:     [],
+    orderGroups:      [],   // eBay ship: [{ orderId, recs[], lineItemIds[], lineItemPrices[], address, saleTotal, saleDate }]; empty for Reverb
     ebayShipMsg:      '',
     carrierWarnings:  [],
 
@@ -51,11 +47,7 @@ document.addEventListener('alpine:init', () => {
       this.saveMsg           = '';
       this.savingShip        = false;
       this.reverbShipMsg     = '';
-      this.ebayOrderId       = null;
-      this.ebayLineItemId    = null;
-      this.ebayLineItemIds    = [];
-      this.ebayLineItemPrices = [];
-      this.ebayOrderRecs      = [];
+      this.orderGroups       = [];
       this.ebayShipMsg       = '';
       this.carrierWarnings   = [];
 
@@ -68,8 +60,9 @@ document.addEventListener('alpine:init', () => {
 
       const listing  = dw.activeListing(r);
       const siteName = listing?.site?.name;
-      const isReverb = siteName === 'Reverb' && !dw.activeEbayOrderId;
-      const isEbay   = siteName === 'eBay' || !!dw.activeEbayOrderId;
+      const isCombine = !!dw.activeEbayOrderGroups?.length;
+      const isReverb = siteName === 'Reverb' && !dw.activeEbayOrderId && !isCombine;
+      const isEbay   = siteName === 'eBay' || !!dw.activeEbayOrderId || isCombine;
       // activeReverbOrderNum is set by reverbModal SHIP button for items without a local order yet
       const pendingOrderNum = dw.activeReverbOrderNum;
       dw.activeReverbOrderNum = null; // clear so it doesn't leak to subsequent opens
@@ -94,59 +87,34 @@ document.addEventListener('alpine:init', () => {
         } catch(e) { console.warn('Reverb order fetch failed:', e); }
       }
 
-      // eBay: activeEbayOrderId is set by ebayModal before opening label modal; fall back to saved order num
+      // eBay: combine-ship passes activeEbayOrderGroups; single-order ship builds one group from the scalar fields
       if (isEbay) {
-        const ebayOrderId = dw.activeEbayOrderId || r.order?.platform_order_num || null;
-        dw.activeEbayOrderId = null; // clear so it doesn't leak to subsequent opens
+        const rawGroups = dw.activeEbayOrderGroups?.length
+          ? dw.activeEbayOrderGroups
+          : [{
+              orderId:     dw.activeEbayOrderId || r.order?.platform_order_num || null,
+              recs:        dw.activeEbayOrderRecs?.length ? [...dw.activeEbayOrderRecs] : [r],
+              lineItemIds: dw.activeEbayLineItemIds?.length ? [...dw.activeEbayLineItemIds] : [],
+            }];
+        // clear so nothing leaks to subsequent opens
+        dw.activeEbayOrderGroups = [];
+        dw.activeEbayOrderId     = null;
+        dw.activeEbayOrderRecs   = [];
+        dw.activeEbayLineItemIds = [];
 
-        this.ebayOrderRecs = dw.activeEbayOrderRecs?.length ? [...dw.activeEbayOrderRecs] : [];
-        dw.activeEbayOrderRecs = [];
+        this.orderGroups = [];
+        for (const g of rawGroups.filter(g => g.orderId)) {
+          const built = await this._fetchOrderGroup(g);
+          if (built) this.orderGroups.push(built);
+        }
 
-        if (ebayOrderId) {
-          this.ebayOrderId = ebayOrderId;
-          try {
-            const res = await fetch(`/api/ebay/orders/${encodeURIComponent(ebayOrderId)}`);
-            if (res.ok) {
-              const order = await res.json();
-              this.ebayLineItemId = order.lineItems?.[0]?.lineItemId || null;
-              // Use store-provided lineItemIds if available (set by ebay modal); fall back to fetched order
-              this.ebayLineItemIds = dw.activeEbayLineItemIds?.length
-                ? [...dw.activeEbayLineItemIds]
-                : (order.lineItems || []).map(li => li.lineItemId).filter(Boolean);
-              dw.activeEbayLineItemIds = [];
-              // Split totalDueSeller proportionally by total per line item
-              const totalDueSeller = parseFloat(order.paymentSummary?.totalDueSeller?.value) || 0;
-              const discountedTotal = (order.lineItems || []).reduce(
-                (sum, li) => sum + (parseFloat(li.total?.value) || 0), 0
-              );
-              this.ebayLineItemPrices = this.ebayLineItemIds.map(id => {
-                const li = (order.lineItems || []).find(l => l.lineItemId === id);
-                const discounted = parseFloat(li?.total?.value) || 0;
-                return discountedTotal > 0
-                  ? Math.round((totalDueSeller * (discounted / discountedTotal)) * 100) / 100
-                  : null;
-              });
-              // totalDueSeller: confirmed available pre-fulfillment (validated 2026-03-26)
-              const dueSeller = parseFloat(order.paymentSummary?.totalDueSeller?.value);
-              if (dueSeller) this.reverbSaleAmount = dueSeller;
-              if (order.creationDate) this.platformSaleDate = order.creationDate.split('T')[0];
-              // shipTo is the actual shipping address; buyerRegistrationAddress is account address (may differ)
-              const shipTo = order.fulfillmentStartInstructions?.[0]?.shippingStep?.shipTo;
-              const addr = shipTo || order.buyer?.buyerRegistrationAddress;
-              if (addr) {
-                const c = addr.contactAddress || {};
-                this.addrText = this._addrToText({
-                  name:             addr.fullName || '',
-                  street_address:   c.addressLine1 || '',
-                  extended_address: c.addressLine2 || '',
-                  locality:         c.city || '',
-                  region:           c.stateOrProvince || '',
-                  postal_code:      c.postalCode || '',
-                  country_code:     c.countryCode || 'US',
-                });
-              }
-            }
-          } catch(e) { console.warn('eBay order fetch failed:', e); }
+        // Primary group seeds the shared address + insurance default; sale total sums across orders
+        const primary = this.orderGroups[0];
+        if (primary) {
+          if (primary.address)  this.addrText         = primary.address;
+          if (primary.saleDate) this.platformSaleDate = primary.saleDate;
+          const total = this.orderGroups.reduce((s, g) => s + (g.saleTotal || 0), 0);
+          if (total) this.reverbSaleAmount = total;
         }
       }
 
@@ -166,9 +134,64 @@ document.addEventListener('alpine:init', () => {
     },
     get itemSku() { return this.record?.sku || null; },
 
+    // all records going on this one label (>1 = multi-item order or a combined ship)
+    get shipItems() {
+      return this.orderGroups.flatMap(g => g.recs.map(r => r.name || r.sku || 'item'));
+    },
+
     setType(type) {
       this.parcel.type = type;
       if (type === 'poly') { this.parcel.weightLbs = '0'; this.parcel.weightOz = '8'; this.parcel.length = '9.5'; this.parcel.width = '9.5'; this.parcel.height = '1'; }
+    },
+
+    // Fetch one eBay order → resolve its line-item ids, per-item sale prices, address, total, date
+    async _fetchOrderGroup(g) {
+      try {
+        const res = await fetch(`/api/ebay/orders/${encodeURIComponent(g.orderId)}`);
+        if (!res.ok) return null;
+        const order = await res.json();
+        const lineItemIds = g.lineItemIds?.length
+          ? g.lineItemIds
+          : (order.lineItems || []).map(li => li.lineItemId).filter(Boolean);
+        // Split totalDueSeller proportionally by total per line item
+        // totalDueSeller: confirmed available pre-fulfillment (validated 2026-03-26)
+        const totalDueSeller  = parseFloat(order.paymentSummary?.totalDueSeller?.value) || 0;
+        const discountedTotal = (order.lineItems || []).reduce(
+          (sum, li) => sum + (parseFloat(li.total?.value) || 0), 0
+        );
+        const lineItemPrices = lineItemIds.map(id => {
+          const li = (order.lineItems || []).find(l => l.lineItemId === id);
+          const discounted = parseFloat(li?.total?.value) || 0;
+          return discountedTotal > 0
+            ? Math.round((totalDueSeller * (discounted / discountedTotal)) * 100) / 100
+            : null;
+        });
+        // shipTo is the actual shipping address; buyerRegistrationAddress is account address (may differ)
+        const shipTo = order.fulfillmentStartInstructions?.[0]?.shippingStep?.shipTo;
+        const a      = shipTo || order.buyer?.buyerRegistrationAddress;
+        let address  = null;
+        if (a) {
+          const c = a.contactAddress || {};
+          address = this._addrToText({
+            name:             a.fullName || '',
+            street_address:   c.addressLine1 || '',
+            extended_address: c.addressLine2 || '',
+            locality:         c.city || '',
+            region:           c.stateOrProvince || '',
+            postal_code:      c.postalCode || '',
+            country_code:     c.countryCode || 'US',
+          });
+        }
+        return {
+          orderId:   g.orderId,
+          recs:      g.recs || [],
+          lineItemIds,
+          lineItemPrices,
+          address,
+          saleTotal: totalDueSeller,
+          saleDate:  order.creationDate ? order.creationDate.split('T')[0] : null,
+        };
+      } catch(e) { console.warn('eBay order group fetch failed:', e); return null; }
     },
 
     _addrToText(a) {
@@ -257,7 +280,7 @@ document.addEventListener('alpine:init', () => {
         this.step = 'result';
         // Auto-fire on purchase — don't wait for button clicks
         if (this.reverbLinks?.ship && data.trackingNumber) this.markShipped();
-        if (this.ebayOrderId && this.ebayLineItemId && data.trackingNumber) this.markShippedEbay();
+        if (this.orderGroups.length && data.trackingNumber) this.markShippedEbay();
         this.saveShipping();
       } catch(e) {
         this.errMsg = e.message;
@@ -272,90 +295,58 @@ document.addEventListener('alpine:init', () => {
       if (!r) return;
       this.savingShip = true;
       this.saveMsg    = '';
-      const dw      = Alpine.store('dw');
-      const listing = dw.activeListing(r);
+      const dw       = Alpine.store('dw');
+      const dateSold = this.platformSaleDate || new Date().toISOString().split('T')[0];
+      const totalCost = this.purchaseResult?.totalCost ?? this.ratePrice ?? 0;
 
-      try {
-        // ── 1. Create or update the order ──────────────────────────────────────
-        const dateSold         = this.platformSaleDate || new Date().toISOString().split('T')[0];
-        const sale_price = this.ebayLineItemPrices.length > 0
-          ? (this.ebayLineItemPrices[0] ?? this.reverbSaleAmount ?? null)
-          : (this.reverbSaleAmount || null);
-        const platform_order_num = this.reverbOrderNum || this.ebayOrderId || null;
+      const tracking = {
+        carrier:         this.carrier || null,
+        service:         this.purchaseResult?.service || null,
+        tracking_id:     this.purchaseResult?.trackingId     || null,
+        tracking_number: this.purchaseResult?.trackingNumber || null,
+        tracker_url:     this.purchaseResult?.trackerUrl     || null,
+        label_url:       this.purchaseResult?.labelUrl       || null,
+      };
 
+      const saveRec = async (rec, { sale_price, platform_order_num, shipping_cost }) => {
+        const listing = dw.activeListing(rec);
         let orderId;
-        if (r.order) {
-          await dw.updateOrder(r.order.id, { sale_price, date_sold: dateSold, platform_order_num });
-          orderId = r.order.id;
+        if (rec.order) {
+          await dw.updateOrder(rec.order.id, { sale_price, date_sold: dateSold, platform_order_num });
+          orderId = rec.order.id;
         } else {
-          const newOrder = await dw.createOrder({
-            listing_id:          listing?.id || null,
-            sale_price,
-            date_sold:           dateSold,
-            platform_order_num,
-          });
+          const newOrder = await dw.createOrder({ listing_id: listing?.id || null, sale_price, date_sold: dateSold, platform_order_num });
           orderId = newOrder.id;
         }
+        if (rec.status !== 'Sold') await dw.updateItem(rec.id, { status: 'Sold' });
+        const shipmentFields = { ...tracking, shipping_cost };
+        if (rec.shipment) await dw.updateShipment(rec.shipment.id, shipmentFields);
+        else              await dw.createShipment({ order_id: orderId, ...shipmentFields });
+      };
 
-        // ── 2. Mark item sold ──────────────────────────────────────────────────
-        if (r.status !== 'Sold') {
-          await dw.updateItem(r.id, { status: 'Sold' });
-        }
-
-        // ── 3. Create or update the shipment ──────────────────────────────────
-        const shipmentFields = {
-          carrier:         this.carrier || null,
-          service:         this.purchaseResult?.service || null,
-          tracking_id:     this.purchaseResult?.trackingId     || null,
-          tracking_number: this.purchaseResult?.trackingNumber || null,
-          tracker_url:     this.purchaseResult?.trackerUrl     || null,
-          label_url:       this.purchaseResult?.labelUrl       || null,
-          shipping_cost:   this.purchaseResult?.totalCost ?? this.ratePrice,
-        };
-        if (r.shipment) {
-          await dw.updateShipment(r.shipment.id, shipmentFields);
-        } else {
-          await dw.createShipment({ order_id: orderId, ...shipmentFields });
-        }
-
-        // For multi-item eBay orders: mark secondary recs sold and attach same tracking
-        if (this.ebayOrderRecs.length > 1) {
-          const trackingFields = {
-            carrier:         this.carrier || null,
-            service:         this.purchaseResult?.service || null,
-            tracking_id:     this.purchaseResult?.trackingId     || null,
-            tracking_number: this.purchaseResult?.trackingNumber || null,
-            tracker_url:     this.purchaseResult?.trackerUrl     || null,
-            label_url:       this.purchaseResult?.labelUrl       || null,
-            shipping_cost:   0,
-          };
-          for (const [idx, secRec] of this.ebayOrderRecs.slice(1).entries()) {
-            const secSalePrice = this.ebayLineItemPrices[idx + 1] ?? null;
-            let secOrderId;
-            if (secRec.order) {
-              await dw.updateOrder(secRec.order.id, {
-                sale_price:         secSalePrice,
-                date_sold:          this.platformSaleDate || new Date().toISOString().split('T')[0],
-                platform_order_num: this.ebayOrderId,
-              });
-              secOrderId = secRec.order.id;
-            } else {
-              const secListing = dw.activeListing(secRec);
-              const newOrder = await dw.createOrder({
-                listing_id:         secListing?.id || null,
-                sale_price:         secSalePrice,
-                date_sold:          this.platformSaleDate || new Date().toISOString().split('T')[0],
-                platform_order_num: this.ebayOrderId,
-              });
-              secOrderId = newOrder.id;
-            }
-            if (secRec.status !== 'Sold') await dw.updateItem(secRec.id, { status: 'Sold' });
-            if (secRec.shipment) {
-              await dw.updateShipment(secRec.shipment.id, trackingFields);
-            } else {
-              await dw.createShipment({ order_id: secOrderId, ...trackingFields });
-            }
+      try {
+        if (this.orderGroups.length) {
+          // eBay (single or combined): one label, shipping evenly amortized across every record
+          const flat = this.orderGroups.flatMap(g =>
+            g.recs.map((rec, i) => ({ rec, orderId: g.orderId, salePrice: g.lineItemPrices[i] ?? null }))
+          );
+          const n         = flat.length || 1;
+          const per       = Math.floor((totalCost / n) * 100) / 100;
+          const remainder = Math.round((totalCost - per * n) * 100) / 100;  // pennies land on the first rec
+          for (const [idx, { rec, orderId, salePrice }] of flat.entries()) {
+            await saveRec(rec, {
+              sale_price:         salePrice,
+              platform_order_num: orderId,
+              shipping_cost:      idx === 0 ? Math.round((per + remainder) * 100) / 100 : per,
+            });
           }
+        } else {
+          // Reverb / non-eBay single record
+          await saveRec(r, {
+            sale_price:         this.reverbSaleAmount || null,
+            platform_order_num: this.reverbOrderNum || null,
+            shipping_cost:      totalCost,
+          });
         }
 
         // createShipment calls fetchAll internally — store is fresh
@@ -368,21 +359,25 @@ document.addEventListener('alpine:init', () => {
     },
 
     async markShippedEbay() {
-      if (!this.ebayOrderId || !this.ebayLineItemIds.length || !this.purchaseResult?.trackingNumber) return;
+      if (!this.orderGroups.length || !this.purchaseResult?.trackingNumber) return;
       this.ebayShipMsg = 'Notifying eBay...';
       try {
-        const res = await fetch(`/api/ebay/orders/${encodeURIComponent(this.ebayOrderId)}/tracking`, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({
-            lineItemIds:         this.ebayLineItemIds,
-            trackingNumber:      this.purchaseResult.trackingNumber,
-            shippingCarrierCode: this.carrier || 'OTHER',
-          }),
-        });
-        if (!res.ok) {
-          const d = await res.json().catch(() => ({}));
-          throw new Error(d.error || `HTTP ${res.status}`);
+        // push the same tracking to every combined order so none flag unshipped
+        for (const g of this.orderGroups) {
+          if (!g.orderId || !g.lineItemIds.length) continue;
+          const res = await fetch(`/api/ebay/orders/${encodeURIComponent(g.orderId)}/tracking`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({
+              lineItemIds:         g.lineItemIds,
+              trackingNumber:      this.purchaseResult.trackingNumber,
+              shippingCarrierCode: this.carrier || 'OTHER',
+            }),
+          });
+          if (!res.ok) {
+            const d = await res.json().catch(() => ({}));
+            throw new Error(d.error || `HTTP ${res.status}`);
+          }
         }
         this.ebayShipMsg = '✓ buyer notified';
       } catch(e) {
