@@ -8,7 +8,8 @@ Deeper technical docs for the dashboard. The [README](../README.md) is the publi
 - [**API reference**](claude/api-reference.md): endpoints, env vars, schema
 - [**Frontend reference**](claude/frontend-reference.md): Alpine architecture, store, modal patterns
 - [**GOTCHAS**](../GOTCHAS.md): dated war-stories by subsystem (grep mid-task)
-- [**Deploy requirements**](deploy-requirements.md): what dash needs from the org paved-road deploy standard (consumer brief for Duck Ops)
+- [**Deploy**](deploy.md): the live release procedure (rsync-artifact standard, rollback, persistent-state model)
+- [**Deploy requirements**](deploy-requirements.md): the consumer brief that fed the migration (historical input to deploy.md)
 
 ## Working notes
 

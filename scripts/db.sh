@@ -17,7 +17,7 @@
 set -euo pipefail
 
 NUC_HOST="geoff@fedora.local"
-NUC_DB="/home/geoff/projects/duckwerksdash/data/duckwerks.db"
+NUC_DB="/srv/duckwerks/dash/data/duckwerks.db"   # persistent state dir (post Duck Ops cutover)
 LOCAL_DB="$(cd "$(dirname "$0")/.." && pwd)/data/duckwerks.db"
 
 USE_LOCAL=0

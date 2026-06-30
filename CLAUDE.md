@@ -33,9 +33,9 @@ Built with Alpine.js, served by a local Express server, backed by SQLite. Stack,
 The production server is an Intel NUC at `fedora.local`. Claude has SSH access and should use it directly.
 
 - **SSH:** `ssh geoff@fedora.local`
-- **Project path:** `/home/geoff/projects/duckwerksdash`
-- **Database:** `/home/geoff/projects/duckwerksdash/data/duckwerks.db` — this is the source of truth. The local `data/duckwerks.db` is stale and useless. Never query it.
-- **Scripts that touch the DB must run on the NUC**, not locally. SSH in and run them there.
+- **App (live):** `/srv/duckwerks/dash/current` — the active release (PM2 `duckwerks`, fork, `:3000`). Releases live under `/srv/duckwerks/dash/releases/<ts>/`; `current` symlinks the live one.
+- **Database:** `/srv/duckwerks/dash/data/duckwerks.db` — the source of truth (persistent dir, symlinked into each release). The local `data/duckwerks.db` is stale and useless. Never query it. Use `scripts/db.sh`, which targets it.
+- The old checkout `/home/geoff/projects/duckwerksdash` is a **retired fallback** — runs nothing; don't deploy or query there.
 
 ## Direct Data Operations
 
@@ -51,14 +51,16 @@ If the right approach isn't clear, sort it out before running anything. This app
 
 ## Dev vs Production
 
-> **⚠️ DEPLOY IS IN TRANSITION (org reorg).** The git-pull-based `deploy-nuc.sh` flow below is the **current** mechanism but it's being **retired** — Duck Ops is building the org-wide rsync-artifact deploy standard (build on Mac → rsync immutable artifact → PM2; no git on the NUC). Dash will get a migration spec from Duck Ops when the standard is ready (Duck Ops `duckwerks-ops` issues #3/#4). **Until then:** the old flow still works, keep using it for now — but do NOT entrench it / build new tooling around `deploy-nuc.sh`, and expect it to change. (Dash's next real deploy change = the Duck Ops reconcile + re-release.)
+Deploy is the Duck Ops rsync-artifact standard: ship the committed tree from the Mac → `npm ci` on the NUC → symlink persistent state → atomic swap → PM2 reload. No git on the NUC. Full procedure: [`docs/deploy.md`](docs/deploy.md).
 
-> **Every commit must be followed immediately by `git push origin main` and `bash scripts/deploy-nuc.sh`. A commit alone is invisible to Geoff. Do not tell Geoff to check anything until deploy-nuc.sh has confirmed the restart.**
+> **Every commit that goes live must be followed by `git push origin main` and `./scripts/deploy.sh`.** deploy.sh rsyncs the *committed* tree (honors `.gitignore`), so commit first — local scratch never ships. A commit alone is invisible to Geoff; don't tell him to check anything until deploy.sh's health check passes.
 
-- **Default: ship to production.** Fix it, commit, push, deploy, tell Geoff to refresh `dash.duckwerks.com`. That is the normal flow for every bug fix, tweak, and feature.
-- **Local dev only for huge projects** — multi-session rewrites, schema migrations, new API integrations. In those cases: use `localhost:3000` (`npm start`), commit less, hold pushes until a natural milestone.
+> **Code swaps, state persists.** Each deploy replaces the release dir. Anything the app writes at runtime must live in a persistent dir outside the release (symlinked in) or it vanishes on the next deploy. Current persistent set: `data/` (DB + `ebay-tokens.json`), `public/dg-photos/`. **Adding a new runtime write path means adding a new persistent dir + symlink** — coordinate with Duck Ops. (See deploy.md.)
+
+- **Default: ship to production.** Fix it, commit, push, `./scripts/deploy.sh`, tell Geoff to refresh `dash.duckwerks.com`. Normal flow for every fix, tweak, and feature.
+- **Local dev only for huge projects** — multi-session rewrites, schema migrations, new API integrations. Use `localhost:3000` (`npm start`), hold deploys until a milestone.
 - **Never tell Geoff to refresh `localhost:3000`** unless you're explicitly in a local dev session together.
-- **Deploying:** push to origin, then `bash scripts/deploy-nuc.sh`.
+- **Rollback** is a pointer swap: repoint `current` at a prior release + `pm2 reload duckwerks` (5 releases kept). See deploy.md.
 
 ---
 
@@ -113,7 +115,7 @@ The deploy sequence, referenced by both checkpoint and close:
 2. Update `docs/session-log.md`
 3. Commit with ticket refs (`ref #N`)
 4. `git push origin main`
-5. `bash scripts/deploy-nuc.sh` — deploy to production
+5. `./scripts/deploy.sh` — deploy to production (rsync-artifact standard; see `docs/deploy.md`)
 
 ## Session Start
 1. Read this CLAUDE.md
