@@ -8,8 +8,9 @@ _Most recent first. Update this at the end of every session._
 - Shipping cost now **evenly amortized** across all records (was: all-on-primary, $0 secondaries) — applies to combine and the existing multi-item path.
 - Packing slips: combine mode renders one per order (PACKING SLIP 1/2/3), reusing the existing per-order eBay print-page button. Modal header gains a "one label · N items" summary.
 - eBay orders on the sites page now sort by buyer name, so same-buyer (combinable) orders cluster.
+- ORDER DETAILS button on the label result now shows only on eBay-ship failure (was: any not-yet-shipped state), killing the flash-and-vanish as `markShippedEbay` resolves.
 - Spec: `docs/superpowers/specs/2026-06-29-combine-orders-shipping-design.md`
-- v2.0.31 → v2.0.33
+- v2.0.31 → v2.0.34
 
 ### 2026-05-23 — Sortable DG inventory with analytics columns
 

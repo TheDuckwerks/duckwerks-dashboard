@@ -200,7 +200,7 @@
             </button>
             <template x-for="(g, gi) in orderGroups" :key="g.orderId">
               <span style="display:contents">
-                <button x-show="ebayShipMsg !== '✓ buyer notified'"
+                <button x-show="ebayShipMsg.startsWith('eBay error')"
                   @click="window.open(`https://www.ebay.com/sh/ord/details?orderid=${g.orderId}`, '_blank')"
                   x-text="orderGroups.length > 1 ? `ORDER DETAILS ${gi + 1}` : 'ORDER DETAILS'"
                   style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
