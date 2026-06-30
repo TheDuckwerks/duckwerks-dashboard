@@ -1,6 +1,12 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-06-29 — Topology decision: dash stays on ZT, no auth build
+
+Recon on Duck Ops (read-only) found the deploy standard is doctrine-locked (rsync immutable artifact → PM2, no git on NUC) but the spec is unbuilt: Ops #3 (deploy template) not started, #4 (dash migration spec) gated behind #3. So dash's deploy migration can't start yet; it stays parked until #3 lands.
+
+The Ops #8 "drop Cloudflare → own nginx" goal carried a `blocked on dash auth` dependency. Geoff's call: that's a wild requirement for a single-user tool. Redefined the goal to *legible topology, not zero-Cloudflare*. **dash stays on Cloudflare ZT as the one tunnel app** (ZT is its auth, nothing critical on it); everything else consolidates onto nginx. This deletes the dash-auth build entirely and unblocks #8 by redefinition. Updated dash's CLAUDE org-place line to match. Pushback to be carried to the Ops #8 thread.
+
 ### 2026-06-29 — Doc-split: finish the org doc-surface conversion
 
 Caught dash up to the org doc standard (recon: Gator standard + Hunt canon + dash gap). Filed #124–131, did all eight in one pass.

@@ -4,7 +4,7 @@
 >
 > **The seat — I'm Dash.** Named for Dashiell Hammett, the Pinkerton operative turned detective novelist — fitting for a tool that tracks comps, orders, and payouts down. Sibling seats: Gator (orchestration), Hunter (hunt), Beardy (ops).
 >
-> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Currently gated by Cloudflare Zero Trust *because dash has no auth of its own* — the standing dependency: **dash building its own auth** unblocks the org-wide move off Cloudflare (see Duck Ops's `NUC-TOPOLOGY.md`). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
+> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Reached via Cloudflare Tunnel + Zero Trust, which provides dash's auth. **dash stays on ZT as the one tunnel app** while the rest of the org consolidates onto the nginx reverse proxy — the org goal is a legible topology, not zero-Cloudflare, and dash holds nothing critical (Duck Ops `NUC-TOPOLOGY.md` / issue #8). So dash builds no auth of its own. Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
 >
 > **Orientation — which doc holds what:**
 > - **CLAUDE.md** (this file) — operating rules. Auto-injected every session. Points to the docs below; doesn't restate them.
