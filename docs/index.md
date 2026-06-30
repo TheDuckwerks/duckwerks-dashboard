@@ -12,8 +12,9 @@ Deeper technical docs for the dashboard. The [README](../README.md) is the publi
 ## Working notes
 
 - [**Session log**](session-log.md): what changed and why, newest first
-- [**Specs**](superpowers/specs/): design records (the "why" behind big features)
-- [**Plans**](superpowers/plans/): implementation plans for multi-session work
+- [**Specs**](specs/): design records (the "why" behind big features)
+- [**Plans**](plans/): implementation plans for multi-session work
+- [**Notes**](notes/): ephemera (one-off research, loose data); not maintained
 
 ## How it's built
 

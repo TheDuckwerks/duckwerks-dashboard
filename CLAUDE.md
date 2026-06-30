@@ -18,9 +18,9 @@ The CMS/analytics/comp tool for Geoff's resale business (Duckwerks Music) — th
 Built with Alpine.js, served by a local Express server, backed by SQLite. Stack, setup, and structure: [README](README.md) and [`docs/index.md`](docs/index.md).
 
 ## Specs & Plans
-- `docs/superpowers/specs/` — design specs (source of truth for "why")
-- `docs/superpowers/plans/` — implementation plans
-- `.superpowers/` — brainstorm working files (gitignored)
+- `docs/specs/` — design specs (source of truth for "why")
+- `docs/plans/` — implementation plans
+- `docs/notes/` — ephemera (one-off research, consumed notes, loose data); not maintained, not load-bearing
 
 ## Project Skills
 - `.claude/skills/list-item/SKILL.md` — eBay listing workflow (intake → comps → pricing → copy → metadata). Invoke by saying "use the list-item skill". Not registered via superpowers — read directly.
@@ -79,7 +79,7 @@ If the right approach isn't clear, sort it out before running anything. This app
 - If no cache exists when `--confirm` is passed, fetch fresh and apply in one shot
 - Use `AND col IS NULL` (or equivalent) on UPDATE statements to make writes idempotent
 
-## When to Use Superpowers Workflow
+## When to Brainstorm vs Just Build
 
 | Signal | Approach |
 |---|---|
@@ -93,7 +93,7 @@ If the right approach isn't clear, sort it out before running anything. This app
 | Requirements fuzzy or design unclear | Brainstorm → spec → build |
 | Multi-session work, or >5 files with non-obvious sequencing | Brainstorm → spec → written plan → build |
 
-**"Brainstorm → spec → build"** means: align on design, write the spec, then implement directly in-session without a written task plan. The spec is the artifact; the plan is overhead unless the work spans sessions or has tricky sequencing.
+**"Brainstorm → spec → build"** means: align on design, write the spec (`docs/specs/`), then implement directly in-session without a written task plan. The spec is the artifact; the plan is overhead unless the work spans sessions or has tricky sequencing.
 
 ---
 
