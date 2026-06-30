@@ -7,8 +7,9 @@ _Most recent first. Update this at the end of every session._
 - Generalized the label modal from "one order, N line items" to "N order-groups, one label." The old single-order and multi-item-in-one-order paths now flow through the same loop. `markShippedEbay` loops every group's order ID, so each order gets tracking pushed (kills the manual Seller-Hub paste).
 - Shipping cost now **evenly amortized** across all records (was: all-on-primary, $0 secondaries) — applies to combine and the existing multi-item path.
 - Packing slips: combine mode renders one per order (PACKING SLIP 1/2/3), reusing the existing per-order eBay print-page button. Modal header gains a "one label · N items" summary.
+- eBay orders on the sites page now sort by buyer name, so same-buyer (combinable) orders cluster.
 - Spec: `docs/superpowers/specs/2026-06-29-combine-orders-shipping-design.md`
-- v2.0.31 → v2.0.32
+- v2.0.31 → v2.0.33
 
 ### 2026-05-23 — Sortable DG inventory with analytics columns
 

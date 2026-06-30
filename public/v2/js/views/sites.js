@@ -88,7 +88,9 @@ document.addEventListener('alpine:init', () => {
           const matched    = items.filter(i => i.rec);
           const allShipped = matched.every(i => i.rec.shipment?.tracking_number);
           return matched.length > 0 && !allShipped;
-        });
+        })
+        // sort by buyer so same-buyer orders cluster (combine candidates sit adjacent)
+        .sort((a, b) => this.ebayBuyerName(a.order).localeCompare(this.ebayBuyerName(b.order)));
     },
 
     async _fetchReverbOrders() {
