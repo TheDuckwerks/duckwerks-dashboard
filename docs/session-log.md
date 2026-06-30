@@ -1,6 +1,16 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-06-29 — Doc-split: finish the org doc-surface conversion
+
+Caught dash up to the org doc standard (recon: Gator standard + Hunt canon + dash gap). Filed #124–131, did all eight in one pass.
+
+- **Surfaces built:** `GOTCHAS.md` now holds the migrated eBay traffic-metric + Alpine-modal gotchas plus new Database (node -e hang / stale local db) and NUC/PM2 (PIDFile) sections. New `docs/claude/codebase-map.md` (the file-by-file map extracted from CLAUDE). New `docs/index.md` (deeper-docs landing the public README links to). New `scripts/db.sh` (sanctioned sqlite3 wrapper, retires the node -e footgun).
+- **CLAUDE.md thinned:** dropped duplicated Stack/Running Locally/Version Control facts; collapsed Checkpoint + Session Close into one Ship Procedure; dropped the WIP banner; kept the deploy-in-transition steer.
+- **README → public face:** the repo is public, so README is now a lean overview (highlights, stack, quickstart, deploy one-liner) that links out to the case study (duckwerks.com/work/duckwerks-dashboard) and `docs/index.md`. Em-dash-free.
+- **Key decision:** README is public here, inverting the org default (README = hook-injected spine). dash's cold-start spine = auto-injected CLAUDE + on-demand docs/. Verified by a README-hidden cold-read: orientation sufficient, no gap. So augmenting the inject-readme hook is optional org-tier cleanup, not needed for dash.
+- Spec/recon notes: this was light-touch, no spec written; recon digests drove it.
+
 ### 2026-06-29 — Combine same-buyer eBay orders into one shipment
 
 - One buyer placing multiple separate eBay orders can now be shipped on a single label (issue #123). Sites page: checkbox per eBay order, "COMBINE & SHIP (N)" bar at 2+ checked, gated to same shipping address.
