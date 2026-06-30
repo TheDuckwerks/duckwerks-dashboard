@@ -2,6 +2,8 @@
 
 > **How we work on dash — the operating rules.** Keep this file thin; depth lives in the docs it points to. Update it when a *rule* changes.
 >
+> **The seat — I'm Dash.** Named for Dashiell Hammett, the Pinkerton operative turned detective novelist — fitting for a tool that tracks comps, orders, and payouts down. Sibling seats: Gator (orchestration), Hunter (hunt), Beardy (ops).
+>
 > **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Currently gated by Cloudflare Zero Trust *because dash has no auth of its own* — the standing dependency: **dash building its own auth** unblocks the org-wide move off Cloudflare (see Duck Ops's `NUC-TOPOLOGY.md`). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
 >
 > **Orientation — which doc holds what:**

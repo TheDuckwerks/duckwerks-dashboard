@@ -27,7 +27,8 @@ FROM_PHONE=...
 ANTHROPIC_API_KEY=sk-ant-...    # comp research — Claude analysis
 SERPAPI_API_KEY=...              # comp research — eBay sold listings via SerpAPI
 CHROME_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome  # Reverb Puppeteer scrape
-PRINT_SERVER_URL=http://MBA.local:3002   # optional — label auto-print via Mac print server
+ZEBRA_PRINTER_IP=192.168.1.50    # label print — Zebra ZD420D over raw TCP
+ZEBRA_PRINTER_PORT=9100          # optional — defaults to 9100
 ```
 
 ## Shipping Provider Test vs Live
@@ -84,7 +85,9 @@ All credentials injected server-side from `.env` — never exposed to the browse
 - Carrier/service name maps: `CARRIER_NAMES`, `SERVICE_NAMES` in `server/label.js` — add entries there when new raw codes appear
 
 **server/print.js** (mounted at `/api/print`)
-- `POST /api/print/label` — proxies `{ url }` to `PRINT_SERVER_URL/print/label`; returns 503 if not configured
+- `POST /api/print/label` — fetches the ZPL from `{ url }` (the EasyPost ZPL label) and writes it over a raw TCP socket to the Zebra ZD420D at `ZEBRA_PRINTER_IP:ZEBRA_PRINTER_PORT` (default 9100); returns 503 if `ZEBRA_PRINTER_IP` is unset
+- `GET /api/print/status` — `{ configured, ip, port }`
+- Frontend (`store.printLabel(zplUrl, fallbackUrl)`) tries the ZPL print first, then falls back to opening the PDF label in a new tab if the printer is unreachable
 
 **server/comps.js** (mounted at `/api/comps`)
 - `POST /api/comps/search` — fetch raw sold listings. Body: `{ items: [{ name, sources, minPrice, notes, searchQuery }] }`. `sources`: `'ebay'`, `'reverb'`, or `'ebay,reverb'`. Returns `{ results: [{ name, hints, listings: [...] }] }`
