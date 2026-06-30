@@ -38,6 +38,19 @@ Miss any of these and the modal renders on top of everything at load.
 
 ---
 
+## NUC / PM2
+
+**systemd kills PM2 on restart because of a stale `PIDFile=` directive.** If the server is randomly restarting or 502ing, check the PM2 systemd service first:
+
+```bash
+sudo journalctl -u pm2-geoff.service -n 20
+sudo systemctl status pm2-geoff.service
+```
+
+Look for "Can't open PID file" or a climbing restart counter. Root cause: the `PIDFile=` directive in `/etc/systemd/system/pm2-geoff.service` makes systemd kill PM2 when it can't read the PID file. Fix: remove `PIDFile=`, set `Type=oneshot` + `RemainAfterExit=yes`.
+
+---
+
 ## Comp research (SerpAPI)
 
 **SerpAPI's eBay engine needs `ebay_domain: 'ebay.com'` or it returns the wrong market.** Without the explicit domain param, the eBay engine defaults to a global/international search — comp results come back as Chinese-language listings with inflated/unverifiable prices and future-dated results. Fixed by adding `ebay_domain: 'ebay.com'` to `searchItem()` params in `server/comps.js` (commit `0c1a733`).

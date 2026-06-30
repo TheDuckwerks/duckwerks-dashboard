@@ -1,21 +1,21 @@
-# Duckwerks Dashboard — Documentation
+# Duckwerks Dashboard Documentation
 
 Deeper technical docs for the dashboard. The [README](../README.md) is the public overview; this is where the detail lives.
 
 ## Reference
 
-- [**Codebase map**](claude/codebase-map.md) — file-by-file roles for server and frontend
-- [**API reference**](claude/api-reference.md) — endpoints, env vars, schema
-- [**Frontend reference**](claude/frontend-reference.md) — Alpine architecture, store, modal patterns
-- [**GOTCHAS**](../GOTCHAS.md) — dated war-stories by subsystem (grep mid-task)
+- [**Codebase map**](claude/codebase-map.md): file-by-file roles for server and frontend
+- [**API reference**](claude/api-reference.md): endpoints, env vars, schema
+- [**Frontend reference**](claude/frontend-reference.md): Alpine architecture, store, modal patterns
+- [**GOTCHAS**](../GOTCHAS.md): dated war-stories by subsystem (grep mid-task)
 
 ## Working notes
 
-- [**Session log**](session-log.md) — what changed and why, newest first
-- [**Specs**](superpowers/specs/) — design records (the "why" behind big features)
-- [**Plans**](superpowers/plans/) — implementation plans for multi-session work
+- [**Session log**](session-log.md): what changed and why, newest first
+- [**Specs**](superpowers/specs/): design records (the "why" behind big features)
+- [**Plans**](superpowers/plans/): implementation plans for multi-session work
 
 ## How it's built
 
-For the story — what it is, why it exists, the build timeline — see the case study at
+For the story (what it is, why it exists, the build timeline) see the case study at
 [**duckwerks.com/work/duckwerks-dashboard**](https://duckwerks.com/work/duckwerks-dashboard/).
