@@ -124,4 +124,38 @@ router.post('/disc', (req, res) => {
   }
 });
 
+// POST /api/catalog-intake/refresh-titles?confirm=true
+// Re-materialize items.name = resolveDiscTitle(blob) for every non-Sold disc
+// (#134 Phase 4), after a generateDiscTitle template change. Overrides survive
+// a template change for free without special-casing: resolveDiscTitle returns a
+// non-null list_title verbatim, so an override disc's name only changes when the
+// override does — never from a template edit. Returns the diff; writes only when
+// confirm=true.
+const refreshRows = db.prepare(`
+  SELECT inv.sku, inv.metadata, it.id AS item_id, it.name AS current_name
+  FROM inventory inv
+  JOIN items it ON it.sku = inv.sku
+  WHERE inv.category = 'disc' AND it.status <> 'Sold'
+  ORDER BY inv.sku
+`);
+const refreshWrite = db.prepare('UPDATE items SET name = ? WHERE id = ?');
+
+router.post('/refresh-titles', (req, res) => {
+  try {
+    const confirm = req.query.confirm === 'true';
+    const changes = [];
+    for (const r of refreshRows.all()) {
+      const blob = r.metadata ? JSON.parse(r.metadata) : {};
+      const next = resolveDiscTitle(blob);      // override verbatim, else generated
+      if (next !== r.current_name) {
+        changes.push({ sku: r.sku, from: r.current_name, to: next });
+        if (confirm) refreshWrite.run(next, r.item_id);
+      }
+    }
+    res.json({ confirm, count: changes.length, changes });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = { router };

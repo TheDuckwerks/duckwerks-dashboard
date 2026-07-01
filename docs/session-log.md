@@ -1,6 +1,15 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-01 (later 4) — #134 Phase 4: refresh command + third-head reconcile (v2.0.42)
+
+Formalized the title regen and closed the "third head" (`items.name` lagging eBay).
+
+- **`refresh-titles` endpoint + script.** `POST /api/catalog-intake/refresh-titles?confirm=` re-materializes `items.name = resolveDiscTitle(blob)` for every non-Sold disc (server-side, where the real DB lives); `scripts/refresh-disc-titles.js` wraps it (dry-run default, `--confirm`, `--push`). Runs on the NUC (`:3000` isn't LAN-exposed) — `ssh geoff@fedora.local "cd /srv/duckwerks/dash/current && node scripts/refresh-disc-titles.js …"`. Retired `clean-disc-titles.js` (pre-NUC, hit the stale local DB, and its null-then-regen would destroy overrides).
+- **Caught + fixed a self-inflicted bug:** first cut *skipped* override discs (`if list_title continue`), which left their `items.name` stale. `resolveDiscTitle` already returns an override verbatim, so the skip was redundant AND harmful. Corrected to materialize all via `resolveDiscTitle` — overrides still survive template changes for free (the template can't move them), and their stale names get fixed.
+- **Reconciled 93 discs, DB-only, zero eBay push:** 67 generated titles (old mint-time format → current recall-first template) + 26 curated overrides (`items.name` → the override value). All now equal what's on eBay (Geoff never hand-edits eBay, so template output == live). Idempotent: re-run reports 0. `items.name` is now the true source across catalog, dashboard, and push.
+- Filed #138 (domain/ZT doc), #139 (web-based LIST + image rsync, retire CLI), #140 (edit panel → structured inputs). Fixed a pre-existing Alpine bug (inventory `x-for` had 3 root elements, silently dropping the edit + preview panels).
+
 ### 2026-07-01 (later 3) — #134 Phase 3: title materialization (v2.0.39)
 
 `items.name` is now the canonical materialized title on every read; the blob's `list_title` is pure spec (override-or-null). Nothing generates a title on the hot path.
