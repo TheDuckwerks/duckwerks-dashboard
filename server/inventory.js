@@ -6,6 +6,7 @@ const { normalizeBlob }   = require('./inventory-schemas');
 const getBySku = db.prepare('SELECT * FROM inventory WHERE sku = ?');
 const listAll  = db.prepare(`
   SELECT inv.*,
+         it.status             AS item_status,
          l.id                  AS listing_id,
          l.platform_listing_id AS ebay_listing_id,
          l.list_price          AS listing_price
@@ -55,8 +56,10 @@ router.get('/', (req, res) => {
     rows = rows.filter(r => r.category === req.query.category);
   }
   if (req.query.excludeStatus) {
-    const excluded = req.query.excludeStatus.split(',');
-    rows = rows.filter(r => !excluded.includes(r.status));
+    // Lifecycle status lives on items.status now (#134 Phase 2); inventory.status
+    // is a retired tombstone. Match case-insensitively (param 'sold' → 'Sold').
+    const excluded = req.query.excludeStatus.split(',').map(s => s.toLowerCase());
+    rows = rows.filter(r => !excluded.includes(String(r.item_status || '').toLowerCase()));
   }
   res.json({ inventory: rows.map(parseRow) });
 });

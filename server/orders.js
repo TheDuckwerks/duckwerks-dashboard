@@ -2,7 +2,6 @@
 const express           = require('express');
 const router            = express.Router();
 const db                = require('./db');
-const { markDiscSold }  = require('./catalog-intake');
 
 // POST create order (sale received — also sets item.status = 'Sold' and listing.status = 'sold')
 router.post('/', (req, res) => {
@@ -34,7 +33,6 @@ router.post('/', (req, res) => {
         db.prepare("UPDATE items SET status = 'Sold' WHERE id = ?").run(item.id);
         db.prepare("UPDATE listings SET status = 'sold', ended_at = datetime('now') WHERE id = ?").run(listing_id);
       }
-      if (item.sku) markDiscSold(item.sku);
     }
   }
   res.status(201).json(db.prepare('SELECT * FROM orders WHERE id = ?').get(result.lastInsertRowid));

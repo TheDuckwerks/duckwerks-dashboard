@@ -102,24 +102,33 @@ function dbWriteDiscListing(title, listPrice, listingId, sku) {
   const existing = db.prepare('SELECT id FROM listings WHERE platform_listing_id = ?').get(String(listingId));
   if (existing) return;
 
-  let cat = db.prepare("SELECT id FROM categories WHERE name = 'Disc Golf'").get();
-  if (!cat) {
-    const r = db.prepare(
-      "INSERT INTO categories (name, color, badge_class) VALUES ('Disc Golf', '#4ade80', 'badge-green')"
-    ).run();
-    cat = { id: r.lastInsertRowid };
-  }
-
   const ebaySite = db.prepare("SELECT id FROM sites WHERE name = 'eBay'").get();
   if (!ebaySite) throw new Error('eBay site not found in DB');
 
-  const item = db.prepare(
-    "INSERT INTO items (name, status, category_id, cost, lot_id, sku) VALUES (?, 'Listed', ?, 0, 9, ?)"
-  ).run(title, cat.id, sku || null);
+  // The items row is minted at intake (#134 Phase 2) — find it, materialize its
+  // name from the current title, and flip to Listed. Fall back to creating one
+  // for any SKU that predates coupling.
+  let itemId;
+  const item = sku ? db.prepare('SELECT id FROM items WHERE sku = ?').get(sku) : null;
+  if (item) {
+    itemId = item.id;
+    db.prepare("UPDATE items SET name = ?, status = 'Listed' WHERE id = ?").run(title, itemId);
+  } else {
+    let cat = db.prepare("SELECT id FROM categories WHERE name = 'Disc Golf'").get();
+    if (!cat) {
+      const r = db.prepare(
+        "INSERT INTO categories (name, color, badge_class) VALUES ('Disc Golf', '#4ade80', 'badge-green')"
+      ).run();
+      cat = { id: r.lastInsertRowid };
+    }
+    itemId = db.prepare(
+      "INSERT INTO items (name, status, category_id, cost, lot_id, sku) VALUES (?, 'Listed', ?, 0, 9, ?)"
+    ).run(title, cat.id, sku || null).lastInsertRowid;
+  }
 
   db.prepare(
     'INSERT INTO listings (item_id, site_id, platform_listing_id, list_price, shipping_estimate, url) VALUES (?, ?, ?, ?, 7, ?)'
-  ).run(item.lastInsertRowid, ebaySite.id, String(listingId), listPrice, `https://ebay.com/itm/${listingId}`);
+  ).run(itemId, ebaySite.id, String(listingId), listPrice, `https://ebay.com/itm/${listingId}`);
 }
 
 function dbWriteSkillListing(item, listingId) {

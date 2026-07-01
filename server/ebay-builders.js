@@ -75,6 +75,13 @@ function generateDiscTitle({ manufacturer, mold, plastic, type, run, notes, weig
   return title.length <= 80 ? title : title.slice(0, 81).replace(/\s+\S*$/, '');
 }
 
+// Resolves a disc's title from its blob: a custom `list_title` override wins,
+// else the generated recall-first title. This is the single title-resolution
+// point — used to materialize items.name at intake/mint and by buildDiscPayload.
+function resolveDiscTitle(blob) {
+  return blob.list_title || generateDiscTitle({ ...blob, condition: normalizeCondition(blob.condition) });
+}
+
 function buildDiscSpecLines(blob) {
   const lines = [];
   if (blob.manufacturer) lines.push(`Brand: ${blob.manufacturer}`);
@@ -143,7 +150,7 @@ function renderSkillDescriptionHtml(text) {
 // Returns the normalized payload shape the list/update routes accept.
 function buildDiscPayload(blob, opts = {}) {
   const condition = normalizeCondition(blob.condition);
-  const title     = blob.list_title || generateDiscTitle({ ...blob, condition });
+  const title     = resolveDiscTitle(blob);
   const specLines = buildDiscSpecLines(blob);
   // Price authority is the listing row once a disc is listed (issue #134). The
   // route resolves it and passes opts.price; blob.listPrice is intake staging,
@@ -176,4 +183,4 @@ function buildDiscPayload(blob, opts = {}) {
   };
 }
 
-module.exports = { buildDiscPayload, renderDescriptionHtml, renderSkillDescriptionHtml, minOffer };
+module.exports = { buildDiscPayload, resolveDiscTitle, renderDescriptionHtml, renderSkillDescriptionHtml, minOffer };

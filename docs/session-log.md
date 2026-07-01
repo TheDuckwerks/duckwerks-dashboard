@@ -1,6 +1,13 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-01 (later 2) — #134 Phase 2: couple item at intake + unify status (v2.0.37)
+
+- **Item minted at intake.** `catalog-intake POST /disc` now creates the `items` row (status `Prepping`, name materialized via the new `resolveDiscTitle`) alongside the `inventory` blob — item exists from birth, so listing becomes pure association. `bulk-list`'s `dbWriteDiscListing` finds-and-associates the existing item (flips to `Listed`, re-materializes name) instead of always creating one; still creates as a fallback for pre-coupling SKUs.
+- **Status unified on `items.status`.** `inventory.status` retired to a dormant tombstone: dropped the `markDiscSold` write (removed from `catalog-intake` + `orders.js`), and the catalog "hide sold" filter now reads `item_status` (added to the `/api/inventory` join), case-insensitive. This also fixes a latent bug — DWG-209 was sold but still showed in the catalog because its `inventory.status` was a stale `listed`; the `item_status` filter correctly hides it.
+- **`resolveDiscTitle` extracted** in `ebay-builders.js` (the single title-resolution point: `list_title` override else generated) and shared by intake, mint, and `buildDiscPayload`.
+- **Migration:** backfilled the 2 orphan intake rows (DWG-178, DWG-224) with `Prepping` items; zero orphans remain — every inventory row now has an item.
+
 ### 2026-07-01 (later) — #134 lifecycle refactor: spec + Phase 1 (price authority)
 
 Turned the "one fact, three stores" drift (#134) into a design and shipped its urgent slice. Full design: `docs/specs/2026-07-01-catalog-item-lifecycle-design.md`.
