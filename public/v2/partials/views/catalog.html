@@ -210,8 +210,8 @@
                   <th style="width:170px"></th>
                 </tr>
               </thead>
-              <tbody>
             <template x-for="row in sortedInventory" :key="row.sku">
+              <tbody>
                 <!-- Summary row -->
                 <tr :style="ebayQueue.includes(row.sku) ? 'border-left:2px solid var(--blue)' : ebayBatchResults[row.sku]?.ok ? 'border-left:2px solid var(--green)' : ebayBatchResults[row.sku]?.error ? 'border-left:2px solid var(--red)' : ''">
                   <td style="font:700 11px/1 var(--mono);white-space:nowrap" x-text="row.sku"></td>
@@ -351,8 +351,8 @@
                   </tr>
                 </template>
 
-            </template><!-- /x-for -->
               </tbody>
+            </template><!-- /x-for -->
             </table>
           </div>
         </template>
