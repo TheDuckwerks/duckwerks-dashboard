@@ -81,19 +81,20 @@ async function savePhotos(files) {
   return urls;
 }
 
-// Resolve a disc's live price from its active listing row (issue #134). The
-// listing row is the price authority once a disc is listed; the catalog blob's
-// listPrice is intake staging only. Returns null when no active listing exists.
-function resolveListingPrice(sku) {
+// Resolve a disc's canonical title and live price from the engine (issue #134):
+// items.name is the materialized title, the active listing row owns the price.
+// The blob's list_title/listPrice are spec/staging, used only as fallbacks when
+// no item/listing exists yet. Returns { title, price } (either may be null).
+function resolveListedFields(sku) {
   const row = db.prepare(`
-    SELECT l.list_price
-    FROM listings l
-    JOIN items it ON it.id = l.item_id
-    WHERE it.sku = ? AND l.status = 'active'
+    SELECT it.name AS title, l.list_price AS price
+    FROM items it
+    LEFT JOIN listings l ON l.item_id = it.id AND l.status = 'active'
+    WHERE it.sku = ?
     ORDER BY l.id DESC
     LIMIT 1
   `).get(sku);
-  return row ? row.list_price : null;
+  return row || { title: null, price: null };
 }
 
 // ── DB writes ─────────────────────────────────────────────────────────────────
@@ -236,8 +237,7 @@ router.post('/bulk-preview', (req, res) => {
   try {
     const disc    = typeof req.body.disc === 'string' ? JSON.parse(req.body.disc) : req.body.disc;
     const sku     = `DWG-${String(disc.id).padStart(3, '0')}`;
-    const price   = resolveListingPrice(sku);   // listing row is authority once listed (#134)
-    const payload = buildDiscPayload(disc, price != null ? { price } : {});
+    const payload = buildDiscPayload(disc, resolveListedFields(sku));   // items.name + listing price (#134)
     res.json({
       title:       payload.title,
       price:       payload.price,
@@ -262,11 +262,11 @@ router.post('/bulk-update', async (req, res) => {
   try {
     const headers = await ebayHeaders();
     const sku     = `DWG-${String(disc.id).padStart(3, '0')}`;
-    const price   = resolveListingPrice(sku);   // listing row is authority once listed (#134)
-    if (price == null) {
+    const fields  = resolveListedFields(sku);   // items.name (title) + listing price (#134)
+    if (fields.price == null) {
       console.warn(`[ebay-listings] bulk-update ${sku}: no active listing row; falling back to blob listPrice`);
     }
-    const payload = buildDiscPayload(disc, price != null ? { price } : {});
+    const payload = buildDiscPayload(disc, fields);
 
     const existing = await getInventoryItem(sku, headers);
     if (!existing) return res.json({ discId: disc.id, error: `No inventory item found for ${sku}` });

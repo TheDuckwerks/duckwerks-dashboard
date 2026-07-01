@@ -1,6 +1,15 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-01 (later 3) — #134 Phase 3: title materialization (v2.0.39)
+
+`items.name` is now the canonical materialized title on every read; the blob's `list_title` is pure spec (override-or-null). Nothing generates a title on the hot path.
+
+- **Hot path reads `items.name`.** `bulk-update`/`bulk-preview` resolve title + price from the engine via `resolveListedFields(sku)` (items.name + active listing price) and hand both to `buildDiscPayload(blob, {title, price})`. The builder only falls back to `resolveDiscTitle(blob)` when no name is passed (pre-item preview). `bulk-list` still materializes `items.name` at mint from the spec.
+- **Catalog display reads `items.name`** (`item_name` added to the `/api/inventory` join); `inventoryDisplayTitle` falls back to the blob-composed string only for an item-less row.
+- **Spec edits re-materialize.** PATCH `/api/inventory/:sku` now recomputes `items.name` from the merged blob for disc rows (never touches a Sold item's name), so a raw-editor spec/override change flows to the canonical title and the next push. `saveEdit` reloads the list to pick up the new join fields.
+- Bundled a small pre-existing fix (v2.0.38): intake save now refreshes the inventory list so a just-cataloged disc appears without a manual reload.
+
 ### 2026-07-01 (later 2) — #134 Phase 2: couple item at intake + unify status (v2.0.37)
 
 - **Item minted at intake.** `catalog-intake POST /disc` now creates the `items` row (status `Prepping`, name materialized via the new `resolveDiscTitle`) alongside the `inventory` blob — item exists from birth, so listing becomes pure association. `bulk-list`'s `dbWriteDiscListing` finds-and-associates the existing item (flips to `Listed`, re-materializes name) instead of always creating one; still creates as a fallback for pre-coupling SKUs.

@@ -2,10 +2,20 @@
 const router              = require('express').Router();
 const db                  = require('./db');
 const { normalizeBlob }   = require('./inventory-schemas');
+const { resolveDiscTitle } = require('./ebay-builders');
+
+// Keep items.name (the canonical materialized title, #134) in sync when a disc's
+// blob spec changes. Never touches a Sold item's name — that's history.
+function rematerializeDiscName(sku, category, metadataJson) {
+  if (category !== 'disc' || !metadataJson) return;
+  const title = resolveDiscTitle(JSON.parse(metadataJson));
+  db.prepare("UPDATE items SET name = ? WHERE sku = ? AND status <> 'Sold'").run(title, sku);
+}
 
 const getBySku = db.prepare('SELECT * FROM inventory WHERE sku = ?');
 const listAll  = db.prepare(`
   SELECT inv.*,
+         it.name               AS item_name,
          it.status             AS item_status,
          l.id                  AS listing_id,
          l.platform_listing_id AS ebay_listing_id,
@@ -103,6 +113,7 @@ router.patch('/:sku', (req, res) => {
     status:   status    ?? null,
     metadata: normalizedMeta,
   });
+  rematerializeDiscName(req.params.sku, category ?? row.category, normalizedMeta);
   res.json(parseRow(getBySku.get(req.params.sku)));
 });
 

@@ -150,7 +150,11 @@ function renderSkillDescriptionHtml(text) {
 // Returns the normalized payload shape the list/update routes accept.
 function buildDiscPayload(blob, opts = {}) {
   const condition = normalizeCondition(blob.condition);
-  const title     = resolveDiscTitle(blob);
+  // Title authority is items.name once a disc exists (issue #134) — the route
+  // hands it in via opts.title. The builder never generates on the hot path;
+  // it only falls back to resolving from the blob spec when no name is passed
+  // (e.g. a preview before the item row exists).
+  const title     = opts.title || resolveDiscTitle(blob);
   const specLines = buildDiscSpecLines(blob);
   // Price authority is the listing row once a disc is listed (issue #134). The
   // route resolves it and passes opts.price; blob.listPrice is intake staging,

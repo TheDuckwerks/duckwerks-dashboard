@@ -253,6 +253,9 @@ document.addEventListener('alpine:init', () => {
     },
 
     inventoryDisplayTitle(row) {
+      // items.name is the canonical materialized title (#134). Fall back to the
+      // blob-composed string only for a row with no item yet (shouldn't happen).
+      if (row.item_name) return row.item_name;
       const m = row.metadata || {};
       if (m.list_title) return m.list_title;
       if (row.category === 'disc') {
@@ -333,13 +336,11 @@ document.addEventListener('alpine:init', () => {
           body:    JSON.stringify({ location: this.editLocation, metadata }),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const updated = await res.json();
-        const idx = this.inventory.findIndex(r => r.sku === this.editingSku);
-        if (idx !== -1) this.inventory[idx] = updated;
         const sku = this.editingSku;
         this.cancelEdit();
         if (!this.ebayQueue.includes(sku)) this.ebayQueue = [...this.ebayQueue, sku];
         delete this.ebayBatchResults[sku];
+        this.loadInventory();   // refresh join fields (item_name may have re-materialized)
       } catch (e) {
         this.inventoryErr = e.message;
       }
