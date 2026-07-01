@@ -198,6 +198,7 @@ document.addEventListener('alpine:init', () => {
         this._showToast(`Disc #${data.discNum} saved`, true);
         localStorage.setItem('catalog_box', this.box);
         this._reset(data.discNum + 1);
+        this.loadInventory();   // surface the just-saved disc in the list below
       } catch (err) {
         this._showToast(err.message, false);
       } finally {
