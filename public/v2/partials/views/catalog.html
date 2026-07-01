@@ -201,9 +201,9 @@
         </div>
 
         <!-- disk-backed preview (accumulates across ranges) -->
-        <template x-if="blkDiscs.length">
+        <template x-if="blkPreview.length">
           <div style="border:1px solid var(--border);margin-bottom:12px">
-            <template x-for="d in blkDiscs" :key="d.id">
+            <template x-for="d in blkPreview" :key="d.id">
               <div style="display:flex;gap:12px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border)">
                 <span style="font:700 11px/1 var(--mono);white-space:nowrap;width:70px" x-text="d.sku"></span>
                 <div style="display:flex;gap:4px;width:150px">
@@ -225,12 +225,12 @@
         </template>
 
         <!-- list -->
-        <template x-if="blkDiscs.length">
+        <template x-if="blkPreview.length">
           <div style="display:flex;gap:10px;align-items:center">
-            <button @click="blkList()" :disabled="blkListing || !blkDiscs.some(d => (blkCounts[d.id] || 0) > 0)"
+            <button @click="blkList()" :disabled="blkListing || !blkReadyDiscs.length"
               style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:6px 18px;background:var(--green);color:#03110a;border:none;cursor:pointer"
-              :style="(blkListing || !blkDiscs.some(d => (blkCounts[d.id] || 0) > 0)) ? 'opacity:.5;cursor:not-allowed' : ''"
-              x-text="blkListing ? ('LISTING… ' + blkProgress.done + '/' + blkProgress.total) : ('BULK LIST ' + blkDiscs.filter(d => (blkCounts[d.id] || 0) > 0).length + ' WITH PHOTOS')"></button>
+              :style="(blkListing || !blkReadyDiscs.length) ? 'opacity:.5;cursor:not-allowed' : ''"
+              x-text="blkListing ? ('LISTING… ' + blkProgress.done + '/' + blkProgress.total) : ('BULK LIST ' + blkReadyDiscs.length + ' WITH PHOTOS')"></button>
             <span style="font:700 9px/1 var(--mono);color:var(--muted)">creates + publishes NEW eBay offers — goes live</span>
           </div>
         </template>

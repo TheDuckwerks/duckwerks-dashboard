@@ -285,6 +285,7 @@ document.addEventListener('alpine:init', () => {
         const data = await res.json();
         this.inventory = data.inventory || [];
         this.loadTraffic();
+        this.blkLoadPhotoStatus();   // populate the bulk-list ready set on load
       } catch (e) {
         this.inventoryErr = e.message;
       }
@@ -438,16 +439,40 @@ document.addEventListener('alpine:init', () => {
       }
       this.blkDiscs = this.inventory
         .filter(r => r.item_status === 'Prepping' && r.category === 'disc')
-        .map(r => ({
-          id:       parseInt(r.sku.replace(/^DWG-0*/i, ''), 10),
-          sku:      r.sku,
-          title:    this.inventoryDisplayTitle(r),
-          price:    this.displayPrice(r),
-          metadata: r.metadata,
-        }))
+        .map(r => this._blkDisc(r))
         .filter(d => ids.has(d.id))
         .sort((a, b) => a.id - b.id);
       this.blkLoadPhotoStatus();   // preview reflects what's already on disk (accumulating)
+    },
+
+    _blkDisc(r) {
+      return {
+        id:       parseInt(r.sku.replace(/^DWG-0*/i, ''), 10),
+        sku:      r.sku,
+        title:    this.inventoryDisplayTitle(r),
+        price:    this.displayPrice(r),
+        metadata: r.metadata,
+      };
+    },
+
+    // Every Prepping disc that has photos on disk — the accumulated "ready to list"
+    // set, independent of the current range. This is what BULK LIST acts on.
+    get blkReadyDiscs() {
+      return this.inventory
+        .filter(r => r.item_status === 'Prepping' && r.category === 'disc')
+        .map(r => this._blkDisc(r))
+        .filter(d => (this.blkCounts[d.id] || 0) > 0)
+        .sort((a, b) => a.id - b.id);
+    },
+
+    // What the preview shows: the current range (to see upload targets awaiting
+    // photos) UNION everything already ready — so narrowing the range to re-shoot
+    // a few SKUs never drops the rest of the batch.
+    get blkPreview() {
+      const byId = new Map();
+      for (const d of this.blkReadyDiscs) byId.set(d.id, d);
+      for (const d of this.blkDiscs)      byId.set(d.id, d);
+      return [...byId.values()].sort((a, b) => a.id - b.id);
     },
 
     // The preview is disk-backed: photo-status gives per-disc counts, and the
@@ -487,9 +512,9 @@ document.addEventListener('alpine:init', () => {
       this.blkUploading = false;
     },
 
-    // List every disc that has photos on disk: bulk-list reads them (no upload).
+    // List every ready disc (Prepping + has photos), regardless of the range.
     async blkList() {
-      const toList = this.blkDiscs.filter(d => (this.blkCounts[d.id] || 0) > 0);
+      const toList = this.blkReadyDiscs;
       if (!toList.length) return;
       this.blkListing  = true;
       this.blkProgress = { done: 0, total: toList.length };
