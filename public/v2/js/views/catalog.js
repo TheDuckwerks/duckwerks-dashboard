@@ -57,7 +57,8 @@ document.addEventListener('alpine:init', () => {
     blkPerDisc:   2,
     blkFiles:     [],
     blkDiscs:     [],      // resolved Prepping discs [{id, sku, title, price, metadata}]
-    blkMapping:   null,    // { id: [photoUrls] } after upload
+    blkCounts:    {},      // { id: photoCount } from disk (photo-status) — the preview truth
+    blkNonce:     0,       // cache-bust for thumbnails after a re-upload
     blkUploading: false,
     blkListing:   false,
     blkResults:   {},      // id -> { ok, url, error }
@@ -446,11 +447,27 @@ document.addEventListener('alpine:init', () => {
         }))
         .filter(d => ids.has(d.id))
         .sort((a, b) => a.id - b.id);
-      this.blkMapping = null;   // disc set changed — clear stale mapping/results
-      this.blkResults = {};
+      this.blkLoadPhotoStatus();   // preview reflects what's already on disk (accumulating)
     },
 
-    // Upload the photo pile; server chunks by N and maps to the discs ascending.
+    // The preview is disk-backed: photo-status gives per-disc counts, and the
+    // URLs are deterministic (DWG-{id}-{n}.jpeg), so any range re-reads the truth
+    // on disk — earlier uploads survive a range change; a re-upload just overwrites.
+    async blkLoadPhotoStatus() {
+      try {
+        const data = await fetch('/api/ebay/photo-status').then(r => r.json());
+        this.blkCounts = data.counts || {};
+        this.blkNonce  = Date.now();   // bust cached thumbnails after a re-upload
+      } catch (e) { /* non-fatal — preview just shows no photos */ }
+    },
+
+    blkPhotoUrls(d) {
+      const n = this.blkCounts[d.id] || 0;
+      return Array.from({ length: n }, (_, i) => `/dg-photos/DWG-${d.id}-${i + 1}.jpeg?v=${this.blkNonce}`);
+    },
+
+    // Upload the photo pile; server chunks by N and maps to the discs ascending,
+    // then we re-read disk so the preview shows the new truth.
     async blkUploadPhotos() {
       if (!this.blkDiscs.length || !this.blkFiles.length) return;
       this.blkUploading = true;
@@ -462,16 +479,17 @@ document.addEventListener('alpine:init', () => {
         const res  = await fetch('/api/ebay/bulk-list-photos', { method: 'POST', body: fd });
         const data = await res.json();
         if (data.error) throw new Error(data.error);
-        this.blkMapping = data.mapping;
+        this.blkFiles = [];                 // consumed
+        await this.blkLoadPhotoStatus();     // refresh preview from disk
       } catch (e) {
         this.inventoryErr = e.message;
       }
       this.blkUploading = false;
     },
 
-    // List every mapped disc: bulk-list reads its photos from disk (no upload).
+    // List every disc that has photos on disk: bulk-list reads them (no upload).
     async blkList() {
-      const toList = this.blkDiscs.filter(d => (this.blkMapping?.[d.id] || []).length);
+      const toList = this.blkDiscs.filter(d => (this.blkCounts[d.id] || 0) > 0);
       if (!toList.length) return;
       this.blkListing  = true;
       this.blkProgress = { done: 0, total: toList.length };
@@ -489,6 +507,7 @@ document.addEventListener('alpine:init', () => {
         this.blkProgress = { ...this.blkProgress, done: this.blkProgress.done + 1 };
       }
       this.blkListing = false;
+      await this.blkLoadPhotoStatus();
       this.loadInventory();   // Prepping -> Listed, refresh the list
     },
 

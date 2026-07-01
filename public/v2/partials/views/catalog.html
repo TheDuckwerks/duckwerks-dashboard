@@ -200,17 +200,17 @@
           </div>
         </div>
 
-        <!-- mapping preview -->
-        <template x-if="blkMapping">
+        <!-- disk-backed preview (accumulates across ranges) -->
+        <template x-if="blkDiscs.length">
           <div style="border:1px solid var(--border);margin-bottom:12px">
             <template x-for="d in blkDiscs" :key="d.id">
               <div style="display:flex;gap:12px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border)">
                 <span style="font:700 11px/1 var(--mono);white-space:nowrap;width:70px" x-text="d.sku"></span>
                 <div style="display:flex;gap:4px;width:150px">
-                  <template x-for="url in (blkMapping[d.id] || [])" :key="url">
+                  <template x-for="url in blkPhotoUrls(d)" :key="url">
                     <img :src="url" loading="lazy" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border)">
                   </template>
-                  <span x-show="!(blkMapping[d.id] || []).length" style="font:700 9px/1 var(--mono);color:var(--red);align-self:center">NO PHOTOS</span>
+                  <span x-show="!blkPhotoUrls(d).length" style="font:700 9px/1 var(--mono);color:var(--muted);align-self:center">no photos</span>
                 </div>
                 <span :title="d.title" style="font-size:11px;color:var(--ink-2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="d.title"></span>
                 <span style="font:700 11px/1 var(--mono);color:var(--ink-1);width:50px;text-align:right" x-text="d.price ? '$' + d.price : '—'"></span>
@@ -225,12 +225,12 @@
         </template>
 
         <!-- list -->
-        <template x-if="blkMapping">
+        <template x-if="blkDiscs.length">
           <div style="display:flex;gap:10px;align-items:center">
-            <button @click="blkList()" :disabled="blkListing"
+            <button @click="blkList()" :disabled="blkListing || !blkDiscs.some(d => (blkCounts[d.id] || 0) > 0)"
               style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:6px 18px;background:var(--green);color:#03110a;border:none;cursor:pointer"
-              :style="blkListing ? 'opacity:.5;cursor:not-allowed' : ''"
-              x-text="blkListing ? ('LISTING… ' + blkProgress.done + '/' + blkProgress.total) : ('BULK LIST ' + blkDiscs.length + ' DISC(S)')"></button>
+              :style="(blkListing || !blkDiscs.some(d => (blkCounts[d.id] || 0) > 0)) ? 'opacity:.5;cursor:not-allowed' : ''"
+              x-text="blkListing ? ('LISTING… ' + blkProgress.done + '/' + blkProgress.total) : ('BULK LIST ' + blkDiscs.filter(d => (blkCounts[d.id] || 0) > 0).length + ' WITH PHOTOS')"></button>
             <span style="font:700 9px/1 var(--mono);color:var(--muted)">creates + publishes NEW eBay offers — goes live</span>
           </div>
         </template>
