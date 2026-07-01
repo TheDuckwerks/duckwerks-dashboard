@@ -40,6 +40,7 @@ document.addEventListener('alpine:init', () => {
     inventoryLoading: false,
     inventoryErr:     '',
     inventoryShowSold: false,
+    invStatusFilter:  'all',   // all | Prepping | Listed — catalog list status scope
     editingSku:       null,
     editLocation:     '',
     editPairs:        [],  // [{ key, value }] — flattened metadata blob
@@ -80,7 +81,10 @@ document.addEventListener('alpine:init', () => {
 
     get sortedInventory() {
       const dir = this.invSortDir === 'asc' ? 1 : -1;
-      return [...this.inventory].sort((a, b) => {
+      const rows = this.invStatusFilter === 'all'
+        ? this.inventory
+        : this.inventory.filter(r => r.item_status === this.invStatusFilter);
+      return [...rows].sort((a, b) => {
         let av, bv;
         const k = this.invSortKey;
         if (k === 'sku') {

@@ -240,9 +240,17 @@
       <div style="margin-top:48px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <div class="modal-section-label">Inventory</div>
-          <button @click="inventoryShowSold = !inventoryShowSold; loadInventory()"
-            style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
-            x-text="inventoryShowSold ? 'HIDE SOLD' : 'SHOW SOLD'"></button>
+          <div style="display:flex;gap:6px;align-items:center">
+            <template x-for="f in [['all','ALL'],['Prepping','INTAKE'],['Listed','LISTED']]" :key="f[0]">
+              <button @click="invStatusFilter = f[0]"
+                :style="invStatusFilter === f[0] ? 'border-color:var(--blue);color:var(--blue)' : ''"
+                style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+                x-text="f[1]"></button>
+            </template>
+            <button @click="inventoryShowSold = !inventoryShowSold; loadInventory()"
+              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+              x-text="inventoryShowSold ? 'HIDE SOLD' : 'SHOW SOLD'"></button>
+          </div>
         </div>
         <!-- Batch update banner -->
         <template x-if="ebayQueue.length > 0 || ebayBatchRunning">
