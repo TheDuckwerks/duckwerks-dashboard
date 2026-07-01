@@ -6,7 +6,9 @@ const { normalizeBlob }   = require('./inventory-schemas');
 const getBySku = db.prepare('SELECT * FROM inventory WHERE sku = ?');
 const listAll  = db.prepare(`
   SELECT inv.*,
-         l.platform_listing_id AS ebay_listing_id
+         l.id                  AS listing_id,
+         l.platform_listing_id AS ebay_listing_id,
+         l.list_price          AS listing_price
   FROM   inventory inv
   LEFT JOIN items it   ON it.sku = inv.sku
   LEFT JOIN listings l ON l.item_id = it.id AND l.status = 'active'

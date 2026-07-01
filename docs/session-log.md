@@ -1,7 +1,14 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
-### 2026-07-01 — DG title recall-rewrite + surgical price cuts (94-listing regen)
+### 2026-07-01 (later) — #134 lifecycle refactor: spec + Phase 1 (price authority)
+
+Turned the "one fact, three stores" drift (#134) into a design and shipped its urgent slice. Full design: `docs/specs/2026-07-01-catalog-item-lifecycle-design.md`.
+
+- **The model.** One canonical home per concept: live price → `listings.list_price` (per marketplace), title → `items.name` (materialized), lifecycle → `items.status`. The blob is spec + junk-drawer — `listPrice` is intake *staging*, `list_title` is the title *spec* (override-or-null), and the genuinely-homeless fields (plastic, run, color, notes, flight numbers). Price stays on the listing, never `items` (an item's eBay and Reverb prices can differ; putting price on the item just recreates the drift one level up). Coupling `items` at intake is 99% de-facto true already (290/292 inventory rows have an item row).
+- **Spec is 5 phases, each shippable:** (1) price authority [done], (2) couple item at intake + unify status on `items.status` + retire `inventory.status`, (3) title materialization (`items.name` canonical), (4) refresh command (formalize the 07-01 regen), (5) GOTCHAS + docs. Written cold-blind with per-phase migrations/verification/checkpoints.
+- **Phase 1 shipped (v2.0.36).** `bulk-update`/`bulk-preview` now resolve price from the active listing row (new `resolveListingPrice` in `ebay-listings.js`), not `blob.listPrice` — so a catalog-driven push can no longer revert a live price to a stale blob value. `buildDiscPayload(blob, {price})` takes the resolved price; blob stays the fallback for unlisted previews. Catalog UI reads/sorts/seeds price from `listing_price` (added to the `/api/inventory` join alongside `listing_id`) via a new `displayPrice()` helper; `savePriceEdit` writes the listing row (PATCH `/api/listings/:id`) for listed discs, blob staging for unlisted.
+- **Safety gate:** re-confirmed zero numeric price drift across all 93 active discs before flipping reads to the listing row.
 
 Chased the "cool discs get zero views" puzzle to its root and reshaped the disc-listing pipeline. Analysis worklog: `docs/notes/dg-cohorts-worklog.md`.
 

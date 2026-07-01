@@ -81,7 +81,7 @@ document.addEventListener('alpine:init', () => {
         if (k === 'manufacturer') { av = a.metadata?.manufacturer || ''; bv = b.metadata?.manufacturer || ''; }
         if (k === 'mold')         { av = a.metadata?.mold || '';         bv = b.metadata?.mold || ''; }
         if (k === 'title')        { av = this.inventoryDisplayTitle(a);  bv = this.inventoryDisplayTitle(b); }
-        if (k === 'price')        { return dir * ((a.metadata?.listPrice || 0) - (b.metadata?.listPrice || 0)); }
+        if (k === 'price')        { return dir * ((this.displayPrice(a) || 0) - (this.displayPrice(b) || 0)); }
         if (k === 'views')        { return dir * ((_traffic(a)?.views ?? -1) - (_traffic(b)?.views ?? -1)); }
         if (k === 'impressions')  { return dir * ((_traffic(a)?.impressions ?? -1) - (_traffic(b)?.impressions ?? -1)); }
         if (k === 'ctr')          { return dir * ((_traffic(a)?.ctr ?? -1) - (_traffic(b)?.ctr ?? -1)); }
@@ -243,6 +243,12 @@ document.addEventListener('alpine:init', () => {
       this.flightData   = null;
       // box kept as-is
       this.$nextTick(() => this.$el.querySelector('[data-focus]')?.focus());
+    },
+
+    // Price to show/sort/seed: the listing row owns it once a disc is listed
+    // (#134); the blob's listPrice is intake staging, shown only pre-list.
+    displayPrice(row) {
+      return row.listing_price ?? row.metadata?.listPrice ?? null;
     },
 
     inventoryDisplayTitle(row) {
@@ -408,7 +414,7 @@ document.addEventListener('alpine:init', () => {
 
     startPriceEdit(row, seed = null) {
       this.priceEditSku = row.sku;
-      this.priceEditVal = seed !== null ? Number(seed) : (row.metadata?.listPrice ?? '');
+      this.priceEditVal = seed !== null ? Number(seed) : (this.displayPrice(row) ?? '');
       this.$nextTick(() => document.getElementById('price-input-' + row.sku)?.focus());
     },
 
@@ -424,16 +430,28 @@ document.addEventListener('alpine:init', () => {
     async savePriceEdit(row) {
       const sku      = row.sku;
       const newPrice = this.priceEditVal;
-      const metadata = { ...(row.metadata || {}), listPrice: newPrice };
       try {
-        const res = await fetch(`/api/inventory/${encodeURIComponent(sku)}`, {
-          method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ metadata }),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const updated = await res.json();
         const idx = this.inventory.findIndex(r => r.sku === sku);
-        if (idx !== -1) this.inventory[idx] = updated;
+        if (row.listing_id) {
+          // Listed: the listing row owns the live price (#134). Write it there and
+          // queue the eBay push; the blob's listPrice is staging, ignored post-mint.
+          const res = await fetch(`/api/listings/${row.listing_id}`, {
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ list_price: newPrice }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          if (idx !== -1) this.inventory[idx] = { ...this.inventory[idx], listing_price: newPrice };
+        } else {
+          // Not yet listed: stage the price on the blob.
+          const metadata = { ...(row.metadata || {}), listPrice: newPrice };
+          const res = await fetch(`/api/inventory/${encodeURIComponent(sku)}`, {
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ metadata }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const updated = await res.json();
+          if (idx !== -1) this.inventory[idx] = { ...this.inventory[idx], metadata: updated.metadata };
+        }
         if (!this.ebayQueue.includes(sku)) this.ebayQueue = [...this.ebayQueue, sku];
         delete this.ebayBatchResults[sku];
       } catch (e) {

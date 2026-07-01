@@ -141,11 +141,14 @@ function renderSkillDescriptionHtml(text) {
 // Builds a normalized payload from a disc inventory blob.
 // blob: the metadata JSON from the inventory table (already parsed)
 // Returns the normalized payload shape the list/update routes accept.
-function buildDiscPayload(blob) {
+function buildDiscPayload(blob, opts = {}) {
   const condition = normalizeCondition(blob.condition);
   const title     = blob.list_title || generateDiscTitle({ ...blob, condition });
   const specLines = buildDiscSpecLines(blob);
-  const price     = parseFloat(blob.listPrice);
+  // Price authority is the listing row once a disc is listed (issue #134). The
+  // route resolves it and passes opts.price; blob.listPrice is intake staging,
+  // used only when no listing exists yet (e.g. preview/mint of an unlisted disc).
+  const price     = opts.price != null ? parseFloat(opts.price) : parseFloat(blob.listPrice);
 
   const aspects = {
     Type: ['Disc Golf Disc'],

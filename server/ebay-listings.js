@@ -81,6 +81,21 @@ async function savePhotos(files) {
   return urls;
 }
 
+// Resolve a disc's live price from its active listing row (issue #134). The
+// listing row is the price authority once a disc is listed; the catalog blob's
+// listPrice is intake staging only. Returns null when no active listing exists.
+function resolveListingPrice(sku) {
+  const row = db.prepare(`
+    SELECT l.list_price
+    FROM listings l
+    JOIN items it ON it.id = l.item_id
+    WHERE it.sku = ? AND l.status = 'active'
+    ORDER BY l.id DESC
+    LIMIT 1
+  `).get(sku);
+  return row ? row.list_price : null;
+}
+
 // ── DB writes ─────────────────────────────────────────────────────────────────
 
 function dbWriteDiscListing(title, listPrice, listingId, sku) {
@@ -211,7 +226,9 @@ router.post('/bulk-photos', (req, res, next) => {
 router.post('/bulk-preview', (req, res) => {
   try {
     const disc    = typeof req.body.disc === 'string' ? JSON.parse(req.body.disc) : req.body.disc;
-    const payload = buildDiscPayload(disc);
+    const sku     = `DWG-${String(disc.id).padStart(3, '0')}`;
+    const price   = resolveListingPrice(sku);   // listing row is authority once listed (#134)
+    const payload = buildDiscPayload(disc, price != null ? { price } : {});
     res.json({
       title:       payload.title,
       price:       payload.price,
@@ -236,7 +253,11 @@ router.post('/bulk-update', async (req, res) => {
   try {
     const headers = await ebayHeaders();
     const sku     = `DWG-${String(disc.id).padStart(3, '0')}`;
-    const payload = buildDiscPayload(disc);
+    const price   = resolveListingPrice(sku);   // listing row is authority once listed (#134)
+    if (price == null) {
+      console.warn(`[ebay-listings] bulk-update ${sku}: no active listing row; falling back to blob listPrice`);
+    }
+    const payload = buildDiscPayload(disc, price != null ? { price } : {});
 
     const existing = await getInventoryItem(sku, headers);
     if (!existing) return res.json({ discId: disc.id, error: `No inventory item found for ${sku}` });

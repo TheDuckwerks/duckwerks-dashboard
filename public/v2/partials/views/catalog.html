@@ -234,9 +234,9 @@
                           @keydown.enter.prevent="startPriceEdit(row)"
                           @keydown="if(/^\d$/.test($event.key)){ $event.preventDefault(); startPriceEdit(row, $event.key) }"
                           @click="startPriceEdit(row)"
-                          :style="row.metadata?.listPrice ? 'color:var(--ink-1)' : 'color:var(--muted)'"
+                          :style="displayPrice(row) ? 'color:var(--ink-1)' : 'color:var(--muted)'"
                           style="font-size:11px;cursor:pointer;outline:none;border-bottom:1px dotted var(--ink-3)"
-                          x-text="row.metadata?.listPrice ? '$' + row.metadata.listPrice : '—'"></span>
+                          x-text="displayPrice(row) ? '$' + displayPrice(row) : '—'"></span>
                     <span x-show="priceEditSku === row.sku" style="display:flex;gap:4px;align-items:center;justify-content:flex-end">
                       <input type="number" min="0" step="1"
                              x-model.number="priceEditVal"
