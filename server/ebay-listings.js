@@ -214,6 +214,63 @@ router.post('/bulk-list', (req, res, next) => {
   }
 });
 
+// POST /api/ebay/bulk-list-photos — upload a photo pile, chunk by N, map to a
+// list of Prepping disc ids (ascending) and write them into dg-photos as
+// DWG-{id}-{n}.jpeg. The upload/map step of web bulk-list (#139) — returns the
+// mapping so the UI can preview disc<->photos before the actual list. Files sort
+// by filename (the shot order). A disc's prior photos are cleared before its new
+// chunk is written, so a re-upload is authoritative.
+router.post('/bulk-list-photos', (req, res, next) => {
+  upload.any()(req, res, err => {
+    if (err) return res.json({ error: `Upload error: ${err.message}` });
+    next();
+  });
+}, (req, res) => {
+  try {
+    const perDisc = parseInt(req.body.perDisc, 10);
+    const discIds = JSON.parse(req.body.discIds || '[]');
+    if (!perDisc || perDisc < 1) return res.status(400).json({ error: 'perDisc must be >= 1' });
+    if (!Array.isArray(discIds) || !discIds.length) return res.status(400).json({ error: 'discIds (ascending array) required' });
+
+    const files = (req.files || []).slice()
+      .sort((a, b) => a.originalname.localeCompare(b.originalname, undefined, { numeric: true }));
+
+    const mapping = {};
+    for (let i = 0; i < discIds.length; i++) {
+      const id    = discIds[i];
+      const chunk = files.slice(i * perDisc, (i + 1) * perDisc);
+      if (!chunk.length) { mapping[id] = []; continue; }   // no files this batch — leave existing
+      // clear prior photos for this disc (re-upload wins)
+      const stale = new RegExp(`^DWG-${id}-\\d+\\.jpe?g$`, 'i');
+      fs.readdirSync(PHOTOS_DIR).filter(f => stale.test(f)).forEach(f => fs.unlinkSync(path.join(PHOTOS_DIR, f)));
+      mapping[id] = chunk.map((f, idx) => {
+        const name = `DWG-${id}-${idx + 1}.jpeg`;
+        fs.writeFileSync(path.join(PHOTOS_DIR, name), f.buffer);
+        return `/dg-photos/${name}`;
+      });
+    }
+    const leftover = Math.max(0, files.length - discIds.length * perDisc);
+    res.json({ mapping, totalFiles: files.length, leftover });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+// GET /api/ebay/photo-status — photo count per disc id from dg-photos (#139).
+// Drives the catalog list-readiness badge. Returns { counts: { "<id>": n } }.
+router.get('/photo-status', (req, res) => {
+  try {
+    const counts = {};
+    for (const f of fs.readdirSync(PHOTOS_DIR)) {
+      const m = f.match(/^DWG-(\d+)-\d+\.jpe?g$/i);
+      if (m) { const id = parseInt(m[1], 10); counts[id] = (counts[id] || 0) + 1; }
+    }
+    res.json({ counts });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // POST /api/ebay/bulk-photos — replace photos on existing listing without touching offer
 // Called by scripts/bulk-list-discs.js --photos-only
 router.post('/bulk-photos', (req, res, next) => {
