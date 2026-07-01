@@ -1,6 +1,17 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-01 (later 5) — #134 Phase 5: docs + close
+
+Closed out #134 (all five phases shipped + verified). Docs reconciled to the new lifecycle:
+- **GOTCHAS.md** — new "Disc catalog & titles" war-story: the canonical homes (price → `listings.list_price`, title → `items.name`, lifecycle → `items.status`), the blob-is-spec/staging rule, and the `refresh-disc-titles` recovery. Also fixed a stale NUC DB path (pointed at the retired `/home/geoff/...` checkout → `/srv/duckwerks/dash/data/duckwerks.db`).
+- **api-reference.md** — catalog-intake section was describing a dead Google-Sheets backend; rewrote to the DB-backed reality + the `refresh-titles` endpoint; schema notes `items.name`/`items.status`/`listings.list_price` as canonical and `inventory.status` as a tombstone.
+- **codebase-map.md** — item-minted-at-intake, `resolveDiscTitle`, the enriched `/api/inventory` join, PATCH re-materialization.
+- **scripts/README.md** — `refresh-disc-titles.js` replaces the retired `clean-disc-titles.js`.
+- **CLAUDE.md** (earlier this session) — corrected the deploy model to working-tree rsync (deploy ≠ commit-gated), matching the Duck Ops NUC refactor.
+
+**Net of #134:** one canonical home per fact (price/title/status), item coupled at intake, blob demoted to spec + junk-drawer, the third head (dashboard lagging eBay) reconciled, and the manual title regen formalized as a command. Follow-ups filed: #138 (domain/ZT doc), #139 (web LIST + image rsync), #140 (edit panel → structured inputs).
+
 ### 2026-07-01 (later 4) — #134 Phase 4: refresh command + third-head reconcile (v2.0.42)
 
 Formalized the title regen and closed the "third head" (`items.name` lagging eBay).

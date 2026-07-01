@@ -7,7 +7,7 @@
 - `server.js` — Express entry point: mounts routers, serves static, redirects `/` → `/v2`
 - `server/db.js` — opens SQLite db via better-sqlite3; shared across all routers
 - `server/catalog.js` — `/api/sites`, `/api/categories`
-- `server/catalog-intake.js` — `/api/catalog-intake/*` — disc intake (manufacturers, molds, plastics, disc save); DB-only, no Google Sheets
+- `server/catalog-intake.js` — `/api/catalog-intake/*` — disc intake (manufacturers, molds, plastics, disc save) + `refresh-titles`; DB-only. Disc save mints the `items` row alongside the `inventory` blob (item coupled at intake, #134)
 - `server/items.js` — `/api/items` CRUD
 - `server/lots.js` — `/api/lots` CRUD
 - `server/listings.js` — `/api/listings` CRUD
@@ -20,9 +20,9 @@
 - `server/ebay-auth.js` — eBay OAuth (one-time setup + auto-refresh)
 - `server/ebay.js` — eBay Sell Fulfillment + Inventory API (`/api/ebay/*`); includes `POST /api/ebay/migrate-listing` and `GET /api/ebay/offer`
 - `server/ebay-client.js` — shared eBay API plumbing (headers, policies, EPS upload, inventory item PUT/GET, offer upsert/update/publish)
-- `server/ebay-builders.js` — disc payload builder (`buildDiscPayload`), description renderers; add new category builders here
+- `server/ebay-builders.js` — disc payload builder (`buildDiscPayload`), title resolver (`resolveDiscTitle` = `list_title` override else `generateDiscTitle`), description renderers; add new category builders here. `buildDiscPayload(blob, {title, price})` — route passes canonical title (`items.name`) + price (listing row), #134
 - `server/ebay-listings.js` — eBay listing routes (`/api/ebay/bulk-list`, `bulk-update`, `bulk-preview`, `bulk-photos`, `list-item`, `update-item`); thin handlers only
-- `server/inventory.js` — local inventory CRUD (`GET /api/inventory`, `GET /api/inventory/:sku`, `PATCH /api/inventory/:sku`); `GET /api/inventory` LEFT JOINs items+listings to return `ebay_listing_id` per row
+- `server/inventory.js` — local inventory CRUD (`GET /api/inventory`, `GET /api/inventory/:sku`, `PATCH /api/inventory/:sku`); `GET /api/inventory` LEFT JOINs items+listings to return `item_name`, `item_status`, `listing_id`, `ebay_listing_id`, `listing_price` per row. PATCH re-materializes `items.name` from the blob for non-Sold disc rows (#134)
 
 ## Scripts
 

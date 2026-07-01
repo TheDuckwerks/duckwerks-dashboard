@@ -49,12 +49,11 @@ All credentials injected server-side from `.env` — never exposed to the browse
 - `GET /api/sites` — all sites
 - `GET /api/categories` — all categories
 
-**server/catalog-intake.js** (mounted at `/api/catalog-intake`)
-- `GET /api/catalog-intake/next-disc-num` — returns next sequential disc number from Google Sheet
-- `GET /api/catalog-intake/manufacturers` — unique manufacturer list from sheet column F
-- `POST /api/catalog-intake/disc` — appends a new disc row to the Google Sheet
-- Requires service account key at `docs/handicaps-244e5d936e6c.json` (not an env var)
-- Sheet ID: `1Gmdw2qcHRA_9wz29CXul3pTCT92pX56V4FPLkrhNnHE`, tab: `duckwerks-dg-catalog`
+**server/catalog-intake.js** (mounted at `/api/catalog-intake`) — DB-backed (SQLite), no Google Sheets
+- `GET /api/catalog-intake/next-disc-num` — next sequential `DWG-NNN` number (from the `inventory` table)
+- `GET /api/catalog-intake/manufacturers` · `/molds` · `/plastics` — lookup lists from `flight_numbers` / `disc_plastics`
+- `POST /api/catalog-intake/disc` — upsert a disc: writes the `inventory` blob AND mints its `items` row (name materialized via `resolveDiscTitle`, status `Prepping`) — item coupled at intake (#134)
+- `POST /api/catalog-intake/refresh-titles?confirm=` — re-materialize `items.name = resolveDiscTitle(blob)` for every non-Sold disc after a `generateDiscTitle` template change; dry-run unless `confirm=true`, returns the diff. CLI wrapper: `scripts/refresh-disc-titles.js` (run on the NUC)
 
 **server/items.js** (mounted at `/api/items`)
 - `GET /api/items` — all items with nested listings, order, shipment, category, lot
@@ -121,8 +120,9 @@ All credentials injected server-side from `.env` — never exposed to the browse
 
 DB location: `data/duckwerks.db`
 
-- `items` — core inventory: name, status, cost, category_id, lot_id
-- `listings` — platform listings per item: site_id, list_price, shipping_estimate, url, platform_listing_id
+- `items` — core inventory ledger: name (**canonical materialized title**, #134), status (`Prepping`/`Listed`/`Sold` — the sole lifecycle owner), cost, category_id, lot_id, sku
+- `listings` — platform listings per item: site_id, list_price (**price authority once listed**, #134), shipping_estimate, url, platform_listing_id, offer_id, status
+- `inventory` — category intake blob keyed by sku: `metadata` JSON (disc specs + `list_title` title-spec + `listPrice` staging), location, category. `status` is a **retired tombstone** — lifecycle lives on `items.status` (#134)
 - `orders` — sale data: listing_id, sale_price, profit, date_sold, platform_order_num
 - `shipments` — shipping data: item_id, tracking_id, tracking_number, label_url, shipping_cost
 - `sites` — platform lookup: name, fee_rate, fee_flat, fee_on_shipping

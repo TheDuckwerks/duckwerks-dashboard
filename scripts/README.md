@@ -39,7 +39,10 @@ node scripts/ebay-traffic-merge.js path/to/report.csv
 
 **`assign-lot.js`** — Assign a range of items to a lot ID.
 
-**`clean-disc-titles.js`** — Push updated titles to eBay for a range of discs.
+**`refresh-disc-titles.js`** — Re-materialize `items.name` for non-Sold discs after a `generateDiscTitle` template change (#134). Dry-run by default; `--confirm` writes, `--push` syncs eBay. Runs on the NUC (`:3000` isn't LAN-exposed):
+```
+ssh geoff@fedora.local "cd /srv/duckwerks/dash/current && node scripts/refresh-disc-titles.js --confirm"
+```
 
 **`update-site-fees.js`** — Update site fee config in the DB.
 
