@@ -51,13 +51,13 @@ If the right approach isn't clear, sort it out before running anything. This app
 
 ## Dev vs Production
 
-Deploy is the Duck Ops rsync-artifact standard: ship the committed tree from the Mac → `npm ci` on the NUC → symlink persistent state → atomic swap → PM2 reload. No git on the NUC. Full procedure: [`docs/deploy.md`](docs/deploy.md).
+Deploy is the Duck Ops rsync-artifact standard: rsync the working tree from the Mac (honoring `.gitignore`) → `npm ci --omit=dev` builds deps on the NUC → symlink persistent state → atomic swap → PM2 reload. No git on the NUC. Full procedure: [`docs/deploy.md`](docs/deploy.md).
 
-> **Every commit that goes live must be followed by `git push origin main` and `./scripts/deploy.sh`.** deploy.sh rsyncs the *committed* tree (honors `.gitignore`), so commit first — local scratch never ships. A commit alone is invisible to Geoff; don't tell him to check anything until deploy.sh's health check passes.
+> **deploy.sh ships the working tree, not a commit.** It rsyncs the live working dir filtered by `.gitignore` (node_modules/.env/data/ etc. excluded), so uncommitted edits ship as-is — deploy freely to test, no commit needed. `npm ci` on the NUC rebuilds node_modules from the lockfile (that target-build is why the native `better-sqlite3` binary is correct, and why node_modules is never shipped). Commit + push are how a *verified* change gets recorded (history + GitHub backup), not a deploy prerequisite; push never touches the deploy (Mac→NUC over ssh). Don't tell Geoff to check anything until the health check passes.
 
 > **Code swaps, state persists.** Each deploy replaces the release dir. Anything the app writes at runtime must live in a persistent dir outside the release (symlinked in) or it vanishes on the next deploy. Current persistent set: `data/` (DB + `ebay-tokens.json`), `public/dg-photos/`. **Adding a new runtime write path means adding a new persistent dir + symlink** — coordinate with Duck Ops. (See deploy.md.)
 
-- **Default: ship to production.** Fix it, commit, push, `./scripts/deploy.sh`, tell Geoff to refresh `dash.duckwerks.com`. Normal flow for every fix, tweak, and feature.
+- **Default: ship to production.** Fix it → `./scripts/deploy.sh` → tell Geoff to refresh `dash.duckwerks.com` and verify → commit + push the verified change. Deploy freely while iterating; commit records what worked, batched. Normal flow for every fix, tweak, and feature.
 - **Local dev only for huge projects** — multi-session rewrites, schema migrations, new API integrations. Use `localhost:3000` (`npm start`), hold deploys until a milestone.
 - **Never tell Geoff to refresh `localhost:3000`** unless you're explicitly in a local dev session together.
 - **Rollback** is a pointer swap: repoint `current` at a prior release + `pm2 reload duckwerks` (5 releases kept). See deploy.md.
@@ -110,7 +110,7 @@ Deploy is the Duck Ops rsync-artifact standard: ship the committed tree from the
 ---
 
 ## Ship Procedure
-The deploy sequence, referenced by both checkpoint and close:
+The **finalize** sequence, referenced by both checkpoint and close. (While iterating you deploy freely off the working tree to test — see Dev vs Production. This pass records the verified change; the final deploy reconciles live to the committed tree.)
 1. Bump patch version in `config.js` + `package.json` (if something shipped)
 2. Update `docs/session-log.md`
 3. Commit with ticket refs (`ref #N`)

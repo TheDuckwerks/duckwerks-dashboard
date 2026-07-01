@@ -16,9 +16,9 @@ From the dash repo on the Mac:
 ./scripts/deploy.sh
 ```
 
-That rsyncs the tracked tree to a new release dir, runs `npm ci --omit=dev` on the NUC, symlinks the persistent state in, swaps `current`, reloads PM2, and health-checks port 3000. Notes:
+That rsyncs the working tree to a new release dir, runs `npm ci --omit=dev` on the NUC, symlinks the persistent state in, swaps `current`, reloads PM2, and health-checks port 3000. Notes:
 
-- **Commit (and push) first.** rsync ships the working tree honoring `.gitignore`; deploy what is committed, not local scratch.
+- **rsync ships the working tree, not a commit.** It honors `.gitignore` (node_modules/.env/data/ excluded) and ships whatever is in the working dir — uncommitted edits included. So deploy freely to test; commit + push are how a verified change gets recorded, not a deploy prerequisite.
 - **No git on the NUC.** Never edit code on the box; edit on the Mac and redeploy.
 - **Rollback** is a pointer swap: repoint `current` at a prior release dir and `pm2 reload duckwerks`. Five releases are retained.
 
