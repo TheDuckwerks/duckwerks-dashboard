@@ -81,6 +81,23 @@ async function savePhotos(files) {
   return urls;
 }
 
+// Read a disc's already-placed photos from disk and push them to EPS (web
+// bulk-list, #139). Photos live in dg-photos as DWG-{id}-{n}.jpeg keyed by the
+// UNPADDED id; the trailing `-` disambiguates DWG-10- from DWG-100-. Ordered by
+// the {n} suffix. Returns the EPS image URLs (empty array if none placed yet).
+async function photosFromDisk(id) {
+  const prefix = `dwg-${id}-`;
+  const suffix = f => parseInt(f.match(/-(\d+)\.jpe?g$/i)?.[1] || '0', 10);
+  const files  = fs.readdirSync(PHOTOS_DIR)
+    .filter(f => f.toLowerCase().startsWith(prefix) && /\.jpe?g$/i.test(f))
+    .sort((a, b) => suffix(a) - suffix(b));
+  const urls = [];
+  for (const f of files) {
+    urls.push(await uploadToEPS(fs.readFileSync(path.join(PHOTOS_DIR, f)), f));
+  }
+  return urls;
+}
+
 // Resolve a disc's canonical title and live price from the engine (issue #134):
 // items.name is the materialized title, the active listing row owns the price.
 // The blob's list_title/listPrice are spec/staging, used only as fallbacks when
@@ -178,7 +195,11 @@ router.post('/bulk-list', (req, res, next) => {
     const locationKey = await getMerchantLocationKey(headers);
     const sku         = `DWG-${String(disc.id).padStart(3, '0')}`;
     const payload     = buildDiscPayload(disc);
-    const photoUrls   = await savePhotos(req.files || []);
+    // Photos come either as a multipart upload (CLI) or already on disk in
+    // dg-photos (web bulk-list, #139 — placed by the upload/map step).
+    const photoUrls   = (req.files && req.files.length)
+      ? await savePhotos(req.files)
+      : await photosFromDisk(disc.id);
 
     await putInventoryItem(sku, buildInventoryItemBody(payload, photoUrls), headers);
     const offerId   = await upsertOffer(buildOfferBody(sku, payload, policies, locationKey), headers);
