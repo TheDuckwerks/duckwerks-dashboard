@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disc Golf Sell-Down</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0f11; --panel:#17191c; --line:#2a2d31; --ink:#e8e6e0; --dim:#8b9096;
+    --yellow:#f2c14e; --green:#4caf7d; --red:#d9534f; --blue:#4a90d9;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:var(--ink); font-family:'Space Mono',monospace;
+    padding:32px 20px 60px; line-height:1.5}
+  .wrap{max-width:880px; margin:0 auto}
+  h1{font-family:'Bebas Neue',sans-serif; font-size:56px; letter-spacing:2px;
+    font-weight:400; line-height:1}
+  .sub{color:var(--dim); font-size:13px; margin-top:6px; margin-bottom:28px}
+  .num{font-family:'Bebas Neue',sans-serif; letter-spacing:1px; font-weight:400}
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:14px}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px}
+  .card .k{color:var(--dim); font-size:11px; text-transform:uppercase; letter-spacing:1px}
+  .card .v{font-family:'Bebas Neue',sans-serif; font-size:44px; line-height:1; margin-top:8px}
+  .card .foot{color:var(--dim); font-size:11px; margin-top:6px}
+  .green{color:var(--green)} .yellow{color:var(--yellow)} .red{color:var(--red)} .blue{color:var(--blue)} .dim{color:var(--dim)}
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:22px; margin-bottom:14px}
+  .panel h2{font-family:'Bebas Neue',sans-serif; font-weight:400; font-size:26px; letter-spacing:1px; margin-bottom:4px}
+  .panel .cap{color:var(--dim); font-size:12px; margin-bottom:20px}
+  /* sell-down curve */
+  .curve{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; align-items:end; height:220px; padding:0 10px}
+  .col{display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%}
+  .bar{width:64px; background:linear-gradient(180deg,var(--blue),#2f5f95); border-radius:6px 6px 0 0;
+    display:flex; align-items:flex-start; justify-content:center; padding-top:8px; position:relative}
+  .bar .bn{font-family:'Bebas Neue',sans-serif; font-size:28px}
+  .avgdot{position:absolute; width:100%; left:0; display:flex; justify-content:center}
+  .avgtag{font-size:12px; color:var(--yellow); margin-top:10px}
+  .mlabel{margin-top:12px; color:var(--dim); font-size:13px}
+  /* histogram */
+  .hist{display:flex; flex-direction:column; gap:10px}
+  .hrow{display:grid; grid-template-columns:88px 1fr 44px; align-items:center; gap:12px; font-size:13px}
+  .htrack{background:#101214; border-radius:5px; height:26px; overflow:hidden}
+  .hfill{height:100%; background:linear-gradient(90deg,var(--green),#2f7d56); border-radius:5px}
+  .hcount{font-family:'Bebas Neue',sans-serif; font-size:22px; text-align:right}
+  /* progress */
+  .prog{height:34px; background:#101214; border-radius:8px; overflow:hidden; display:flex; border:1px solid var(--line)}
+  .prog .done{background:linear-gradient(90deg,var(--green),#2f7d56); display:flex; align-items:center; padding-left:14px; font-size:13px}
+  .prog .left{flex:1; display:flex; align-items:center; justify-content:flex-end; padding-right:14px; color:var(--yellow); font-size:13px}
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .top li{display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px dashed var(--line); font-size:12px}
+  .top li:last-child{border-bottom:none}
+  .top .p{font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--green)}
+  .insight{border-left:3px solid var(--yellow); background:#1c1a12}
+  .insight h2{color:var(--yellow)}
+  .insight p{font-size:14px; margin-top:8px}
+  .insight strong{color:var(--yellow)}
+  .foot-note{color:var(--dim); font-size:11px; text-align:center; margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>THE DISC GOLF SELL-DOWN</h1>
+  <div class="sub">400+ discs → a closet cleared, one throw at a time · data through 2026-06-30</div>
+
+  <div class="grid">
+    <div class="card"><div class="k">Discs sold</div><div class="v">197</div><div class="foot">all on eBay</div></div>
+    <div class="card"><div class="k">Gross</div><div class="v green">$3,141</div><div class="foot">$15.95 avg / disc</div></div>
+    <div class="card"><div class="k">Net after fees</div><div class="v green">$2,646</div><div class="foot">~$13.43 / disc pocketed</div></div>
+    <div class="card"><div class="k">Cost basis</div><div class="v blue">$0</div><div class="foot">it was your closet</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>The sell-down curve</h2>
+    <div class="cap">Volume and average price, month over month. The market ate the cream first.</div>
+    <div class="curve">
+      <div class="col">
+        <div class="avgtag">$17.83 avg</div>
+        <div class="bar" style="height:100%"><span class="bn">93</span></div>
+        <div class="mlabel">April</div>
+      </div>
+      <div class="col">
+        <div class="avgtag">$14.67 avg</div>
+        <div class="bar" style="height:83%"><span class="bn">77</span></div>
+        <div class="mlabel">May</div>
+      </div>
+      <div class="col">
+        <div class="avgtag">$13.09 avg</div>
+        <div class="bar" style="height:29%"><span class="bn">27</span></div>
+        <div class="mlabel">June</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Where the prices landed</h2>
+    <div class="cap">197 sales by price band. The fat middle is the $10–20 disc.</div>
+    <div class="hist">
+      <div class="hrow"><span class="dim">under $10</span><div class="htrack"><div class="hfill" style="width:3%"></div></div><span class="hcount">3</span></div>
+      <div class="hrow"><span class="dim">$10 – 15</span><div class="htrack"><div class="hfill" style="width:100%"></div></div><span class="hcount">102</span></div>
+      <div class="hrow"><span class="dim">$15 – 20</span><div class="htrack"><div class="hfill" style="width:53%"></div></div><span class="hcount">54</span></div>
+      <div class="hrow"><span class="dim">$20 – 25</span><div class="htrack"><div class="hfill" style="width:25%"></div></div><span class="hcount">26</span></div>
+      <div class="hrow"><span class="dim">$25 – 35</span><div class="htrack"><div class="hfill" style="width:10%"></div></div><span class="hcount">10</span></div>
+      <div class="hrow"><span class="dim">$35 +</span><div class="htrack"><div class="hfill" style="width:2%"></div></div><span class="hcount">2</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Two-thirds of the way home</h2>
+    <div class="cap">197 sold · 94 still listed (asking $1,710, avg $18.20)</div>
+    <div class="prog">
+      <div class="done" style="width:68%">197 sold · 68%</div>
+      <div class="left">94 left</div>
+    </div>
+  </div>
+
+  <div class="split">
+    <div class="panel top">
+      <h2>Top of the stack</h2>
+      <div class="cap">Rare, unthrown, event-stamped — where the money hid.</div>
+      <ul style="list-style:none">
+        <li><span>MVP Spin Proton · No Stamp OOP</span><span class="p">$47</span></li>
+        <li><span>MVP Tesla · Lizotte Team Series</span><span class="p">$38</span></li>
+        <li><span>MVP Uplink · Gyropalooza Stamp</span><span class="p">$34</span></li>
+        <li><span>Axiom Proxy · OTB Open '23</span><span class="p">$29</span></li>
+        <li><span>Axiom Hex · Axolotl First Release</span><span class="p">$29</span></li>
+      </ul>
+    </div>
+    <div class="panel insight">
+      <h2>The slash signal</h2>
+      <p>Your remaining 94 discs ask an <strong>$18.20 average</strong> — but June actually cleared at <strong>$13.09</strong>. That gap is the tail stalling.</p>
+      <p>Volume fell 93 → 77 → 27. The good molds are gone; what's left are slow movers priced to an April market that no longer exists.</p>
+      <p>Re-up the expired <strong>buy-2-get-15%</strong> and mark the long tail down toward $13 to move it.</p>
+    </div>
+  </div>
+
+  <div class="foot-note">Duckwerks Dashboard · disc golf vertical · numbers are live from the NUC db</div>
+</div>
+</body>
+</html>

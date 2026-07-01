@@ -1,6 +1,16 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-01 — DG title recall-rewrite + surgical price cuts (94-listing regen)
+
+Chased the "cool discs get zero views" puzzle to its root and reshaped the disc-listing pipeline. Analysis worklog: `docs/notes/dg-cohorts-worklog.md`.
+
+- **Diagnosis: recall, not rank.** Traffic + SerpAPI field/sold scans showed the stalled tail was priced fine (at/below comp) but invisible: 26 Axiom/Streamline titles carried no "MVP" (the parent brand buyers search), 0/94 had "disc golf", 0 had a disc *type* word. Top-rated/promo/price are rank levers; they can't put you in a search your title doesn't match.
+- **New title template** (`generateDiscTitle` in `ebay-builders.js`): recall-first — `[MVP] brand mold [notes] plastic type + Disc Golf + color + weight + condition`, priority-drop assembly under eBay's 80-char cap. `run` dropped by default; SimonLine normalized; factory/lab seconds surface their real grade instead of a false "Unthrown".
+- **26 signature/event discs** got hand-curated `list_title`s (Lizotte, McBeth, Jennifer Allen, event stamps, First Runs) since the blanket template drops `run`.
+- **Surgical price changes off SOLD comps**, not the big slash we assumed: 3 real cuts (Meteor $25→18, Time-Lapse $26→19, Saint $23→20) + −$1 on the seen-but-stuck view-getters. Zero-view discs left alone (never seen ≠ price problem).
+- **Two denormalization bugs caught pre-push:** catalog `listPrice` drifted from the live listing (the $89 ghost on DWG-009) — hand-synced 11; and `bulk-list-discs` sent the curated title as `title` while the builder reads `list_title` — fixed. Filed **#134** for the underlying "one fact, three stores" (blob / `items.name` / `listings.list_price`).
+
 ### 2026-06-30 — Deploy migration onto the Duck Ops standard; Dash named
 
 Continuation of the 06-29 session, into the org/ops collaboration.

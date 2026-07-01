@@ -9,6 +9,8 @@ const MIN_OFFER_PCT = 0.75;
 
 const DISC_TYPE_MAP     = { 'Putter': 'Putting Disc', 'Midrange': 'Midrange Disc' };
 const MANUFACTURER_MAP  = { 'Streamline': 'Streamline Discs' };
+// Axiom and Streamline are MVP sub-brands; buyers search the parent, so lead the title with it.
+const PARENT_BRAND      = { 'Axiom': 'MVP', 'Streamline': 'MVP' };
 
 const VALID_COLORS = new Set([
   'Beige', 'Black', 'Blue', 'Bronze', 'Brown', 'Gold', 'Gray', 'Green',
@@ -19,18 +21,58 @@ const VALID_COLORS = new Set([
 const CONDITION_MAP = { 'USED': 'USED_EXCELLENT' };
 
 function normalizeDiscType(type) { return DISC_TYPE_MAP[type] || type; }
+// For titles, use the short form buyers actually search (and avoid "...Disc Disc Golf").
+const TITLE_TYPE_MAP = { 'Putting Disc': 'Putter', 'Midrange Disc': 'Midrange', 'Mid': 'Midrange' };
+function titleDiscType(type) { return type ? (TITLE_TYPE_MAP[type] || type) : ''; }
 function normalizeManufacturer(m) { return MANUFACTURER_MAP[m] || m; }
 function normalizeCondition(c) { return CONDITION_MAP[c] || c || 'NEW'; }
 function minOffer(price) { return Math.floor(parseFloat(price) * MIN_OFFER_PCT); }
 
-function generateDiscTitle({ manufacturer, mold, plastic, run, weight, color, condition }) {
-  const parts = [manufacturer, mold, plastic];
-  if (run) parts.push(run);
-  parts.push(`${weight}g`, color);
-  if (condition.startsWith('USED')) parts.push('Used');
-  const title = parts.join(' ');
-  if (title.length <= 80) return title;
-  return title.slice(0, 81).replace(/\s+\S*$/, '');
+// Recall-first title: lead with the terms buyers search (parent brand, mold, plastic,
+// disc type, "Disc Golf"), then the low-search extras. `run` is omitted by default —
+// it is inconsistent (junk like "post-prototype" vs gold like "Lizotte signature"), so
+// signature/event discs carry a hand-written `list_title` instead. Assembled in read
+// order; if over eBay's 80-char cap, the lowest-value tail segments drop first while the
+// searchable core is always kept.
+function generateDiscTitle({ manufacturer, mold, plastic, type, run, notes, weight, color, condition }) {
+  const parent = PARENT_BRAND[manufacturer];
+  const line   = notes ? String(notes).replace(/simon\s*line/ig, 'SimonLine') : '';
+
+  // Condition word. Seconds/x-outs are a required disclosure AND a deal-hunter search term,
+  // so surface the real grade instead of the (false) "Unthrown". Grade text lives in run/notes.
+  const src  = `${notes || ''} ${run || ''}`;
+  let cond, condDrop;
+  if      (/x-?out/i.test(src))          { cond = 'X-Out';          condDrop = 0; }
+  else if (/lab\s*second/i.test(src))    { cond = 'Lab Second';     condDrop = 0; }
+  else if (/factory\s*second/i.test(src)){ cond = 'Factory Second'; condDrop = 0; }
+  else if (/misprint|\bsecond\b/i.test(src)) { cond = 'Factory Second'; condDrop = 0; }
+  else if ((condition || 'NEW').toUpperCase().startsWith('USED')) { cond = 'Used'; condDrop = 4; }
+  else                                   { cond = 'Unthrown';       condDrop = 4; }
+
+  // drop = 0 never drops (searchable core); higher drop = shed first when over budget
+  const segs = [
+    { t: parent,       drop: 0 },
+    { t: manufacturer, drop: 0 },
+    { t: mold,         drop: 0 },
+    { t: line,         drop: 3 },
+    { t: plastic,      drop: 0 },
+    { t: titleDiscType(type), drop: 0 },
+    { t: 'Disc Golf',  drop: 0 },
+    { t: color,        drop: 2 },
+    { t: weight ? `${weight}g` : '', drop: 1 },
+    { t: cond,         drop: condDrop },
+  ].filter(s => s.t);
+
+  const render = ss => ss.map(s => s.t).join(' ');
+  let kept = segs.slice();
+  while (render(kept).length > 80) {
+    const droppable = kept.filter(s => s.drop > 0);
+    if (!droppable.length) break;
+    const victim = droppable.reduce((a, b) => (b.drop > a.drop ? b : a));
+    kept = kept.filter(s => s !== victim);
+  }
+  const title = render(kept);
+  return title.length <= 80 ? title : title.slice(0, 81).replace(/\s+\S*$/, '');
 }
 
 function buildDiscSpecLines(blob) {

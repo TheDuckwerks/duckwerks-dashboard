@@ -150,6 +150,7 @@ async function main() {
         const disc = {
           id:           p.id,
           title:        p.title,
+          list_title:   p.title,   // buildDiscPayload reads `list_title` for the curated-title override
           listPrice:    p.price,
           description:  p.meta.description    || '',
           condition:    p.meta.condition      || '',

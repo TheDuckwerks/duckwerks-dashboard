@@ -65,7 +65,7 @@ Deploy is the Duck Ops rsync-artifact standard: ship the committed tree from the
 ---
 
 ## Key Files
-- File-by-file roles (server + frontend): [`docs/claude/codebase-map.md`](docs/claude/codebase-map.md)
+- File-by-file roles (server + frontend): [`docs/claude/codebase-map.md`](docs/claude/codebase-map.md) — **eBay logic is split across `ebay.js` / `ebay-client.js` / `ebay-listings.js` / `ebay-builders.js`; grepping one file misses the rest. The full mint-and-edit path (price/title/description write) is `bulk-update` + `update-item` in `ebay-listings.js`, via `updateOffer`/`upsertOffer`/`publishOffer` in `ebay-client.js`.**
 - Endpoints + env vars + schema: [`docs/claude/api-reference.md`](docs/claude/api-reference.md)
 - Alpine architecture + modal patterns: [`docs/claude/frontend-reference.md`](docs/claude/frontend-reference.md)
 
