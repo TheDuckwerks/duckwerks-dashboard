@@ -220,6 +220,7 @@
                   <td style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="row.metadata?.mold || '—'"></td>
                   <td style="font-size:11px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
                     <span x-text="inventoryDisplayTitle(row)"></span>
+                    <span x-show="row.item_status === 'Prepping'" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--yellow);margin-left:6px">INTAKE</span>
                     <span x-show="ebayQueue.includes(row.sku)" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--blue);margin-left:6px">QUEUED</span>
                     <a x-show="ebayBatchResults[row.sku]?.ok" :href="ebayBatchResults[row.sku]?.url" target="_blank"
                        style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--green);margin-left:6px;text-decoration:none">UPDATED →</a>
@@ -264,7 +265,7 @@
                   <td style="white-space:nowrap">
                     <div style="display:flex;gap:6px;justify-content:flex-end">
                       <button @click="ebayPreviewDisc(row)"
-                        x-show="!ebayPreview[row.sku]"
+                        x-show="!ebayPreview[row.sku] && row.ebay_listing_id"
                         style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--blue);color:var(--blue);cursor:pointer">
                         UPDATE EBAY
                       </button>
