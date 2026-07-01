@@ -1,6 +1,17 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-01 (later 6) — #139 web bulk-list: spec + Phases 1-3 lean v1 (v2.0.45)
+
+Started "get listing off the CLI." Spec: `docs/specs/2026-07-01-web-bulk-list-design.md`.
+
+- **Design (aligned in-session):** intake (done, #134) → shoot in DWG order → drag a JPEG pile into the catalog → server chunks by N + maps to Prepping discs ascending → preview → confirm → offers created + published. Browser upload over rsync (no reverse SSH — too fragile); associate at listing stage, not intake; JPEG-in baseline (HEIC deferred); immediate publish. Reuses the proven `bulk-list` mint path (CLI-first-then-absorb).
+- **Phase 1 — disk-read mint (v2.0.43):** `bulk-list` reads photos from `dg-photos` (`DWG-{id}-{n}.jpeg`, unpadded id) when no multipart upload. Glob/sort verified (DWG-10 vs DWG-100 disambiguation, numeric suffix sort).
+- **Phase 2 — upload/map + readiness (v2.0.44):** `POST /api/ebay/bulk-list-photos` (chunk by N, map to discIds, write `dg-photos`, clear a disc's prior photos on re-upload) + `GET /api/ebay/photo-status` (count per id). Both verified on the NUC.
+- **Phase 3 lean v1 — the UI (v2.0.45):** a "Bulk List to eBay" section in the catalog: DWG range → resolves Prepping discs; photos + photos-per-disc → UPLOAD + MAP → thumbnail preview (disc ↔ photos ↔ title ↔ price) → BULK LIST → per-disc results. Skipped the boundary-nudge (fixed-N, polish later per the lean-first call).
+- **NOT yet tested end-to-end** — listing publishes **live** to eBay, so Geoff drives that with real catalog items later today. Backend proven; the UI is unverified in-browser.
+- Deferred to Phase 3.1+: boundary-nudge preview, pre-upload readiness badges, HEIC server-side, Phase 4 cutover (retire `bulk-list-discs.js`/`rename-disc-photos.js`/`convert-photos.js`).
+
 ### 2026-07-01 (later 5) — #134 Phase 5: docs + close
 
 Closed out #134 (all five phases shipped + verified). Docs reconciled to the new lifecycle:

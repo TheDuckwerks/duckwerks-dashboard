@@ -168,6 +168,74 @@
 
       </form>
 
+      <!-- ── Bulk List to eBay (web listing, #139) ──────────────────────────── -->
+      <div style="margin-top:48px">
+        <div class="modal-section-label" style="margin-bottom:12px">Bulk List to eBay</div>
+
+        <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;margin-bottom:8px">
+          <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">DWG range</span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="text" x-model="blkRange" @input="blkResolveDiscs()" placeholder="e.g. 293-298 or 293,295"
+              style="font-size:12px;padding:4px 8px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:200px">
+            <span style="font:700 10px/1 var(--mono);color:var(--muted)" x-text="blkDiscs.length + ' Prepping disc(s)'"></span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;margin-bottom:8px">
+          <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">photos / disc</span>
+          <input type="number" min="1" x-model.number="blkPerDisc"
+            style="font-size:12px;padding:4px 8px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:60px">
+        </div>
+
+        <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;margin-bottom:12px">
+          <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">photos</span>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="file" multiple accept="image/jpeg,image/jpg"
+              @change="blkFiles = Array.from($event.target.files)"
+              style="font-size:11px;color:var(--ink-2)">
+            <button @click="blkUploadPhotos()" :disabled="blkUploading || !blkDiscs.length || !blkFiles.length"
+              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer;opacity:1"
+              :style="(blkUploading || !blkDiscs.length || !blkFiles.length) ? 'opacity:.4;cursor:not-allowed' : ''"
+              x-text="blkUploading ? 'UPLOADING…' : 'UPLOAD + MAP'"></button>
+          </div>
+        </div>
+
+        <!-- mapping preview -->
+        <template x-if="blkMapping">
+          <div style="border:1px solid var(--border);margin-bottom:12px">
+            <template x-for="d in blkDiscs" :key="d.id">
+              <div style="display:flex;gap:12px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border)">
+                <span style="font:700 11px/1 var(--mono);white-space:nowrap;width:70px" x-text="d.sku"></span>
+                <div style="display:flex;gap:4px;width:150px">
+                  <template x-for="url in (blkMapping[d.id] || [])" :key="url">
+                    <img :src="url" loading="lazy" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border)">
+                  </template>
+                  <span x-show="!(blkMapping[d.id] || []).length" style="font:700 9px/1 var(--mono);color:var(--red);align-self:center">NO PHOTOS</span>
+                </div>
+                <span style="font-size:11px;color:var(--ink-2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="d.title"></span>
+                <span style="font:700 11px/1 var(--mono);color:var(--ink-1);width:50px;text-align:right" x-text="d.price ? '$' + d.price : '—'"></span>
+                <span style="width:110px;text-align:right">
+                  <span x-show="blkResults[d.id]?.ok" style="font:700 9px/1 var(--mono);color:var(--green)">LISTED ✓</span>
+                  <a x-show="blkResults[d.id]?.ok" :href="blkResults[d.id]?.url" target="_blank" style="font:700 9px/1 var(--mono);color:var(--blue);text-decoration:none;margin-left:6px">VIEW →</a>
+                  <span x-show="blkResults[d.id]?.error" style="font:700 9px/1 var(--mono);color:var(--red)" x-text="blkResults[d.id]?.error"></span>
+                </span>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <!-- list -->
+        <template x-if="blkMapping">
+          <div style="display:flex;gap:10px;align-items:center">
+            <button @click="blkList()" :disabled="blkListing"
+              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:6px 18px;background:var(--green);color:#03110a;border:none;cursor:pointer"
+              :style="blkListing ? 'opacity:.5;cursor:not-allowed' : ''"
+              x-text="blkListing ? ('LISTING… ' + blkProgress.done + '/' + blkProgress.total) : ('BULK LIST ' + blkDiscs.length + ' DISC(S)')"></button>
+            <span style="font:700 9px/1 var(--mono);color:var(--muted)">creates + publishes NEW eBay offers — goes live</span>
+          </div>
+        </template>
+      </div>
+
       <!-- ── Inventory ──────────────────────────────────────────────────────── -->
       <div style="margin-top:48px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">

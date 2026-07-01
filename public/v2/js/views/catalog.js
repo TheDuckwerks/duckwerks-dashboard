@@ -52,6 +52,16 @@ document.addEventListener('alpine:init', () => {
     ebayBatchRunning: false,
     ebayBatchResults: {},  // sku -> { ok, url, error }
     ebayBatchProgress: { done: 0, total: 0 },
+    // bulk list to eBay (web listing, #139)
+    blkRange:     '',
+    blkPerDisc:   2,
+    blkFiles:     [],
+    blkDiscs:     [],      // resolved Prepping discs [{id, sku, title, price, metadata}]
+    blkMapping:   null,    // { id: [photoUrls] } after upload
+    blkUploading: false,
+    blkListing:   false,
+    blkResults:   {},      // id -> { ok, url, error }
+    blkProgress:  { done: 0, total: 0 },
     invSortKey: 'sku',
     invSortDir: 'asc',
 
@@ -412,6 +422,74 @@ document.addEventListener('alpine:init', () => {
         this.ebayBatchProgress = { ...this.ebayBatchProgress, done: this.ebayBatchProgress.done + 1 };
       }
       this.ebayBatchRunning = false;
+    },
+
+    // ── Bulk list to eBay (web listing, #139) ──────────────────────────────
+    // Resolve the Prepping discs named by the DWG range, ascending.
+    blkResolveDiscs() {
+      const ids = new Set();
+      for (const seg of (this.blkRange || '').split(',')) {
+        const parts = seg.trim().split('-').map(s => parseInt(s, 10));
+        if (parts.length === 1 && !isNaN(parts[0])) ids.add(parts[0]);
+        else if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+          for (let i = parts[0]; i <= parts[1]; i++) ids.add(i);
+        }
+      }
+      this.blkDiscs = this.inventory
+        .filter(r => r.item_status === 'Prepping' && r.category === 'disc')
+        .map(r => ({
+          id:       parseInt(r.sku.replace(/^DWG-0*/i, ''), 10),
+          sku:      r.sku,
+          title:    this.inventoryDisplayTitle(r),
+          price:    this.displayPrice(r),
+          metadata: r.metadata,
+        }))
+        .filter(d => ids.has(d.id))
+        .sort((a, b) => a.id - b.id);
+      this.blkMapping = null;   // disc set changed — clear stale mapping/results
+      this.blkResults = {};
+    },
+
+    // Upload the photo pile; server chunks by N and maps to the discs ascending.
+    async blkUploadPhotos() {
+      if (!this.blkDiscs.length || !this.blkFiles.length) return;
+      this.blkUploading = true;
+      try {
+        const fd = new FormData();
+        fd.append('perDisc', this.blkPerDisc);
+        fd.append('discIds', JSON.stringify(this.blkDiscs.map(d => d.id)));
+        this.blkFiles.forEach(f => fd.append('photos', f));
+        const res  = await fetch('/api/ebay/bulk-list-photos', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        this.blkMapping = data.mapping;
+      } catch (e) {
+        this.inventoryErr = e.message;
+      }
+      this.blkUploading = false;
+    },
+
+    // List every mapped disc: bulk-list reads its photos from disk (no upload).
+    async blkList() {
+      const toList = this.blkDiscs.filter(d => (this.blkMapping?.[d.id] || []).length);
+      if (!toList.length) return;
+      this.blkListing  = true;
+      this.blkProgress = { done: 0, total: toList.length };
+      for (const d of toList) {
+        try {
+          const fd = new FormData();
+          fd.append('disc', JSON.stringify({ id: d.id, ...(d.metadata || {}) }));
+          const res  = await fetch('/api/ebay/bulk-list', { method: 'POST', body: fd });
+          const data = await res.json();
+          if (data.error) throw new Error(data.error);
+          this.blkResults = { ...this.blkResults, [d.id]: { ok: true, url: data.url } };
+        } catch (e) {
+          this.blkResults = { ...this.blkResults, [d.id]: { ok: false, error: e.message } };
+        }
+        this.blkProgress = { ...this.blkProgress, done: this.blkProgress.done + 1 };
+      }
+      this.blkListing = false;
+      this.loadInventory();   // Prepping -> Listed, refresh the list
     },
 
     startPriceEdit(row, seed = null) {
