@@ -153,19 +153,30 @@ document.addEventListener('alpine:init', () => {
         const lineItemIds = g.lineItemIds?.length
           ? g.lineItemIds
           : (order.lineItems || []).map(li => li.lineItemId).filter(Boolean);
-        // Split totalDueSeller proportionally by total per line item
-        // totalDueSeller: confirmed available pre-fulfillment (validated 2026-03-26)
-        const totalDueSeller  = parseFloat(order.paymentSummary?.totalDueSeller?.value) || 0;
-        const discountedTotal = (order.lineItems || []).reduce(
-          (sum, li) => sum + (parseFloat(li.total?.value) || 0), 0
-        );
-        const lineItemPrices = lineItemIds.map(id => {
+        // sale_price stores per-line GROSS (buyer-paid line total + its shipping share).
+        // totalDueSeller is the POST-fee payout (confirmed 2026-07-01, order 01-14846-51165:
+        // total 17.00, totalDueSeller 14.39, Seller Hub fees 2.61) — never store it as sale_price.
+        const lineGross = id => {
           const li = (order.lineItems || []).find(l => l.lineItemId === id);
-          const discounted = parseFloat(li?.total?.value) || 0;
-          return discountedTotal > 0
-            ? Math.round((totalDueSeller * (discounted / discountedTotal)) * 100) / 100
-            : null;
-        });
+          if (!li) return null;
+          const t = parseFloat(li.total?.value) || 0;
+          const s = parseFloat(li.deliveryCost?.shippingCost?.value) || 0;
+          return Math.round((t + s) * 100) / 100;
+        };
+        const lineItemPrices = lineItemIds.map(lineGross);
+        // Actual eBay fees = order gross (pricingSummary.total) − totalDueSeller, split per
+        // line by gross share; rounding drift lands on the first line. undefined → the server
+        // falls back to the site-formula estimate.
+        const totalDueSeller = parseFloat(order.paymentSummary?.totalDueSeller?.value) || 0;
+        const orderGross     = parseFloat(order.pricingSummary?.total?.value) || 0;
+        const grossSum       = lineItemPrices.reduce((s, p) => s + (p || 0), 0);
+        let lineItemFees = lineItemIds.map(() => undefined);
+        if (totalDueSeller > 0 && orderGross >= totalDueSeller && grossSum > 0) {
+          const orderFees = Math.round((orderGross - totalDueSeller) * 100) / 100;
+          lineItemFees = lineItemPrices.map(p => Math.round(orderFees * ((p || 0) / grossSum) * 100) / 100);
+          const drift = Math.round((orderFees - lineItemFees.reduce((s, f) => s + f, 0)) * 100) / 100;
+          lineItemFees[0] = Math.round((lineItemFees[0] + drift) * 100) / 100;
+        }
         // shipTo is the actual shipping address; buyerRegistrationAddress is account address (may differ)
         const shipTo = order.fulfillmentStartInstructions?.[0]?.shippingStep?.shipTo;
         const a      = shipTo || order.buyer?.buyerRegistrationAddress;
@@ -187,6 +198,7 @@ document.addEventListener('alpine:init', () => {
           recs:      g.recs || [],
           lineItemIds,
           lineItemPrices,
+          lineItemFees,
           address,
           saleTotal: totalDueSeller,
           saleDate:  order.creationDate ? order.creationDate.split('T')[0] : null,
@@ -328,23 +340,24 @@ document.addEventListener('alpine:init', () => {
         if (this.orderGroups.length) {
           // eBay (single or combined): one label, shipping evenly amortized across every record
           const flat = this.orderGroups.flatMap(g =>
-            g.recs.map((rec, i) => ({ rec, orderId: g.orderId, salePrice: g.lineItemPrices[i] ?? null }))
+            g.recs.map((rec, i) => ({ rec, orderId: g.orderId, salePrice: g.lineItemPrices[i] ?? null, fees: g.lineItemFees?.[i] }))
           );
           const n         = flat.length || 1;
           const per       = Math.floor((totalCost / n) * 100) / 100;
           const remainder = Math.round((totalCost - per * n) * 100) / 100;  // pennies land on the first rec
-          for (const [idx, { rec, orderId, salePrice }] of flat.entries()) {
+          for (const [idx, { rec, orderId, salePrice, fees }] of flat.entries()) {
             await saveRec(rec, {
               sale_price:         salePrice,
               platform_order_num: orderId,
               shipping_cost:      idx === 0 ? Math.round((per + remainder) * 100) / 100 : per,
+              fees,
             });
           }
         } else {
           // Reverb / non-eBay single record
           // direct_checkout_payout is already net of Reverb fees — record fees as 0,
-          // never the site formula (that would double-count). eBay recs omit fees so
-          // the server derives them from the site formula (sale_price is pre-fee).
+          // never the site formula (that would double-count). eBay recs carry actual
+          // fees from the order (gross − totalDueSeller), computed in _fetchOrderGroup.
           await saveRec(r, {
             sale_price:         this.reverbSaleAmount || null,
             platform_order_num: this.reverbOrderNum || null,
