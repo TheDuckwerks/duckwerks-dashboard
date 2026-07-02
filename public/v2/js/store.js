@@ -192,11 +192,11 @@ document.addEventListener('alpine:init', () => {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    // Effective lot cost — prefers lots.total_cost (captured once at lot purchase)
-    // over summed item costs, since per-disc cost is often never set for bulk lots.
+    // Lot cost — the sum of item cost basis. Lots are collections of items; a
+    // purchased lot's basis is amortized onto items.cost via REALLOCATE COSTS.
+    // lots.total_cost is vestigial; a zero here is an assertion, not a gap.
     lotCost(lot) {
       if (!lot) return 0;
-      if (lot.total_cost > 0) return lot.total_cost;
       return (lot.items || []).reduce((s, r) => s + (r.cost || 0), 0);
     },
 
