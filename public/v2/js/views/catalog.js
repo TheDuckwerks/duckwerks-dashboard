@@ -135,6 +135,9 @@ document.addEventListener('alpine:init', () => {
     },
 
     async init() {
+      const savedSort = dwSortable.load('catalog', 'sku', 'asc');
+      this.invSortKey = savedSort.col;
+      this.invSortDir = savedSort.dir;
       await Promise.all([this._fetchNextDiscNum(), this._fetchManufacturers(), this._fetchMolds(), this._fetchPlastics()]);
       this.$watch('mold',    () => { this.type = ''; this._fetchFlightNumbers(); });
       this.$watch('moldNew', () => { this.type = ''; this._fetchFlightNumbers(); });
@@ -334,6 +337,7 @@ document.addEventListener('alpine:init', () => {
         this.invSortKey = key;
         this.invSortDir = key === 'sku' ? 'asc' : 'desc';
       }
+      dwSortable.save('catalog', this.invSortKey, this.invSortDir);
     },
 
     invSortGlyph(key) {
