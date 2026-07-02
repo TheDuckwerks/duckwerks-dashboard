@@ -5,8 +5,6 @@ _Most recent first. Update this at the end of every session._
 
 Short session. Fixed #156: `bulk-list-discs.js --update` gated on `metadata.listPrice`, which #134 nulls once a disc is listed, so every listed disc skipped. Update mode now trusts the `/api/inventory` join: skips "not listed" when there's no active listing row, shows the live `listing_price` in the dry run, and stops reading the blob price entirely (title/price authority is server-side via `resolveListedFields`). Verified with a read-only dry run against the NUC over an SSH tunnel (DWG-009 shows its real $23). Context landed post-fix: the CLI is off the daily path (web catalog flow is the listing surface, retirement is #139 Phase 4), so this was a tail-fix on a deprecated tool; #156 closed with that note. #157 (Finances API fee capture) untouched, stays open.
 
-Process note: Geoff wants a kickoff orientation (queue slice + intended order) before work starts on a loose opener; no rule banked, his call.
-
 ### 2026-07-01 (later 8) — Fable audit night: docs burndown, money-model archaeology, TRS policy fix (v2.0.50)
 
 Long warm session, three arcs. First Fable session; sonnet subagents did the legwork.
