@@ -367,13 +367,19 @@ router.post('/bulk-update', async (req, res) => {
     const offer = await getOfferBySku(sku, headers);
     if (!offer) return res.json({ discId: disc.id, error: `No offer found for ${sku}` });
 
+    // Explicit policy IDs on every PUT. Spreading offer.listingPolicies re-writes
+    // the stripped live state (no policy IDs), leaving the listing on account
+    // defaults instead of the pinned TRS+-eligible set (see GOTCHAS 2026-07-01).
+    const policies = await fetchPolicies(headers);
     await updateOffer(offer.offerId, {
       sku,
       marketplaceId:       MARKETPLACE,
       format:              'FIXED_PRICE',
       merchantLocationKey: offer.merchantLocationKey,
       listingPolicies: {
-        ...offer.listingPolicies,
+        fulfillmentPolicyId: policies.fulfillmentPolicyId,
+        returnPolicyId:      policies.returnPolicyId,
+        paymentPolicyId:     policies.paymentPolicyId,
         bestOfferTerms: {
           bestOfferEnabled: true,
           autoDeclinePrice: { value: String(payload.minOffer), currency: 'USD' },
@@ -497,13 +503,17 @@ router.post('/update-item', async (req, res) => {
     const offer = await getOfferBySku(item.sku, headers);
     if (!offer) return res.status(404).json({ error: `No offer found for SKU ${item.sku}` });
 
+    // Explicit policy IDs on every PUT (same trap as bulk-update; see GOTCHAS 2026-07-01)
+    const updPolicies = await fetchPolicies(headers);
     await updateOffer(offer.offerId, {
       sku:                 item.sku,
       marketplaceId:       MARKETPLACE,
       format:              'FIXED_PRICE',
       merchantLocationKey: offer.merchantLocationKey,
       listingPolicies: {
-        ...offer.listingPolicies,
+        fulfillmentPolicyId: updPolicies.fulfillmentPolicyId,
+        returnPolicyId:      updPolicies.returnPolicyId,
+        paymentPolicyId:     updPolicies.paymentPolicyId,
         bestOfferTerms: {
           bestOfferEnabled: true,
           autoDeclinePrice: { value: String(item.minOffer ?? minOffer(item.price)), currency: 'USD' },

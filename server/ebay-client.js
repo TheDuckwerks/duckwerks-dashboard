@@ -18,19 +18,29 @@ async function ebayHeaders() {
   };
 }
 
+// Pinned return policy: "free 30 days money back" (seller pays). Free returns is a
+// deliberate choice (2026-07-01): it qualifies every listing for the Top Rated Plus
+// 10% final-value-fee discount. Never take returnPolicies[0]: the account carries
+// buyer-pays variants and the ordering is not stable (see GOTCHAS).
+const RETURN_POLICY_ID = '269654771012';
+
+let _policies = null;
 async function fetchPolicies(headers) {
+  if (_policies) return _policies;
   const [fp, rp, pp] = await Promise.all([
     fetch(`${EBAY_API}/sell/account/v1/fulfillment_policy?marketplace_id=${MARKETPLACE}`, { headers }).then(r => r.json()),
     fetch(`${EBAY_API}/sell/account/v1/return_policy?marketplace_id=${MARKETPLACE}`, { headers }).then(r => r.json()),
     fetch(`${EBAY_API}/sell/account/v1/payment_policy?marketplace_id=${MARKETPLACE}`, { headers }).then(r => r.json()),
   ]);
   const fulfillmentPolicyId = fp.fulfillmentPolicies?.[0]?.fulfillmentPolicyId;
-  const returnPolicyId      = rp.returnPolicies?.[0]?.returnPolicyId;
+  const returnPolicyId      = rp.returnPolicies?.some(p => p.returnPolicyId === RETURN_POLICY_ID)
+    ? RETURN_POLICY_ID : null;
   const paymentPolicyId     = pp.paymentPolicies?.[0]?.paymentPolicyId;
   if (!fulfillmentPolicyId || !returnPolicyId || !paymentPolicyId) {
-    throw new Error('No eBay business policies found. Enable them at Seller Hub > Account > Business policies.');
+    throw new Error(`eBay business policies missing (need fulfillment, payment, and pinned return policy ${RETURN_POLICY_ID}). Check Seller Hub > Account > Business policies.`);
   }
-  return { fulfillmentPolicyId, returnPolicyId, paymentPolicyId };
+  _policies = { fulfillmentPolicyId, returnPolicyId, paymentPolicyId };
+  return _policies;
 }
 
 async function getMerchantLocationKey(headers) {
