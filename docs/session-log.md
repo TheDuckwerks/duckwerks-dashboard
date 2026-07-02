@@ -1,6 +1,18 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-01 (later 8) — Fable audit night: docs burndown, money-model archaeology, TRS policy fix (v2.0.50)
+
+Long warm session, three arcs. First Fable session; sonnet subagents did the legwork.
+
+**Docs/debt audit + burndown.** Five-agent archaeology of what the doc-split lost (synthesis: `docs/notes/2026-07-01-docs-debt-audit.md`); filed #143–#153, then burned down the same night: api-reference carries the full `/api/ebay` surface + do-not-reinvent pipeline map + schema invariants (#143/#144); frontend-reference rewritten to code reality, Sites view documented, phantom SITE_FEES killed (#145); codebase-map + scripts/README swept (#146); GOTCHAS +10 dated war stories (#147); `price_history` + `traffic_snapshots` capture live (#149/#150); lot cost reads `lots.total_cost` (#148, needs the real DG figure to light up); catalog sort persists (#153); navToItems site-filter bug found by the doc agent while verifying, fixed (#154).
+
+**Money model, settled the hard way.** #136 was a misdiagnosis (its "missing fees" math was circular): `orders.sale_price` IS the post-fee payout on both platforms, so realized profit was never fee-blind. What shipped: `orders.fees` column (defaults 0, escape hatch), profit = payout − fees − cost − actual shipping, momentum chart stops re-subtracting formula fees (it had been understating net), take-home labels, `siteFee()` as the one estimate formula (#152). One mid-thread overreach (storing gross + derived fees) got reverted; stored sale prices untouched. Shipping (#137, realized half): 68 pre-shipping-flow rows had their listing estimates materialized into `shipment.shipping_cost` (displayed numbers unmoved), then the estimate fallback on sold items died. Full forensics in GOTCHAS (tax hides in eBay's fee base; the Finances API basis excludes it).
+
+**TRS discount hunt → real bug.** Added `sell.finances` scope (re-auth done). Root cause of sporadically missing Top Rated Plus discounts: return-policy roulette (`returnPolicies[0]` across four account policies, two of them hidden buyer-pays) plus offer PUTs stripping policy IDs off live listings (#155). Fixed: pinned free-returns policy (Geoff's deliberate call), explicit policy IDs on every PUT, fleet sweep re-attached 92/93 active discs (DWG-086 locked by a pending Best Offer, heals on next touch). CLI `--update` stale blob-price guard → #156. Finances-API fee capture parked as #157.
+
+**Deferred to cold sessions:** #151 DG analytics pack (design together), #137 estimate half (stored mint defaults), DG lot `total_cost` value, the one non-disc listing still on buyer-pays returns, ghost-policy deletion in Seller Hub.
+
 ### 2026-07-01 (later 7) — #139 verified end-to-end + polish (v2.0.46–v2.0.49)
 
 Tested the web bulk-list live and hardened it. **Full round-trip proven in production:** upload a photo pile → server chunks/maps to Prepping discs → preview → BULK LIST → 2 discs went live on eBay with the right title (`items.name`), staged price, SKU, photos → teardown (withdraw + delete offer/inventory-item on eBay, revert DB to Prepping, delete photos) left them pristine. Zero CLI.
