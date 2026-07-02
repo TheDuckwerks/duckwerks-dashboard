@@ -173,6 +173,8 @@ DB location: `data/duckwerks.db`
 - Cascade rules: `listings.item_id`, `orders.listing_id`, `shipments.order_id` are `ON DELETE CASCADE`; `items.lot_id`, `items.category_id` are `ON DELETE SET NULL`.
 - One order per listing, one shipment per order is an application invariant, not a database constraint (there is no `UNIQUE` on `orders.listing_id` or `shipments.order_id`). A label reprint `PATCH`es the existing `shipments` row's `label_url`; it never inserts a new shipment.
 - SKU is write-once: not in the `items` `PATCH` allowlist, no UI edit field. Reassignment requires deliberate DB surgery (intentional friction, per the disc-sku-storage spec).
+- Zero is an assertion, NULL is an absence. A stored 0 in a money column (`items.cost`, `lots.total_cost`, `orders.fees`, `shipments.shipping_cost`) means genuinely zero (personal-collection items, payout-stored prices, free shipping) and is never a gap to backfill. NULL means never captured. Do not "fix" zeros. (Calibration example: the DG lot's costs are 0 on purpose; the discs predate the business.)
+- Lot costing is per-item: a purchased lot's basis is amortized onto `items.cost` via the lot modal's REALLOCATE COSTS. `lots.total_cost` is vestigial (0 everywhere); rollups effectively always sum item costs.
 
 ### Profit Formulas
 
