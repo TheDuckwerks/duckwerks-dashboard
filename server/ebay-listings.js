@@ -144,9 +144,15 @@ function dbWriteDiscListing(title, listPrice, listingId, sku) {
     ).run(title, cat.id, sku || null).lastInsertRowid;
   }
 
-  db.prepare(
+  const result = db.prepare(
     'INSERT INTO listings (item_id, site_id, platform_listing_id, list_price, shipping_estimate, url) VALUES (?, ?, ?, ?, 7, ?)'
   ).run(itemId, ebaySite.id, String(listingId), listPrice, `https://ebay.com/itm/${listingId}`);
+
+  if (listPrice != null) {
+    db.prepare(
+      'INSERT INTO price_history (listing_id, old_price, new_price, source) VALUES (?, NULL, ?, ?)'
+    ).run(result.lastInsertRowid, listPrice, 'mint');
+  }
 }
 
 function dbWriteSkillListing(item, listingId) {
@@ -167,9 +173,15 @@ function dbWriteSkillListing(item, listingId) {
     "INSERT INTO items (name, status, category_id, cost, lot_id, sku) VALUES (?, 'Listed', ?, 0, ?, ?)"
   ).run(item.title, cat.id, item.lot_id || null, item.sku);
 
-  db.prepare(
+  const result = db.prepare(
     'INSERT INTO listings (item_id, site_id, platform_listing_id, list_price, shipping_estimate, url) VALUES (?, ?, ?, ?, 0, ?)'
   ).run(ins.lastInsertRowid, ebaySite.id, String(listingId), item.price, `https://ebay.com/itm/${listingId}`);
+
+  if (item.price != null) {
+    db.prepare(
+      'INSERT INTO price_history (listing_id, old_price, new_price, source) VALUES (?, NULL, ?, ?)'
+    ).run(result.lastInsertRowid, item.price, 'mint');
+  }
 }
 
 // ── Routes ────────────────────────────────────────────────────────────────────
@@ -504,10 +516,19 @@ router.post('/update-item', async (req, res) => {
       shipToLocations:    offer.shipToLocations,
     }, headers);
 
-    db.prepare('UPDATE listings SET list_price = ? WHERE platform_listing_id = ?')
-      .run(item.price, String(offer.listing?.listingId));
+    const listingId  = offer.listing?.listingId;
+    const listingRow = db.prepare('SELECT id, list_price FROM listings WHERE platform_listing_id = ?').get(String(listingId));
 
-    res.json({ sku: item.sku, offerId: offer.offerId, listingId: offer.listing?.listingId });
+    db.prepare('UPDATE listings SET list_price = ? WHERE platform_listing_id = ?')
+      .run(item.price, String(listingId));
+
+    if (listingRow && Number(listingRow.list_price) !== Number(item.price)) {
+      db.prepare(
+        'INSERT INTO price_history (listing_id, old_price, new_price, source) VALUES (?, ?, ?, ?)'
+      ).run(listingRow.id, listingRow.list_price, item.price, 'update-item');
+    }
+
+    res.json({ sku: item.sku, offerId: offer.offerId, listingId });
   } catch (e) {
     console.error('[ebay-listings] update-item error:', e);
     res.status(500).json({ error: e.message });

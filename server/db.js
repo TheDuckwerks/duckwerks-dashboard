@@ -120,6 +120,26 @@ db.exec(`
     metadata   TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS price_history (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    listing_id INTEGER NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
+    changed_at TEXT NOT NULL DEFAULT (datetime('now')),
+    old_price  REAL,
+    new_price  REAL NOT NULL,
+    source     TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS traffic_snapshots (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    ebay_listing_id TEXT NOT NULL,
+    snapshot_date   TEXT NOT NULL,
+    pulled_at       TEXT NOT NULL DEFAULT (datetime('now')),
+    views           INTEGER,
+    impressions     INTEGER,
+    ctr             REAL,
+    UNIQUE(ebay_listing_id, snapshot_date)
+  );
 `);
 
 // ── Multi-unit listings — quantity columns (migration) ────────────────────────

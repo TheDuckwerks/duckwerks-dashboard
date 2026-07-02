@@ -13,6 +13,11 @@ router.post('/', (req, res) => {
   `).run(item_id, site_id, platform_listing_id || null, list_price || null, shipping_estimate || null, url || null, offer_id || null);
   // Set item status to Listed
   db.prepare("UPDATE items SET status = 'Listed' WHERE id = ?").run(item_id);
+  if (list_price) {
+    db.prepare(
+      'INSERT INTO price_history (listing_id, old_price, new_price, source) VALUES (?, NULL, ?, ?)'
+    ).run(result.lastInsertRowid, list_price, 'mint');
+  }
   res.status(201).json(db.prepare('SELECT * FROM listings WHERE id = ?').get(result.lastInsertRowid));
 });
 
@@ -24,8 +29,21 @@ router.patch('/:id', (req, res) => {
     if (req.body[f] !== undefined) { sets.push(`${f} = ?`); vals.push(req.body[f]); }
   });
   if (!sets.length) return res.status(400).json({ error: 'no fields to update' });
+
+  const priceChanging = req.body.list_price !== undefined && req.body.list_price !== null;
+  const before = priceChanging
+    ? db.prepare('SELECT list_price FROM listings WHERE id = ?').get(req.params.id)
+    : null;
+
   vals.push(req.params.id);
   db.prepare(`UPDATE listings SET ${sets.join(', ')} WHERE id = ?`).run(...vals);
+
+  if (before && Number(before.list_price) !== Number(req.body.list_price)) {
+    db.prepare(
+      'INSERT INTO price_history (listing_id, old_price, new_price, source) VALUES (?, ?, ?, ?)'
+    ).run(req.params.id, before.list_price, req.body.list_price, 'patch');
+  }
+
   const listing = db.prepare('SELECT * FROM listings WHERE id = ?').get(req.params.id);
   if (!listing) return res.status(404).json({ error: 'not found' });
   res.json(listing);

@@ -1,6 +1,7 @@
 const express = require('express');
 const router  = express.Router();
 const { getAccessToken, getAppToken, authRedirectUrl, exchangeCodeForTokens, writeTokens } = require('./ebay-auth');
+const db      = require('./db');
 
 const EBAY_API = 'https://api.ebay.com';
 
@@ -252,6 +253,18 @@ router.post('/traffic', async (req, res) => {
           ctr:         get('CLICK_THROUGH_RATE'),
         };
       }
+    }
+
+    // Persist one snapshot row per listing for this pull (#150). Keyed by
+    // (ebay_listing_id, snapshot_date), INSERT OR REPLACE so the last pull of a
+    // day wins.
+    const snapshotDate  = new Date().toISOString().slice(0, 10);
+    const insertSnapshot = db.prepare(`
+      INSERT OR REPLACE INTO traffic_snapshots (ebay_listing_id, snapshot_date, views, impressions, ctr)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+    for (const [lid, metrics] of Object.entries(listings)) {
+      insertSnapshot.run(lid, snapshotDate, metrics.views, metrics.impressions, metrics.ctr);
     }
 
     res.json({ listings });
