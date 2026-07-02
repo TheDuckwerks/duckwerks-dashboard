@@ -4,19 +4,19 @@ One-liners for each script. All scripts default to dry run; pass `--confirm` to 
 
 ## Active workflows
 
-**`bulk-list-discs.js`** — List or update discs on eBay from inventory DB.
+**`bulk-list-discs.js`** — List or update discs on eBay from inventory DB. Secondary path to the catalog's web bulk-list UI (#139); still the one to use for `--photos-only` batches and scripted runs.
 ```
 node scripts/bulk-list-discs.js --ids 293-310 --photos /path/to/photos   # list new
 node scripts/bulk-list-discs.js --ids 293-310 --update                    # update existing
 node scripts/bulk-list-discs.js --ids 293-310 --photos-only               # replace photos only
 ```
 
-**`deploy-nuc.sh`** — Pull latest and restart PM2 on the NUC. Run after every push.
+**`deploy.sh`** — Deploy to the NUC (Duck Ops rsync-artifact standard). See [`docs/deploy.md`](../docs/deploy.md).
 ```
-bash scripts/deploy-nuc.sh
+./scripts/deploy.sh
 ```
 
-**`ebay-traffic-merge.js`** — Merge an eBay traffic report CSV into the local DB.
+**`ebay-traffic-merge.js`** — Merge an offline eBay Seller Hub traffic-report CSV export with DB SKU + price data. Unrelated to the live `POST /api/ebay/traffic` route (analytics.js); this is for CSV exports pulled outside the app.
 ```
 node scripts/ebay-traffic-merge.js path/to/report.csv
 ```
@@ -46,7 +46,7 @@ ssh geoff@fedora.local "cd /srv/duckwerks/dash/current && node scripts/refresh-d
 
 **`update-site-fees.js`** — Update site fee config in the DB.
 
-**`withdraw-offers.js`** — Withdraw eBay offers for a range of SKUs.
+**`withdraw-offers.js`** — Reference code, not a reusable tool: withdraws eBay offers for a hardcoded set of SKU/offer-ID pairs baked into the script. Edit the pairs before rerunning for a different set.
 
 ## Reference data (re-seed if DB is rebuilt)
 
