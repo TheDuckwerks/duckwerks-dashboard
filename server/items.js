@@ -28,7 +28,9 @@ function buildItem(row) {
       const shipment = db.prepare('SELECT * FROM shipments WHERE order_id = ?').get(order.id);
       orderObj = {
         ...order,
-        profit: order.sale_price - (order.fees ?? 0) - row.cost - (shipment?.shipping_cost ?? l.shipping_estimate ?? 0),
+        // Realized shipping is the shipment's actual cost only — never the listing
+        // estimate (#137). Missing cost means no recorded label: subtract nothing.
+        profit: order.sale_price - (order.fees ?? 0) - row.cost - (shipment?.shipping_cost ?? 0),
         shipment: shipment || null,
       };
     }
