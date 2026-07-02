@@ -75,14 +75,18 @@ async function main() {
     const title   = (meta.list_title || '').trim();
     const price   = parseFloat(meta.listPrice) || 0;
 
-    const warnings = [];
-    if (!price)  warnings.push('no listPrice in metadata');
-
     if (row.status === 'sold') return { id, paddedId, row, meta, title, skip: 'sold' };
 
     if (updateMode) {
-      return { id, paddedId, row, meta, title, price, warnings: warnings.length ? warnings : null };
+      // Title/price authority for a listed disc is items.name + the active
+      // listing row (#134) — the bulk-update route resolves both server-side.
+      // metadata.listPrice is intake staging (nulled once listed): never a gate here.
+      if (!row.listing_id) return { id, paddedId, row, meta, title, skip: 'not listed (no active listing)' };
+      return { id, paddedId, row, meta, title: (row.item_name || title), price: parseFloat(row.listing_price) || 0 };
     }
+
+    const warnings = [];
+    if (!price)  warnings.push('no listPrice in metadata');
 
     if (photosOnlyMode) {
       const photoPattern = new RegExp(`^DWG-${id}-.*\\.jpe?g$`, 'i');
