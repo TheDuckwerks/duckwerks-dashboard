@@ -10,11 +10,27 @@
 
 **The local `data/duckwerks.db` is stale and useless.** The NUC copy at `/srv/duckwerks/dash/data/duckwerks.db` (symlinked as `data/` into each release) is the source of truth. `scripts/db.sh` targets it by default for exactly this reason; never reason from the local file.
 
+**2026-05-15: WAL grows unbounded under PM2 without a periodic checkpoint.** The long-lived PM2-managed connection holds the database open, which blocks SQLite's automatic WAL auto-truncation. The WAL hit 5.8MB against a 596KB main db before anyone noticed; a manual `wal_checkpoint(TRUNCATE)` reclaimed it instantly. Fixed with an hourly `PRAGMA wal_checkpoint(PASSIVE)` via `setInterval` in `server/db.js`. If the WAL balloons again, checkpoint manually rather than suspecting the schema.
+
 ---
 
 ## eBay
 
 **Traffic API — use `TOTAL_IMPRESSION_TOTAL`, not `LISTING_IMPRESSION_TOTAL`.** `TOTAL_IMPRESSION_TOTAL` includes promoted-listing impressions; `LISTING_IMPRESSION_TOTAL` is organic only. The Seller Hub UI shows the total, so the organic-only metric will silently undercount and not match what Geoff sees. Used in `public/v2/js/views/analytics.js`.
+
+**eBay rejects a `scope` parameter in the refresh-token request body.** `refreshAccessToken()` in `server/ebay-auth.js` sends only `grant_type` and `refresh_token`; the refreshed access token inherits whatever scopes the original grant had. There's no way to add a new scope via refresh; a scope change needs a full browser re-auth with the new scope list.
+
+**Build eBay's `{ }` / `[ ]` filter syntax as raw strings, never through `URLSearchParams`.** `URLSearchParams` percent-encodes `[`, `]`, `{`, `}`, `|`, and eBay's filter parser rejects the encoded form outright. Bit two separate features: the fulfillment order filter (`orderfulfillmentstatus:{NOT_STARTED|IN_PROGRESS}`, `server/ebay.js`) and the traffic report filter (`marketplace_ids:{...},date_range:[...],listing_ids:{...}`, also `server/ebay.js`). Both build the query string by manual template-literal concatenation instead of `URLSearchParams`.
+
+**2026-04-05: eBay's Media (EPS) image upload is two HTTP calls, not one.** POST to `apim.ebay.com/commerce/media/v1_beta/.../create_image_from_file` returns 201 with an empty body and the image reference in the `Location` header; a second GET against that URL returns the actual `imageUrl`. `uploadToEPS()` in `server/ebay-client.js` does both steps. A 201 with no visible payload is success, not a failure; check the `Location` header before assuming the upload broke.
+
+**`publishOffer` retries once, 3s later, on eBay errorId 25604.** 25604 ("Product not found") is eBay's async-processing lag right after an offer is created, not a real failure; it usually clears within a few seconds. `publishOffer()` in `server/ebay-client.js` catches exactly that errorId, waits 3s, and retries once before surfacing the error. If it still fails after the retry, that's a genuine error; don't bolt on a second retry loop upstream.
+
+**2026-04-06, bit again 2026-05-16: category 184356 (Disc Golf Discs) silently requires `USED_EXCELLENT`, not `USED`.** `USED` is only a UI display label, not a valid Inventory API `ConditionEnum`; the category shows no condition sub-grades in Seller Hub, so nothing in the UI hints at this. `normalizeCondition()` in `server/ebay-builders.js` maps `USED` → `USED_EXCELLENT` before any payload is built. If a disc listing throws a condition-related error (e.g. 2004), confirm the payload actually went through `normalizeCondition()` rather than bypassing the builder.
+
+**2026-05-01/02: eBay Motors (category 9886 and its subcategories) rejects Inventory API listings for missing fitment data.** Motors categories need an ASSEMBLY-based fitment table (e.g. `US_CARS_AND_TRUCKS`) that the Inventory API can't carry through item specifics alone. Workaround: list under a non-Motors category (e.g. Consumer Electronics 258), then manually recategorize in Seller Hub. Treat the recategorize step as risky, not routine: one HIKEit relist went unbuyable ("out of stock") after a manual category change and had to be withdrawn and relisted from scratch via Seller Hub.
+
+**2026-05-16: `upsertOffer(offerBody, headers)` and `updateOffer(offerId, offerBody, headers)` have different argument orders.** `upsertOffer` (new listings, used by `bulk-list`) takes `(body, headers)`; `updateOffer` (existing listings, used by `bulk-update` and `update-item`) takes `(offerId, body, headers)`, note the extra leading `offerId`. Transposing them passes an offer ID where a body is expected with no obvious error at the call site. Flagged during the 2026-05-16 `ebay-client.js` extraction; check the signature before wiring up a new caller.
 
 ---
 
@@ -63,6 +79,10 @@ Look for "Can't open PID file" or a climbing restart counter. Root cause: the `P
 ---
 
 ## Comp research (SerpAPI)
+
+**2026-03-29/30: eBay's own APIs are a dead end for comp research; SerpAPI is the only path that worked.** Puppeteer scraping (headless, `headless: 'new'`, and headed) all hit eBay's bot-detection challenge page; a direct fetch with browser headers just got eBay's CSR shell (0 items in the raw HTML); the Finding API's `findCompletedItems` returned error 10001 (access not enabled for the App ID). Switched to SerpAPI's eBay engine (`show_only=Sold`) in `server/comps.js`, which returns real sold listings with a `sold_date` field. Don't re-attempt a native eBay scrape, Browse API, or Finding API for comps; it's already been tried and blocked.
+
+**2026-04-19: Puppeteer runs in a child process, never inline in Express.** A Chromium crash in the main process would take the whole server down with it. `searchReverb()` in `server/comps.js` spawns `scripts/reverb-scrape.js` via `child_process.spawn` instead of driving Puppeteer directly in-process. Keep any future scraper out-of-process for the same reason; Chromium on Fedora also needs `--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu`.
 
 **SerpAPI's eBay engine needs `ebay_domain: 'ebay.com'` or it returns the wrong market.** Without the explicit domain param, the eBay engine defaults to a global/international search — comp results come back as Chinese-language listings with inflated/unverifiable prices and future-dated results. Fixed by adding `ebay_domain: 'ebay.com'` to `searchItem()` params in `server/comps.js` (commit `0c1a733`).
 
