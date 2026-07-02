@@ -16,7 +16,7 @@ document.addEventListener('alpine:init', () => {
       this.$watch('$store.dw.pendingFilters', v => {
         if (v) {
           this.statusFilter = v.status;
-          this.siteFilter   = v.site;
+          this.siteFilters  = v.site && v.site !== 'All' ? [v.site] : [];
           Alpine.store('dw').categoryFilter = v.category;
           Alpine.store('dw').pendingFilters = null;
         }
