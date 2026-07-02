@@ -89,7 +89,7 @@ document.addEventListener('alpine:init', () => {
     get lotRows() {
       const dw = Alpine.store('dw');
       return dw.lots.map(lot => {
-        const cost      = lot.items.reduce((s, r) => s + (r.cost || 0), 0);
+        const cost      = dw.lotCost(lot);
         const recovered = lot.items.filter(r => r.status === 'Sold')
                             .reduce((s, r) => s + (r.order?.sale_price || 0), 0);
         const soldCount  = lot.items.filter(r => r.status === 'Sold').length;

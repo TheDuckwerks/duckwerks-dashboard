@@ -192,6 +192,14 @@ document.addEventListener('alpine:init', () => {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
+    // Effective lot cost — prefers lots.total_cost (captured once at lot purchase)
+    // over summed item costs, since per-disc cost is often never set for bulk lots.
+    lotCost(lot) {
+      if (!lot) return 0;
+      if (lot.total_cost > 0) return lot.total_cost;
+      return (lot.items || []).reduce((s, r) => s + (r.cost || 0), 0);
+    },
+
     // Best active listing — highest estimated net (price - shipping - fees) among active listings
     activeListing(r) {
       const active = (r.listings || []).filter(l => l.status === 'active');

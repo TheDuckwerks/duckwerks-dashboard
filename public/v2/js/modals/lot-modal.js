@@ -54,7 +54,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     totalCost() {
-      return this.items.reduce((sum, r) => sum + (r.cost || 0), 0);
+      return Alpine.store('dw').lotCost(this.lot);
     },
 
     recovered() {

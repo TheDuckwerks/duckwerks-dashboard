@@ -16,15 +16,15 @@ document.addEventListener('alpine:init', () => {
       return [...dw.lots].sort((a, b) => {
         let av, bv;
         if      (key === 'name')      { return dir === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name); }
-        else if (key === 'cost')      { av = a.items.reduce((s, r) => s + (r.cost||0), 0); bv = b.items.reduce((s, r) => s + (r.cost||0), 0); }
+        else if (key === 'cost')      { av = dw.lotCost(a); bv = dw.lotCost(b); }
         else if (key === 'recovered') {
           av = a.items.filter(r => r.status==='Sold').reduce((s,r)=>s+(r.order?.sale_price||0),0);
           bv = b.items.filter(r => r.status==='Sold').reduce((s,r)=>s+(r.order?.sale_price||0),0);
         }
         else if (key === 'roi') {
-          const cA = a.items.reduce((s,r)=>s+(r.cost||0),0);
+          const cA = dw.lotCost(a);
           const rA = a.items.filter(r=>r.status==='Sold').reduce((s,r)=>s+(r.order?.sale_price||0),0);
-          const cB = b.items.reduce((s,r)=>s+(r.cost||0),0);
+          const cB = dw.lotCost(b);
           const rB = b.items.filter(r=>r.status==='Sold').reduce((s,r)=>s+(r.order?.sale_price||0),0);
           av = cA > 0 ? rA / cA : 0; bv = cB > 0 ? rB / cB : 0;
         }
@@ -51,7 +51,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     countByStatus(lot, status) { return lot.items.filter(r => r.status === status).length; },
-    totalCost(lot)      { return lot.items.reduce((s, r) => s + (r.cost || 0), 0); },
+    totalCost(lot)      { return Alpine.store('dw').lotCost(lot); },
     totalRecovered(lot) { return lot.items.filter(r => r.status==='Sold').reduce((s,r)=>s+(r.order?.sale_price||0),0); },
     recoveryPct(lot) {
       const cost = this.totalCost(lot);
