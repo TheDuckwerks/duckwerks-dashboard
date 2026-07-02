@@ -1,6 +1,20 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-01 (later 7) — #139 verified end-to-end + polish (v2.0.46–v2.0.49)
+
+Tested the web bulk-list live and hardened it. **Full round-trip proven in production:** upload a photo pile → server chunks/maps to Prepping discs → preview → BULK LIST → 2 discs went live on eBay with the right title (`items.name`), staged price, SKU, photos → teardown (withdraw + delete offer/inventory-item on eBay, revert DB to Prepping, delete photos) left them pristine. Zero CLI.
+
+Polish shipped while playing with it:
+- **413 on upload** — nginx `dash-pond.conf` vhost had no `client_max_body_size` (1MB default) → added `512M` (Geoff ran the sudo; Beardy review = **#141**). App itself handled 5MB direct in 4ms; RAM headroom is fine (13Gi free) so multer stays memory-storage.
+- **Disk-backed preview (v2.0.47):** preview reads `photo-status` (disk truth) instead of the last upload response, so it survives range changes.
+- **Decoupled range from the preview set (v2.0.48):** the range is now only the *upload target*; the preview/list set = current range ∪ every Prepping disc with photos on disk (`blkReadyDiscs`/`blkPreview`). Populate large, re-shoot a few narrow, list the lot.
+- **Title tooltip (v2.0.46)** and **catalog status filter ALL/INTAKE/LISTED (v2.0.49).**
+- **Dead-disc cleanup:** the #134 item-at-intake backfill had resurrected two mislisted-and-ended orphans (DWG-178/224) as Prepping; the disk-backed ready-set surfaced them via old photos. Deleted them (records + photos). Filed **#142** — model gap: no terminal `Ended`/pulled-unsold item status.
+- Test SKUs 293/294 deleted at session end (records + photos); `next-disc-num` back to 293.
+
+**#139 lean v1 is done and proven.** Deferred: boundary-nudge, HEIC-in, Phase 4 cutover (retire the list CLIs).
+
 ### 2026-07-01 (later 6) — #139 web bulk-list: spec + Phases 1-3 lean v1 (v2.0.45)
 
 Started "get listing off the CLI." Spec: `docs/specs/2026-07-01-web-bulk-list-design.md`.
