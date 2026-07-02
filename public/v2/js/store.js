@@ -200,6 +200,14 @@ document.addEventListener('alpine:init', () => {
       return (lot.items || []).reduce((s, r) => s + (r.cost || 0), 0);
     },
 
+    // Platform fee for a price (+shipping when the site fees shipping) on a listing's site.
+    // The single fee formula for estimates — realized fees live on orders.fees (#136).
+    siteFee(site, price, ship = 0) {
+      if (!site) return 0;
+      return site.fee_on_shipping ? (price + ship) * site.fee_rate + site.fee_flat
+                                  :  price         * site.fee_rate + site.fee_flat;
+    },
+
     // Best active listing — highest estimated net (price - shipping - fees) among active listings
     activeListing(r) {
       const active = (r.listings || []).filter(l => l.status === 'active');
@@ -207,10 +215,7 @@ document.addEventListener('alpine:init', () => {
       const estNet = l => {
         const lp   = l.list_price || 0;
         const ship = l.shipping_estimate ?? 7;
-        const fee  = l.site ? (l.site.fee_on_shipping ? (lp + ship) * l.site.fee_rate + l.site.fee_flat
-                                                      :  lp         * l.site.fee_rate + l.site.fee_flat)
-                            : 0;
-        return lp - ship - fee;
+        return lp - ship - this.siteFee(l.site, lp, ship);
       };
       return active.reduce((best, l) => estNet(l) > estNet(best) ? l : best, active[0]);
     },
@@ -263,13 +268,7 @@ document.addEventListener('alpine:init', () => {
         ship = 7; // placeholder
       }
 
-      let fee = 0;
-      if (listing?.site) {
-        const s = listing.site;
-        fee = s.fee_on_shipping ? (lp + ship) * s.fee_rate + s.fee_flat
-                                :  lp         * s.fee_rate + s.fee_flat;
-      }
-      return lp - cost - ship - fee;
+      return lp - cost - ship - this.siteFee(listing?.site, lp, ship);
     },
 
     // Post-fee payout for a listed item (est.)
@@ -277,13 +276,7 @@ document.addEventListener('alpine:init', () => {
       const listing = this.activeListing(r);
       const lp      = listing?.list_price || 0;
       const ship    = listing?.shipping_estimate ?? 7;
-      let fee = 0;
-      if (listing?.site) {
-        const s = listing.site;
-        fee = s.fee_on_shipping ? (lp + ship) * s.fee_rate + s.fee_flat
-                                :  lp         * s.fee_rate + s.fee_flat;
-      }
-      return lp - fee;
+      return lp - this.siteFee(listing?.site, lp, ship);
     },
 
     fmt0(n)  { return '$' + Math.round(Math.abs(n)).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); },

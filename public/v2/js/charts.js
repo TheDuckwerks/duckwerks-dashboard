@@ -55,17 +55,11 @@ document.addEventListener('alpine:init', () => {
         const cost      = r.cost || 0;
         const shipping  = r.shipment?.shipping_cost || 0;
 
-        // Fee: find the sold listing by presence of an order (not l.status — that's 'active'/'ended')
-        // Fee base is saleGross (actual sale price), not list_price — intentional for actuals.
+        // Site grouping from the sold listing (by presence of an order, not l.status — that's 'active'/'ended')
         const listing  = r.listings?.find(l => l.order) || r.listings?.[0];
-        const site     = listing?.site;
-        const siteName = site?.name || 'Other';
-        let fee = 0;
-        if (site) {
-          fee = site.fee_on_shipping
-            ? (saleGross + shipping) * site.fee_rate + site.fee_flat
-            : saleGross * site.fee_rate + site.fee_flat;
-        }
+        const siteName = listing?.site?.name || 'Other';
+        // Realized fees live on the order row (orders.fees, #136) — never recomputed from the site formula here
+        const fee     = r.order?.fees ?? 0;
         const saleNet = saleGross - cost - shipping - fee;
 
         for (let i = 0; i < WINDOWS.length; i++) {

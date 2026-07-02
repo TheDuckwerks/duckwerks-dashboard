@@ -3,15 +3,27 @@ const express           = require('express');
 const router            = express.Router();
 const db                = require('./db');
 
+// Default platform fee for an order — sale_price × site rate + flat, per order.
+// Callers whose sale_price is already net of fees (Reverb payout) pass fees: 0.
+function defaultFees(listing_id, sale_price) {
+  if (sale_price == null) return null;
+  const site = db.prepare(
+    'SELECT s.fee_rate, s.fee_flat FROM listings l JOIN sites s ON s.id = l.site_id WHERE l.id = ?'
+  ).get(listing_id);
+  if (!site) return null;
+  return Math.round((sale_price * site.fee_rate + site.fee_flat) * 100) / 100;
+}
+
 // POST create order (sale received — also sets item.status = 'Sold' and listing.status = 'sold')
 router.post('/', (req, res) => {
-  const { listing_id, platform_order_num, sale_price, date_sold, quantity } = req.body;
+  const { listing_id, platform_order_num, sale_price, date_sold, quantity, fees } = req.body;
   if (!listing_id) return res.status(400).json({ error: 'listing_id is required' });
+  const feesVal = fees !== undefined ? fees : defaultFees(listing_id, sale_price || null);
   const result = db.prepare(`
-    INSERT INTO orders (listing_id, platform_order_num, sale_price, date_sold)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO orders (listing_id, platform_order_num, sale_price, date_sold, fees)
+    VALUES (?, ?, ?, ?, ?)
   `).run(listing_id, platform_order_num || null, sale_price || null,
-         date_sold || new Date().toISOString().split('T')[0]);
+         date_sold || new Date().toISOString().split('T')[0], feesVal);
   // Update item and listing status
   const listing = db.prepare('SELECT * FROM listings WHERE id = ?').get(listing_id);
   if (listing) {
@@ -40,12 +52,20 @@ router.post('/', (req, res) => {
 
 // PATCH update order (e.g. save platform_order_num from Reverb Sync)
 router.patch('/:id', (req, res) => {
-  const allowed = ['platform_order_num', 'sale_price', 'date_sold'];
+  const allowed = ['platform_order_num', 'sale_price', 'date_sold', 'fees'];
   const sets = [], vals = [];
   allowed.forEach(f => {
     if (req.body[f] !== undefined) { sets.push(`${f} = ?`); vals.push(req.body[f]); }
   });
   if (!sets.length) return res.status(400).json({ error: 'no fields to update' });
+  // A new sale_price without explicit fees re-derives the site-formula default
+  if (req.body.sale_price !== undefined && req.body.fees === undefined) {
+    const existing = db.prepare('SELECT listing_id FROM orders WHERE id = ?').get(req.params.id);
+    if (existing) {
+      sets.push('fees = ?');
+      vals.push(defaultFees(existing.listing_id, req.body.sale_price));
+    }
+  }
   vals.push(req.params.id);
   db.prepare(`UPDATE orders SET ${sets.join(', ')} WHERE id = ?`).run(...vals);
   const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);

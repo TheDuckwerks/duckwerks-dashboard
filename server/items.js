@@ -28,7 +28,7 @@ function buildItem(row) {
       const shipment = db.prepare('SELECT * FROM shipments WHERE order_id = ?').get(order.id);
       orderObj = {
         ...order,
-        profit: order.sale_price - row.cost - (shipment?.shipping_cost ?? l.shipping_estimate ?? 0),
+        profit: order.sale_price - (order.fees ?? 0) - row.cost - (shipment?.shipping_cost ?? l.shipping_estimate ?? 0),
         shipment: shipment || null,
       };
     }

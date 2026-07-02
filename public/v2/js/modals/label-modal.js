@@ -308,14 +308,14 @@ document.addEventListener('alpine:init', () => {
         label_url:       this.purchaseResult?.labelUrl       || null,
       };
 
-      const saveRec = async (rec, { sale_price, platform_order_num, shipping_cost }) => {
+      const saveRec = async (rec, { sale_price, platform_order_num, shipping_cost, fees }) => {
         const listing = dw.activeListing(rec);
         let orderId;
         if (rec.order) {
-          await dw.updateOrder(rec.order.id, { sale_price, date_sold: dateSold, platform_order_num });
+          await dw.updateOrder(rec.order.id, { sale_price, date_sold: dateSold, platform_order_num, fees });
           orderId = rec.order.id;
         } else {
-          const newOrder = await dw.createOrder({ listing_id: listing?.id || null, sale_price, date_sold: dateSold, platform_order_num });
+          const newOrder = await dw.createOrder({ listing_id: listing?.id || null, sale_price, date_sold: dateSold, platform_order_num, fees });
           orderId = newOrder.id;
         }
         if (rec.status !== 'Sold') await dw.updateItem(rec.id, { status: 'Sold' });
@@ -342,10 +342,14 @@ document.addEventListener('alpine:init', () => {
           }
         } else {
           // Reverb / non-eBay single record
+          // direct_checkout_payout is already net of Reverb fees — record fees as 0,
+          // never the site formula (that would double-count). eBay recs omit fees so
+          // the server derives them from the site formula (sale_price is pre-fee).
           await saveRec(r, {
             sale_price:         this.reverbSaleAmount || null,
             platform_order_num: this.reverbOrderNum || null,
             shipping_cost:      totalCost,
+            fees:               this.reverbSaleAmount ? 0 : undefined,
           });
         }
 

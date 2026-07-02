@@ -158,6 +158,14 @@ if (!listingCols.includes('offer_id')) {
   db.prepare('ALTER TABLE listings ADD COLUMN offer_id TEXT').run();
 }
 
+// ── Realized fees — fees column on orders (migration, #136) ──────────────────
+// Platform fee dollars for the order. NULL = legacy row not yet backfilled;
+// 0 = genuinely fee-free (Reverb payout already net, cash sales).
+const orderCols = db.pragma('table_info(orders)').map(r => r.name);
+if (!orderCols.includes('fees')) {
+  db.prepare('ALTER TABLE orders ADD COLUMN fees REAL').run();
+}
+
 // ── Seed reference data (idempotent) ──────────────────────────────────────────
 
 const seedSites = db.prepare(

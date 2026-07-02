@@ -28,7 +28,7 @@
           <div class="stat-card" :class="realizedProfit() >= 0 ? 'green' : 'red'">
             <div class="stat-card-label">REALIZED PROFIT</div>
             <div class="stat-card-value" x-text="(realizedProfit() >= 0 ? '+' : '') + $store.dw.fmt0(realizedProfit())"></div>
-            <div class="stat-card-sub">sold after fees</div>
+            <div class="stat-card-sub">take-home, fees + shipping out</div>
           </div>
           <div class="stat-card" :class="forecastedProfit() >= 0 ? 'green' : 'red'">
             <div class="stat-card-label">FORECASTED PROFIT</div>
