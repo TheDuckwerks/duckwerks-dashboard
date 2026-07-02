@@ -149,7 +149,7 @@ The pipeline is a deliberate two-mode split. The **inventory-backed** path (`bul
 - Re-auth: visit `/api/ebay/auth`, complete sign-in, land on `duckwerks.com/ebay-oauth-callback.php` (external page, not in this repo), copy code, run the displayed curl command against `POST /api/ebay/auth/exchange` (body `{ code }`).
 - Credential rotation (a new refresh token, or a scope change) requires the full OAuth dance above; there is no way to rotate `ebay-tokens.json` without it.
 - eBay carrier codes: `USPS`, `UPS`, `FEDEX`, `DHL` (mapped from EasyPost names in `server/ebay.js`)
-- `totalDueSeller` (`paymentSummary.totalDueSeller` on `GET /api/ebay/orders/:id`) is the **post-fee payout**, equivalent to Reverb's `direct_checkout_payout`. The pre-fee buyer-paid total is `pricingSummary.total`; their difference is the order's actual eBay fees (verified 2026-07-01 against Seller Hub: total 17.00, totalDueSeller 14.39, fees 2.61). Available pre-fulfillment. Never store `totalDueSeller` as `sale_price` (see the `orders` schema note).
+- `totalDueSeller` (`pricingSummary.totalDueSeller` on `GET /api/ebay/orders/:id`) is the **pre-fee** order total: item price plus collected shipping, after discounts, with final value fees not yet deducted. Available pre-fulfillment. It is not equivalent to Reverb's `direct_checkout_payout`, which is post-fee.
 
 ---
 
@@ -160,7 +160,7 @@ DB location: `data/duckwerks.db`
 - `items` — core inventory ledger: name (**canonical materialized title**, #134), status (`Prepping`/`Listed`/`Sold` — the sole lifecycle owner), cost, category_id, lot_id, sku, quantity, quantity_sold, oversold (multi-unit listings; `quantity` defaults to 1, `oversold` flips to 1 if an order pushes `quantity_sold` past `quantity`)
 - `listings` — platform listings per item: site_id, list_price (**price authority once listed**, #134), shipping_estimate, url, platform_listing_id, offer_id, status
 - `inventory` — category intake blob keyed by sku: `metadata` JSON (disc specs + `list_title` title-spec + `listPrice` staging), location, category. `status` is a **retired tombstone** — lifecycle lives on `items.status` (#134)
-- `orders` — sale data: listing_id, sale_price, date_sold, platform_order_num, fees. `sale_price` is the gross buyer-paid amount for the line (eBay: line total + its shipping share); `fees` is the platform's actual fee dollars for it (eBay: order gross − `totalDueSeller`, split by gross share; Reverb: 0 because its `direct_checkout_payout` is stored net, a historical shape kept so old rows stay truthful). There is no stored `profit` column; realized profit is computed per request (see Profit Formulas below). Legacy rows with `fees` NULL predate the 2026-07-01 fees backfill (#136)
+- `orders` — sale data: listing_id, sale_price, date_sold, platform_order_num. There is no stored `profit` column; realized profit is computed per request (see Profit Formulas below). `sale_price` provenance differs by platform: eBay writes `totalDueSeller` split per line item (pre-fee); Reverb writes `direct_checkout_payout` (post-fee). This inconsistency is being reworked under #136 / #152
 - `shipments` — shipping data: order_id, carrier, service, tracking_id, tracking_number, tracker_url, label_url, shipping_cost
 - `sites` — platform lookup: name, fee_rate, fee_flat, fee_on_shipping
 - `categories` — category lookup: name, color, badge_class
