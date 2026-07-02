@@ -10,6 +10,7 @@ const SCOPES = [
   'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
   'https://api.ebay.com/oauth/api_scope/sell.reputation',
   'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+  'https://api.ebay.com/oauth/api_scope/sell.finances',
 ].join(' ');
 
 function clientCredentials() {
