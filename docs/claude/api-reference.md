@@ -126,7 +126,7 @@ The pipeline is a deliberate two-mode split. The **inventory-backed** path (`bul
 - `GET /api/ebay/auth` — redirects to eBay OAuth consent page (one-time setup)
 - `POST /api/ebay/auth/exchange` — exchanges auth code for tokens
 - `GET /api/ebay/orders` — orders awaiting fulfillment (`NOT_STARTED|IN_PROGRESS`); `?filter=sold` switches to `FULFILLED|IN_PROGRESS`
-- `GET /api/ebay/orders/:id` — single order (buyer address + `pricingSummary.totalDueSeller` payout)
+- `GET /api/ebay/orders/:id` — single order (buyer address + `paymentSummary.totalDueSeller` payout)
 - `POST /api/ebay/orders/:id/tracking` — push tracking; marks order shipped, triggers payout flow. Body: `{ lineItemIds, trackingNumber, shippingCarrierCode }`
 - `GET /api/ebay/listings` — all active seller listings via the Browse API (app token, no user OAuth). Requires `EBAY_SELLER_USERNAME` in `.env`. Returns `{ listings: [{ title, legacyItemId, price, watchCount, quantityAvailable }] }`
 - `POST /api/ebay/migrate-listing` — migrate up to 5 legacy listings to the Inventory API model. Body: `{ listingIds: string[] }` (max 5). Returns `[{ listingId, sku, offerId, error }]`
@@ -149,7 +149,7 @@ The pipeline is a deliberate two-mode split. The **inventory-backed** path (`bul
 - Re-auth: visit `/api/ebay/auth`, complete sign-in, land on `duckwerks.com/ebay-oauth-callback.php` (external page, not in this repo), copy code, run the displayed curl command against `POST /api/ebay/auth/exchange` (body `{ code }`).
 - Credential rotation (a new refresh token, or a scope change) requires the full OAuth dance above; there is no way to rotate `ebay-tokens.json` without it.
 - eBay carrier codes: `USPS`, `UPS`, `FEDEX`, `DHL` (mapped from EasyPost names in `server/ebay.js`)
-- `totalDueSeller` (`pricingSummary.totalDueSeller` on `GET /api/ebay/orders/:id`) is the **pre-fee** order total: item price plus collected shipping, after discounts, with final value fees not yet deducted. Available pre-fulfillment. It is not equivalent to Reverb's `direct_checkout_payout`, which is post-fee.
+- `totalDueSeller` (`paymentSummary.totalDueSeller` on `GET /api/ebay/orders/:id`) is the **post-fee payout**, equivalent to Reverb's `direct_checkout_payout` (verified 2026-07-01 against Seller Hub: `pricingSummary.total` 17.00, `totalDueSeller` 14.39, fees 2.61). Available pre-fulfillment. It is what the ship flow stores as `sale_price`; the pre-fee buyer-paid total is `pricingSummary.total`.
 
 ---
 
@@ -160,7 +160,7 @@ DB location: `data/duckwerks.db`
 - `items` — core inventory ledger: name (**canonical materialized title**, #134), status (`Prepping`/`Listed`/`Sold` — the sole lifecycle owner), cost, category_id, lot_id, sku, quantity, quantity_sold, oversold (multi-unit listings; `quantity` defaults to 1, `oversold` flips to 1 if an order pushes `quantity_sold` past `quantity`)
 - `listings` — platform listings per item: site_id, list_price (**price authority once listed**, #134), shipping_estimate, url, platform_listing_id, offer_id, status
 - `inventory` — category intake blob keyed by sku: `metadata` JSON (disc specs + `list_title` title-spec + `listPrice` staging), location, category. `status` is a **retired tombstone** — lifecycle lives on `items.status` (#134)
-- `orders` — sale data: listing_id, sale_price, date_sold, platform_order_num. There is no stored `profit` column; realized profit is computed per request (see Profit Formulas below). `sale_price` provenance differs by platform: eBay writes `totalDueSeller` split per line item (pre-fee); Reverb writes `direct_checkout_payout` (post-fee). This inconsistency is being reworked under #136 / #152
+- `orders` — sale data: listing_id, sale_price, date_sold, platform_order_num, fees. **`sale_price` is the post-fee seller payout** (eBay: `totalDueSeller` split per line item; Reverb: `direct_checkout_payout`) — platform fees are already out of it, so never subtract a formula fee from a realized number (that double-counts, the #136 trap). `fees` defaults to 0 and exists for manual correction. There is no stored `profit` column; realized profit is computed per request (see Profit Formulas below)
 - `shipments` — shipping data: order_id, carrier, service, tracking_id, tracking_number, tracker_url, label_url, shipping_cost
 - `sites` — platform lookup: name, fee_rate, fee_flat, fee_on_shipping
 - `categories` — category lookup: name, color, badge_class
@@ -177,7 +177,7 @@ DB location: `data/duckwerks.db`
 ### Profit Formulas
 
 Two profit numbers exist and are not directly comparable.
-- **Realized** (`order.profit`, computed in `server/items.js` `buildItem()`, not a stored column): `sale_price - items.cost - shipping_cost`, where shipping_cost is the shipment's cost if shipped, otherwise the listing's `shipping_estimate`, otherwise 0. No platform fees are subtracted.
+- **Realized** (`order.profit`, computed in `server/items.js` `buildItem()`, not a stored column): `sale_price - fees - items.cost - shipping_cost`, where shipping_cost is the shipment's cost if shipped, otherwise the listing's `shipping_estimate`, otherwise 0 (the estimate fallback on shipped items is #137). Because `sale_price` is the post-fee payout, `fees` is normally 0 and the result is genuine take-home; never add a formula fee on top.
 - **Estimated** (`estProfit()` in `public/v2/js/store.js`, for `Listed` items): `list_price - cost - shipping - fee`, where shipping falls back from shipment cost to listing estimate to a $7 placeholder, and fee is computed from the listing's `sites.fee_rate`/`fee_flat` (`fee_on_shipping` decides whether shipping is folded into the fee base).
 
 This asymmetry (realized profit ignores fees, estimated profit subtracts them) is the mechanism behind #136.

@@ -32,6 +32,8 @@
 
 **2026-05-16: `upsertOffer(offerBody, headers)` and `updateOffer(offerId, offerBody, headers)` have different argument orders.** `upsertOffer` (new listings, used by `bulk-list`) takes `(body, headers)`; `updateOffer` (existing listings, used by `bulk-update` and `update-item`) takes `(offerId, body, headers)`, note the extra leading `offerId`. Transposing them passes an offer ID where a body is expected with no obvious error at the call site. Flagged during the 2026-05-16 `ebay-client.js` extraction; check the signature before wiring up a new caller.
 
+**2026-07-01: `orders.sale_price` is the post-fee payout; a session "fixed" fees into realized profit and had to revert.** The ship flow stores what the seller is paid: eBay `paymentSummary.totalDueSeller` split per line item, Reverb `direct_checkout_payout`. Both are net of platform fees (verified against Seller Hub: `pricingSummary.total` 17.00, `totalDueSeller` 14.39, fees 2.61). Issue #136 assumed stored prices were gross, derived a ~$500 "missing fees" gap from the site formula (circular; never checked a payout report), and the resulting backfill would have double-counted ~$942 across 245 orders; the SELECT-first confirm step caught it. The rules: realized numbers (`order.profit`, the momentum chart) read `orders.fees` (normally 0), never `siteFee()`; the fee formula exists only for yellow estimates on listed items; and before believing any "the stored money value is wrong" claim, verify one real order against Seller Hub first.
+
 ---
 
 ## Disc catalog & titles

@@ -57,7 +57,7 @@ public/v2/
 
 Platform fees are DB-driven off the `sites` table (`fee_rate`, `fee_flat`, `fee_on_shipping`). There is no hardcoded per-site table. `siteFee(site, price, ship)` on the store is the single fee formula; `estProfit()` and `payout()` build on it, resolving the site from the item's `activeListing()`. `lot-modal.js` and the `items`/`lots` sort keys call these store methods directly rather than reimplementing them.
 
-Those are estimates for listed items (yellow). Realized fees are per-order data, not a formula: `orders.fees` is written at order creation (eBay derives from the site formula server-side, Reverb records 0 because its payout is already net), and both the server-computed `order.profit` and the momentum chart in `charts.js` read that column rather than recomputing (#136).
+Those are estimates for listed items (yellow). Realized numbers never use the formula: `orders.sale_price` is the post-fee payout (eBay `totalDueSeller` split, Reverb `direct_checkout_payout`), so `orders.fees` is normally 0 and both the server-computed `order.profit` and the momentum chart in `charts.js` read the stored column instead of recomputing. Applying `siteFee()` to a realized sale double-counts (the #136 trap).
 
 ---
 

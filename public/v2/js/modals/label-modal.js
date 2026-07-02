@@ -343,8 +343,9 @@ document.addEventListener('alpine:init', () => {
         } else {
           // Reverb / non-eBay single record
           // direct_checkout_payout is already net of Reverb fees — record fees as 0,
-          // never the site formula (that would double-count). eBay recs omit fees so
-          // the server derives them from the site formula (sale_price is pre-fee).
+          // never the site formula (that would double-count). eBay recs omit fees too:
+          // their sale_price is the totalDueSeller split, also post-fee, so the server
+          // default of 0 is correct for both.
           await saveRec(r, {
             sale_price:         this.reverbSaleAmount || null,
             platform_order_num: this.reverbOrderNum || null,
