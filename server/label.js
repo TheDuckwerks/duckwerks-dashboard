@@ -1,5 +1,13 @@
 const express = require('express');
 const router  = express.Router();
+const db      = require('./db');
+
+// Freeze a shipment's terminal state so it drops out of the live-poll set (#160).
+// Idempotent: only writes the first time a tracker resolves to delivered.
+const freezeDelivered = db.prepare(
+  `UPDATE shipments SET tracking_status = 'delivered', delivered_at = ?
+   WHERE tracking_id = ? AND tracking_status IS NOT 'delivered'`
+);
 
 const PROVIDER = (process.env.SHIPPING_PROVIDER || 'SHIPPO').toUpperCase();
 
@@ -244,6 +252,11 @@ router.get('/tracker/:id', async (req, res) => {
     });
     const data = await r.json();
     if (!r.ok) return res.status(r.status).json(data);
+    if (data.status === 'delivered') {
+      const events      = data.tracking_details || [];
+      const deliveredAt = events.find(e => e.status === 'delivered')?.datetime || data.updated_at || null;
+      freezeDelivered.run(deliveredAt, req.params.id);
+    }
     res.json(data);
   } catch (e) {
     res.status(502).json({ error: 'EasyPost request failed', detail: e.message });

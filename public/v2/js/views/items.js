@@ -8,8 +8,7 @@ document.addEventListener('alpine:init', () => {
     openStatusId: null,
     sortKey:      'createdTime',
     sortDir:      'desc',
-    trackingData:    {},
-    trackingLoading: false,
+    get trackingLoading() { return Alpine.store('dw').trackingLoading; },
 
     init() {
       document.addEventListener('click', () => { this.openStatusId = null; });
@@ -20,14 +19,6 @@ document.addEventListener('alpine:init', () => {
           Alpine.store('dw').categoryFilter = v.category;
           Alpine.store('dw').pendingFilters = null;
         }
-      });
-      this.$watch('statusFilter', val => {
-        if (val === 'Sold' || val === 'All') this._loadTracking();
-      });
-      const dw = Alpine.store('dw');
-      if ((this.statusFilter === 'Sold' || this.statusFilter === 'All') && !dw.loading && dw.records.length > 0) this._loadTracking();
-      this.$watch('$store.dw.loading', loading => {
-        if (!loading && (this.statusFilter === 'Sold' || this.statusFilter === 'All')) this._loadTracking();
       });
       const saved = dwSortable.load('items', 'createdTime', 'desc');
       this.sortKey = saved.col;
@@ -106,23 +97,23 @@ document.addEventListener('alpine:init', () => {
       return recs;
     },
 
-    // Expands multi-unit items into per-order rows for the Sold table.
-    // Single-unit items pass through as-is. trackingKey(row) gives the right
-    // key into trackingData (item id for single-unit, order id for multi-unit).
+    // Expands multi-unit items into per-order rows for the Sold table. Single-unit
+    // items pass through as-is. _key is the unique x-for key; _trackingId is the row's
+    // shipment tracking_id — the key into the shared $store.dw.trackingData cache (#160).
     get soldRows() {
       const rows = [];
       for (const r of this.rows) {
         if (r.quantity > 1) {
           const orders = (r.listings || []).flatMap(l => l.order ? [l.order] : []);
           if (orders.length === 0) {
-            rows.push({ _isMultiUnit: true, _item: r, _order: null, _trackingKey: `item-${r.id}` });
+            rows.push({ _isMultiUnit: true, _item: r, _order: null, _key: `item-${r.id}`, _trackingId: null });
           } else {
             for (const o of orders) {
-              rows.push({ _isMultiUnit: true, _item: r, _order: o, _trackingKey: `order-${o.id}` });
+              rows.push({ _isMultiUnit: true, _item: r, _order: o, _key: `order-${o.id}`, _trackingId: o.shipment?.tracking_id || null });
             }
           }
         } else {
-          rows.push({ _isMultiUnit: false, _item: r, _order: r.order || null, _trackingKey: `item-${r.id}` });
+          rows.push({ _isMultiUnit: false, _item: r, _order: r.order || null, _key: `item-${r.id}`, _trackingId: r.order?.shipment?.tracking_id || null });
         }
       }
       return rows;
@@ -278,33 +269,6 @@ document.addEventListener('alpine:init', () => {
         listed:   rows.filter(r => r.status === 'Listed').length,
         forecast: rows.filter(r => r.status === 'Listed').reduce((s, r) => s + dw.estProfit(r), 0),
       });
-    },
-
-    async _loadTracking() {
-      const dw = Alpine.store('dw');
-      if (dw.loading || !dw.records.length) return;
-      const tasks = [];
-      for (const r of dw.records) {
-        if (r.quantity > 1) {
-          // Multi-unit: fetch tracking per order's shipment, key by order-{id}
-          for (const l of (r.listings || [])) {
-            if (l.order?.shipment?.tracking_id) {
-              tasks.push({ key: `order-${l.order.id}`, trackingId: l.order.shipment.tracking_id });
-            }
-          }
-        } else if (r.status === 'Sold' && r.shipment?.tracking_id) {
-          tasks.push({ key: `item-${r.id}`, trackingId: r.shipment.tracking_id });
-        }
-      }
-      if (!tasks.length) return;
-      this.trackingLoading = true;
-      const results = await Promise.all(tasks.map(async ({ key, trackingId }) => ({
-        key, data: await dw.fetchTracker(trackingId)
-      })));
-      const merged = {};
-      results.forEach(({ key, data }) => { merged[key] = data; });
-      this.trackingData    = merged;
-      this.trackingLoading = false;
     },
 
     trackStatusBadge(status) {

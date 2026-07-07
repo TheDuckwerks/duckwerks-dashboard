@@ -3,7 +3,6 @@ document.addEventListener('alpine:init', () => {
   Alpine.data('shippingModal', () => ({
     loading:      false,
     refreshing:   false,
-    trackingData: {},  // { [recordId]: { status, carrier, estDelivery, publicUrl } | null }
     locations:    {},
     errMsg:       '',
 
@@ -14,40 +13,23 @@ document.addEventListener('alpine:init', () => {
     },
 
     async _open() {
-      this.loading      = true;
-      this.errMsg       = '';
-      this.trackingData = {};
-      this.locations    = {};
-      await this._loadAll();
+      this.loading   = true;
+      this.errMsg    = '';
+      this.locations = {};
+      await Alpine.store('dw').loadTrackers();   // refresh the shared tracker cache on open
       await this._fetchLocations(this.inTransitRecords);
       this.loading = false;
     },
 
     get inTransitRecords() {
       const dw = Alpine.store('dw');
-      return dw.records.filter(r => dw.isInTransit(r, this.trackingData));
-    },
-
-    async _loadAll() {
-      const dw = Alpine.store('dw');
-      // Guard: if store hasn't loaded yet, nothing to fetch
-      if (dw.loading || !dw.records.length) { this.loading = false; return; }
-      // Collect all results locally first — concurrent spread writes would race
-      const results = await Promise.all(this.inTransitRecords.map(async r => {
-        const tid  = r.shipment?.tracking_id;
-        const data = await dw.fetchTracker(tid);
-        return { id: r.id, data };
-      }));
-      const merged = {};
-      results.forEach(({ id, data }) => { merged[id] = data; });
-      this.trackingData = merged;
+      return dw.records.filter(r => dw.isInTransit(r));
     },
 
     async refreshAll() {
-      this.refreshing   = true;
-      this.trackingData = {};
-      this.locations    = {};
-      await this._loadAll();
+      this.refreshing = true;
+      this.locations  = {};
+      await Alpine.store('dw').loadTrackers();
       await this._fetchLocations(this.inTransitRecords);
       this.refreshing = false;
     },
@@ -72,21 +54,21 @@ document.addEventListener('alpine:init', () => {
     },
 
     trackStatus(r) {
-      return this.trackingData[r.id]?.status || null;
+      return Alpine.store('dw').trackerFor(r.shipment)?.status || null;
     },
 
     trackCarrier(r) {
-      return this.trackingData[r.id]?.carrier || 'n/a';
+      return Alpine.store('dw').trackerFor(r.shipment)?.carrier || 'n/a';
     },
 
     trackEstDelivery(r) {
-      const raw = this.trackingData[r.id]?.estDelivery;
+      const raw = Alpine.store('dw').trackerFor(r.shipment)?.estDelivery;
       if (!raw) return null;
       return new Date(raw).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     },
 
     trackPublicUrl(r) {
-      return this.trackingData[r.id]?.publicUrl || r.shipment?.tracker_url || null;
+      return Alpine.store('dw').trackerFor(r.shipment)?.publicUrl || r.shipment?.tracker_url || null;
     },
 
     statusBadgeClass(status) {

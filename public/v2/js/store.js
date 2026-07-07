@@ -34,6 +34,8 @@ document.addEventListener('alpine:init', () => {
     environment:      '',
     trafficMap:       {},   // { [legacyListingId]: { views, impressions, ctr } } — session cache
     trafficLoading:   false,
+    trackingData:     {},   // { [tracking_id]: {status, carrier, estDelivery, deliveredAt, events, publicUrl} } — shared across views
+    trackingLoading:  false,
 
     // ── Init ──────────────────────────────────────────────────────────────────
     async init() {
@@ -70,6 +72,7 @@ document.addEventListener('alpine:init', () => {
         this._lots      = lots;
         this.categories = cats;
         this.sites      = sites;
+        this.loadTrackers();   // fire-and-forget — refresh the shared tracker cache in sync with records
       } catch (e) {
         this.error = 'Failed to load records: ' + e.message;
       } finally {
@@ -448,12 +451,67 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    isInTransit(r, trackingData) {
+    // Membership is a pure function of stored shipment state — no live fetch needed (#160).
+    isInTransit(r) {
       if (r.status !== 'Sold' || !r.shipment?.tracking_id) return false;
-      const td = trackingData[r.id];
-      if (!td || td.status !== 'delivered') return true;
-      if (!td.deliveredAt) return false;
-      return (Date.now() - new Date(td.deliveredAt).getTime()) < 3 * 24 * 60 * 60 * 1000;
+      const s = r.shipment;
+      if (s.tracking_status !== 'delivered') return true;          // not yet delivered = in transit
+      if (!s.delivered_at) return false;
+      return (Date.now() - new Date(s.delivered_at).getTime()) < 3 * 24 * 60 * 60 * 1000;  // 3-day grace
+    },
+
+    // Populate the shared tracker cache once for every sold shipment (single + multi-unit
+    // orders), keyed by tracking_id — a tracker belongs to a shipment, so this key serves
+    // all views (#160). Delivered shipments seed from stored fields; only in-flight ones
+    // poll live. Fire-and-forget from fetchAll so the UI never blocks on tracker polls.
+    async loadTrackers() {
+      if (this.trackingLoading) return;
+      const byId = {};
+      for (const r of this.records) {
+        if (r.quantity > 1) {
+          for (const l of (r.listings || [])) {
+            const s = l.order?.shipment;
+            if (s?.tracking_id) byId[s.tracking_id] = s;
+          }
+        } else if (r.status === 'Sold' && r.shipment?.tracking_id) {
+          byId[r.shipment.tracking_id] = r.shipment;
+        }
+      }
+      const shipments = Object.values(byId);
+      if (!shipments.length) { this.trackingData = {}; return; }
+      this.trackingLoading = true;
+      const merged  = {};
+      const toFetch = [];
+      for (const s of shipments) {
+        if (s.tracking_status === 'delivered') merged[s.tracking_id] = this.storedTracker(s);
+        else toFetch.push(s);
+      }
+      const results = await Promise.all(toFetch.map(async s => ({
+        id: s.tracking_id, data: await this.fetchTracker(s.tracking_id)
+      })));
+      results.forEach(({ id, data }) => { merged[id] = data; });
+      this.trackingData    = merged;
+      this.trackingLoading = false;
+    },
+
+    // Tracker for a record, looked up by its shipment's tracking_id. Pass the shipment
+    // (record's own, or a specific order's shipment for multi-unit rows).
+    trackerFor(shipment) {
+      return this.trackingData[shipment?.tracking_id] || null;
+    },
+
+    // Display shape for a frozen-delivered shipment, built from stored fields so delivered
+    // packages never trigger a live tracker poll (#160). Mirrors fetchTracker's return shape.
+    storedTracker(shipment) {
+      if (shipment?.tracking_status !== 'delivered') return null;
+      return {
+        status:      'delivered',
+        carrier:     this._carrierName(shipment.carrier),
+        estDelivery: shipment.delivered_at || null,
+        deliveredAt: shipment.delivered_at || null,
+        events:      [],
+        publicUrl:   shipment.tracker_url || null,
+      };
     },
 
   });

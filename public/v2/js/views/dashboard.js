@@ -2,39 +2,18 @@
 document.addEventListener('alpine:init', () => {
   Alpine.data('dashView', () => ({
 
-    trackingData:    {},
-    trackingLoading: false,
-
-    init() {
-      this.$watch('$store.dw.loading', val => { if (!val) this._loadTracking(); });
-      const dw = Alpine.store('dw');
-      if (!dw.loading && dw.records.length > 0) this._loadTracking();
-    },
+    get trackingLoading() { return Alpine.store('dw').trackingLoading; },
 
     get inTransitRows() {
       const dw = Alpine.store('dw');
-      return dw.records.filter(r => dw.isInTransit(r, this.trackingData))
+      return dw.records.filter(r => dw.isInTransit(r))
         .sort((a, b) => new Date(b.order?.date_sold || 0) - new Date(a.order?.date_sold || 0));
     },
 
-    async _loadTracking() {
-      const dw = Alpine.store('dw');
-      const toFetch = dw.records.filter(r => r.status === 'Sold' && r.shipment?.tracking_id);
-      if (!toFetch.length) return;
-      this.trackingLoading = true;
-      const results = await Promise.all(toFetch.map(async r => ({
-        id: r.id, data: await dw.fetchTracker(r.shipment.tracking_id)
-      })));
-      const merged = {};
-      results.forEach(({ id, data }) => { merged[id] = data; });
-      this.trackingData    = merged;
-      this.trackingLoading = false;
-    },
-
-    trackStatus(r)      { return this.trackingData[r.id]?.status || null; },
-    trackCarrier(r)     { return this.trackingData[r.id]?.carrier || 'n/a'; },
+    trackStatus(r)      { return Alpine.store('dw').trackerFor(r.shipment)?.status || null; },
+    trackCarrier(r)     { return Alpine.store('dw').trackerFor(r.shipment)?.carrier || 'n/a'; },
     trackEstDelivery(r) {
-      const raw = this.trackingData[r.id]?.estDelivery;
+      const raw = Alpine.store('dw').trackerFor(r.shipment)?.estDelivery;
       return raw ? new Date(raw).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'n/a';
     },
 

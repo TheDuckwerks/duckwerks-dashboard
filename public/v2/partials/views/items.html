@@ -116,7 +116,7 @@
                 </tr>
               </thead>
               <tbody>
-                <template x-for="row in soldRows" :key="row._trackingKey">
+                <template x-for="row in soldRows" :key="row._key">
                   <tr @click="openItem(row._item)" style="cursor:pointer">
                     <td class="date" x-text="row._order?.date_sold ? new Date(row._order.date_sold + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—'"></td>
                     <td class="nm">
@@ -133,12 +133,12 @@
                       x-text="row._order?.profit != null ? ((row._order.profit >= 0 ? '+' : '') + $store.dw.fmt0(row._order.profit)) : '—'"></td>
                     <td class="num r" x-text="row._order?.shipment?.shipping_cost != null ? $store.dw.fmt0(row._order.shipment.shipping_cost) : '—'"></td>
                     <td>
-                      <span x-show="row._order?.shipment?.tracking_id && trackingData[row._trackingKey]"
-                        :class="'badge ' + trackStatusBadge(trackingData[row._trackingKey]?.status)"
-                        x-text="trackStatusLabel(trackingData[row._trackingKey]?.status)"></span>
-                      <span x-show="row._order?.shipment?.tracking_id && !trackingData[row._trackingKey] && !trackingLoading"
+                      <span x-show="row._trackingId && $store.dw.trackingData[row._trackingId]"
+                        :class="'badge ' + trackStatusBadge($store.dw.trackingData[row._trackingId]?.status)"
+                        x-text="trackStatusLabel($store.dw.trackingData[row._trackingId]?.status)"></span>
+                      <span x-show="row._trackingId && !$store.dw.trackingData[row._trackingId] && !trackingLoading"
                         style="color:var(--ink-4);font-size:11px">—</span>
-                      <span x-show="!row._order?.shipment?.tracking_id"
+                      <span x-show="!row._trackingId"
                         style="color:var(--ink-4);font-size:11px">—</span>
                     </td>
                   </tr>
@@ -204,8 +204,8 @@
                       x-text="r.order?.date_sold ? new Date(r.order.date_sold + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—'"></td>
                     <td x-show="statusFilter === 'All'">
                       <span x-show="r.shipment?.tracking_id">
-                        <span x-show="trackingData['item-' + r.id]" :class="'badge ' + trackStatusBadge(trackingData['item-' + r.id]?.status)" x-text="trackStatusLabel(trackingData['item-' + r.id]?.status)"></span>
-                        <span x-show="!trackingData['item-' + r.id] && !trackingLoading" style="color:var(--ink-4);font-size:11px">—</span>
+                        <span x-show="$store.dw.trackingData[r.shipment?.tracking_id]" :class="'badge ' + trackStatusBadge($store.dw.trackingData[r.shipment?.tracking_id]?.status)" x-text="trackStatusLabel($store.dw.trackingData[r.shipment?.tracking_id]?.status)"></span>
+                        <span x-show="!$store.dw.trackingData[r.shipment?.tracking_id] && !trackingLoading" style="color:var(--ink-4);font-size:11px">—</span>
                       </span>
                       <span x-show="!r.shipment?.tracking_id" style="color:var(--ink-4);font-size:11px">—</span>
                     </td>

@@ -95,6 +95,8 @@ db.exec(`
     label_url        TEXT,
     shipping_cost    REAL,
     shipped_at       TEXT,
+    tracking_status  TEXT,
+    delivered_at     TEXT,
     created_at       TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -165,6 +167,17 @@ const orderCols = db.pragma('table_info(orders)').map(r => r.name);
 if (!orderCols.includes('fees')) {
   db.prepare('ALTER TABLE orders ADD COLUMN fees REAL').run();
 }
+
+// ── Tracker terminal state — freeze delivered shipments (migration, #160) ────
+// tracking_status = last known EasyPost status; 'delivered' is terminal and
+// removes the shipment from the live-poll set. delivered_at = delivery timestamp,
+// used for the client's 3-day post-delivery grace in the In-Transit widget.
+const shipmentCols = db.pragma('table_info(shipments)').map(r => r.name);
+['tracking_status', 'delivered_at'].forEach(col => {
+  if (!shipmentCols.includes(col)) {
+    db.prepare(`ALTER TABLE shipments ADD COLUMN ${col} TEXT`).run();
+  }
+});
 
 // ── Seed reference data (idempotent) ──────────────────────────────────────────
 
