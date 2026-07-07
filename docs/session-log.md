@@ -1,6 +1,10 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-06 — Sites order-refresh cleanup (v2.0.52)
+
+Diagnosed a page-load slowness Geoff noticed on the Sites/checkout view: the 4.8s wasn't server-side (TTFB ~180ms) but browser connection stall — order calls queued behind a hard-refresh's full boot traffic. Not a bug. The real cleanup (#158): `fetchOrders` had no in-flight guard (unlike `checkOrders`), so overlapping triggers from the three stacked `$watch` handlers (view-enter, modal-close, `ordersRefreshTick`) each ran the full pair of live eBay/Reverb calls — notably the header "check orders" button double-fires by setting `activeView='sites'` and bumping the tick in one expression. Fixed in `sites.js`: guard coalesces concurrent/re-entrant calls (collapses the double at the source, no index.html change), `try/finally` so the loading flag can't stick, and stopped blanking the lists up front (killed the blank-then-refill flash — helpers overwrite on success). Corrected a mid-session miss: `/api/inventory/{sku}` is a local SQLite read, not a live eBay call, so the per-SKU location fan-out is cheap. Filed #159 (bulk/queue label flow) as the separate UX bother. Verified empty-queue case live; the double-fire/flash fixes need real orders to fully confirm.
+
 ### 2026-07-01 (nightcap) — #156 CLI --update fix (v2.0.51)
 
 Short session. Fixed #156: `bulk-list-discs.js --update` gated on `metadata.listPrice`, which #134 nulls once a disc is listed, so every listed disc skipped. Update mode now trusts the `/api/inventory` join: skips "not listed" when there's no active listing row, shows the live `listing_price` in the dry run, and stops reading the blob price entirely (title/price authority is server-side via `resolveListedFields`). Verified with a read-only dry run against the NUC over an SSH tunnel (DWG-009 shows its real $23). Context landed post-fix: the CLI is off the daily path (web catalog flow is the listing surface, retirement is #139 Phase 4), so this was a tail-fix on a deprecated tool; #156 closed with that note. #157 (Finances API fee capture) untouched, stays open.

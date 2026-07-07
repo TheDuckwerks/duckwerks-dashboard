@@ -1,6 +1,6 @@
 {
   "name": "duckwerks-dashboard",
-  "version": "2.0.51",
+  "version": "2.0.52",
   "description": "Local proxy server for Duckwerks Dashboard",
   "main": "server.js",
   "scripts": {

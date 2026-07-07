@@ -48,24 +48,27 @@ document.addEventListener('alpine:init', () => {
     // ── Orders ────────────────────────────────────────────────────────────────
 
     async fetchOrders() {
+      if (this.ordersLoading) return;   // coalesce concurrent/re-entrant triggers (view-enter, modal-close, tick)
       this.ordersLoading   = true;
-      this.ebayOrders      = [];
-      this.reverbOrders    = [];
       this.orderSel        = {};
       this.ebayOrdersErr   = '';
       this.reverbOrdersErr = '';
-      const [ebay, reverb] = await Promise.allSettled([
-        this._fetchEbayOrders(),
-        this._fetchReverbOrders(),
-      ]);
-      if (ebay.status   === 'rejected') this.ebayOrdersErr   = ebay.reason?.message   || 'eBay fetch failed';
-      if (reverb.status === 'rejected') this.reverbOrdersErr = reverb.reason?.message || 'Reverb fetch failed';
-      const allSkus = [
-        ...this.ebayOrders.flatMap(e => e.items.map(i => i.rec?.sku).filter(Boolean)),
-        ...this.reverbOrders.map(e => e.rec?.sku).filter(Boolean),
-      ];
-      if (allSkus.length) await this._fetchLocations(allSkus);
-      this.ordersLoading = false;
+      try {
+        // keep the current lists visible until fresh data lands — the helpers overwrite on success, so no blank flash
+        const [ebay, reverb] = await Promise.allSettled([
+          this._fetchEbayOrders(),
+          this._fetchReverbOrders(),
+        ]);
+        if (ebay.status   === 'rejected') { this.ebayOrders   = []; this.ebayOrdersErr   = ebay.reason?.message   || 'eBay fetch failed'; }
+        if (reverb.status === 'rejected') { this.reverbOrders = []; this.reverbOrdersErr = reverb.reason?.message || 'Reverb fetch failed'; }
+        const allSkus = [
+          ...this.ebayOrders.flatMap(e => e.items.map(i => i.rec?.sku).filter(Boolean)),
+          ...this.reverbOrders.map(e => e.rec?.sku).filter(Boolean),
+        ];
+        if (allSkus.length) await this._fetchLocations(allSkus);
+      } finally {
+        this.ordersLoading = false;
+      }
     },
 
     async _fetchEbayOrders() {
