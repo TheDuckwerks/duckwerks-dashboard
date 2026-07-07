@@ -48,6 +48,7 @@ public/v2/
 - `$store.dw.records[]`: all inventory items, fetched on init
 - `$store.dw.lots[]`: all lot records, fetched on init
 - `$store.dw.categories[]` / `$store.dw.sites[]`: reference data, fetched on init alongside records/lots
+- `$store.dw.trackingData{}`: shared tracker cache keyed by `tracking_id`, populated by `loadTrackers()` (fired from `fetchAll`). Delivered shipments seed from stored fields via `storedTracker()`; only in-flight ones poll EasyPost. All views read it through `store.trackerFor(shipment)` — they don't fetch trackers themselves (#160)
 - `$store.dw.fetchAll()`: re-call after any write that affects displayed data
 - `CAT_COLOR` / `CAT_BADGE` in `config.js`: category display config (CSS color var + badge class), keyed by category name; matches server seed data
 
@@ -153,7 +154,8 @@ Three independent filter axes, all applied in `itemsView.rows` getter:
 
 ### Shipping Modal: In Transit
 - Shows sold+tracked items not yet delivered, or delivered within last 3 days
-- Filter logic lives in `store.isInTransit(r, trackingData)`; update the window there, not in each view
+- Membership lives in `store.isInTransit(r)` — a pure function of stored shipment fields (`tracking_status`/`delivered_at`), no live data needed; update the window there, not in each view (#160)
+- Tracker data is shared: dashboard, items, and this modal all read `$store.dw.trackingData` (see Data Layer) rather than fetching independently
 - `deliveredAt` extracted from EasyPost `tracking_details` event with `status === 'delivered'`
 - EasyPost test mode uses historical fake delivery dates, so items may disappear immediately after delivery; expected behavior
 

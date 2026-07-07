@@ -94,7 +94,7 @@ All credentials injected server-side from `.env` — never exposed to the browse
 **server/label.js** (mounted at `/api/label`)
 - `POST /api/label/rates` — create shipment, return sorted rates. Body: `{ toAddress, parcel }` (parcel weight in decimal lbs)
 - `POST /api/label/purchase` — purchase a rate, return tracking + label URL. Body: `{ rateObjectId }`. EasyPost encodes `shipmentId|rateId` in `rateObjectId` — transparent to client
-- `GET /api/label/tracker/:id` — proxies EasyPost tracker by ID; returns tracker object with status, carrier, tracking_details, etc.
+- `GET /api/label/tracker/:id` — proxies EasyPost tracker by ID; returns tracker object with status, carrier, tracking_details, etc. Side effect: when the tracker resolves to `delivered`, freezes the shipment's `tracking_status`/`delivered_at` so it drops out of the client's live-poll set (#160)
 - `GET /api/label/usage` — Shippo-only usage counter; returns `{ skipped: true }` when on EasyPost
 - Carrier/service name maps: `CARRIER_NAMES`, `SERVICE_NAMES` in `server/label.js` — add entries there when new raw codes appear
 
@@ -161,7 +161,7 @@ DB location: `data/duckwerks.db`
 - `listings` — platform listings per item: site_id, list_price (**price authority once listed**, #134), shipping_estimate, url, platform_listing_id, offer_id, status
 - `inventory` — category intake blob keyed by sku: `metadata` JSON (disc specs + `list_title` title-spec + `listPrice` staging), location, category. `status` is a **retired tombstone** — lifecycle lives on `items.status` (#134)
 - `orders` — sale data: listing_id, sale_price, date_sold, platform_order_num, fees. **`sale_price` is the post-fee seller payout** (eBay: `totalDueSeller` split per line item; Reverb: `direct_checkout_payout`) — platform fees are already out of it, so never subtract a formula fee from a realized number (that double-counts, the #136 trap). `fees` defaults to 0 and exists for manual correction. There is no stored `profit` column; realized profit is computed per request (see Profit Formulas below)
-- `shipments` — shipping data: order_id, carrier, service, tracking_id, tracking_number, tracker_url, label_url, shipping_cost
+- `shipments` — shipping data: order_id, carrier, service, tracking_id, tracking_number, tracker_url, label_url, shipping_cost, tracking_status, delivered_at. `tracking_status`/`delivered_at` are the frozen terminal state (#160): the tracker route writes them when EasyPost reports `delivered`, and the client then polls only non-delivered shipments (delivered ones render from these stored fields).
 - `sites` — platform lookup: name, fee_rate, fee_flat, fee_on_shipping
 - `categories` — category lookup: name, color, badge_class
 - `lots` — lot groupings: name, purchase_date, total_cost, notes
