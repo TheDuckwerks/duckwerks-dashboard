@@ -485,13 +485,6 @@ router.post('/update-item', async (req, res) => {
     const existing = await getInventoryItem(item.sku, headers);
     if (!existing) return res.status(404).json({ error: `No inventory item found for SKU ${item.sku}` });
 
-    // eBay serializes a never-set weight as {value: 0} on GET, but its PUT validator
-    // rejects value 0 (25709) — strip it so the round-trip doesn't self-destruct
-    if (existing.packageWeightAndSize?.weight?.value === 0) {
-      delete existing.packageWeightAndSize.weight;
-      if (!Object.keys(existing.packageWeightAndSize).length) delete existing.packageWeightAndSize;
-    }
-
     await putInventoryItem(item.sku, {
       ...existing,
       product: {

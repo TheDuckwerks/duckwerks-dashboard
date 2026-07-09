@@ -69,7 +69,9 @@ document.addEventListener('alpine:init', () => {
         const result = this.results[i];
         if (!item.listings || item.listings.length === 0) {
           result.status = 'error';
-          result.error  = 'No listings found — check source or search terms';
+          result.error  = item.errors?.length
+            ? item.errors.join(' · ')
+            : 'No listings found — check source or search terms';
           continue;
         }
         try {

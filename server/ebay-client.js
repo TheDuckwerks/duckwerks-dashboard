@@ -107,6 +107,13 @@ async function getInventoryItem(sku, headers) {
 }
 
 async function putInventoryItem(sku, body, headers) {
+  // eBay's own GET serializes a never-set weight as {value: 0}, which its PUT
+  // validator rejects (25709) — strip it here so every GET→modify→PUT round-trip
+  // is safe by construction (see GOTCHAS: eBay)
+  if (body.packageWeightAndSize?.weight?.value === 0) {
+    delete body.packageWeightAndSize.weight;
+    if (!Object.keys(body.packageWeightAndSize).length) delete body.packageWeightAndSize;
+  }
   const res = await fetch(
     `${EBAY_API}/sell/inventory/v1/inventory_item/${encodeURIComponent(sku)}`,
     { method: 'PUT', headers, body: JSON.stringify(body) }

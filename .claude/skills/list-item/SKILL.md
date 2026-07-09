@@ -76,13 +76,13 @@ Based on intake + category, assess what you know vs. what you need:
 - Typical eBay item specifics / aspects required
 - Any category-specific pricing factors from `gear-comp-research.md`
 
-**Lot assignment:** Call `GET http://fedora.local:3000/api/lots` to get the lot list. Present the names and ask which lot this item belongs to. Save `lot_id` and `lot_name` to gap_analysis data. If the API is unreachable, ask the user directly.
+**Lot assignment:** Call `GET https://dash.pond.duckwerks.com/api/lots` to get the lot list. Present the names and ask which lot this item belongs to. Save `lot_id` and `lot_name` to gap_analysis data. If the API is unreachable, ask the user directly.
 
 If other gaps exist, ask 1-2 targeted questions. Do NOT open-ended web search.
 
 Output a brief "here's what I know, here's what I'm assuming" summary and confirm before proceeding.
 
-> **TODO:** call `GET http://fedora.local:3000/api/ebay/aspects?category=X` to pull required item specifics automatically.
+> **TODO:** call `GET https://dash.pond.duckwerks.com/api/ebay/aspects?category=X` to pull required item specifics automatically.
 
 ### Phase 3 — Comp Search Terms
 Propose 2-3 eBay search term variants. Explain the tradeoffs (broad vs. specific). User confirms or edits.
@@ -92,7 +92,7 @@ Output: the exact search string(s) to use. Save to checkpoint. Then immediately 
 ### Phase 4 — Comp Data (automated)
 Run comps automatically via the local API:
 
-**Step 1 — Search:** POST to `http://fedora.local:3000/api/comps/search` with all confirmed search terms as separate items:
+**Step 1 — Search:** POST to `https://dash.pond.duckwerks.com/api/comps/search` with all confirmed search terms as separate items:
 ```json
 {
   "items": [
@@ -103,7 +103,7 @@ Run comps automatically via the local API:
 ```
 Returns `{ results: [{ name, listings: [...] }] }`.
 
-**Step 2 — Analyze:** For each result with listings, POST to `http://fedora.local:3000/api/comps/analyze`:
+**Step 2 — Analyze:** For each result with listings, POST to `https://dash.pond.duckwerks.com/api/comps/analyze`:
 ```json
 { "item": { "name": "search term", "hints": {}, "listings": [...] } }
 ```
@@ -121,7 +121,7 @@ COMP RESEARCH: <search term>
 <csv rows>
 ```
 
-If the API is unreachable or returns an error, fall back: tell the user to go to `http://fedora.local:3000` → COMP tab → run the searches manually → copy the result into `comps.txt` → tell you when it's there. Then read the file and proceed.
+If the API is unreachable or returns an error, fall back: tell the user to go to `https://dash.pond.duckwerks.com` → COMP tab → run the searches manually → copy the result into `comps.txt` → tell you when it's there. Then read the file and proceed.
 
 Save file reference to checkpoint. Proceed to Phase 5.
 
@@ -171,7 +171,7 @@ Produce the full eBay listing metadata block.
 - Use the slug to build a human-readable SKU: `DW-<slug>` truncated to 50 chars
 - Save as `sku` in `metadata.data`
 
-> **TODO:** validate required aspects against live eBay category data via `GET http://fedora.local:3000/api/ebay/aspects`.
+> **TODO:** validate required aspects against live eBay category data via `GET https://dash.pond.duckwerks.com/api/ebay/aspects`.
 
 ### Phase 8 — Listing
 Present final review: title, price, condition, key metadata, description preview.
@@ -185,7 +185,7 @@ User approves.
 
 Write `docs/listing-sessions/<slug>/listing.md` — clean, sectioned, copy-paste ready. One fenced block per field (title, price, min offer, category, condition, duration, shipping, returns, item specifics, description, condition field).
 
-**Then POST to `http://fedora.local:3000/api/ebay/list-item`:**
+**Then POST to `https://dash.pond.duckwerks.com/api/ebay/list-item`:**
 
 Assemble payload from checkpoint phases `copy` + `metadata`:
 ```json

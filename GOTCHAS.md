@@ -16,7 +16,7 @@
 
 ## eBay
 
-**2026-07-09: Inventory API GET→PUT round-trips self-destruct on weight.** GET `inventory_item/{sku}` serializes a never-set package weight as `packageWeightAndSize.weight: { value: 0, unit: "POUND" }`, but PUT rejects `value: 0` (`25709 Invalid value for weight.value`) — so echoing eBay's own GET body back at it 400s. Bit the EQ title-revision pass: all 9 `update-item` calls failed identically. `update-item` in `server/ebay-listings.js` now strips a zero weight (and an emptied `packageWeightAndSize`) before the PUT. Any future GET→modify→PUT path needs the same sanitization.
+**2026-07-09: Inventory API GET→PUT round-trips self-destruct on weight.** GET `inventory_item/{sku}` serializes a never-set package weight as `packageWeightAndSize.weight: { value: 0, unit: "POUND" }`, but PUT rejects `value: 0` (`25709 Invalid value for weight.value`) — so echoing eBay's own GET body back at it 400s. Bit the EQ title-revision pass: all 9 `update-item` calls failed identically. `putInventoryItem` in `server/ebay-client.js` strips a zero weight (and an emptied `packageWeightAndSize`) before every PUT, so all round-trip paths are safe by construction. Related trap: PUT replaces the whole inventory item, so a path that rebuilds the body instead of spreading `existing` silently erases fields it omits (`bulk-photos` does this deliberately for weight-less discs).
 
 **Traffic API — use `TOTAL_IMPRESSION_TOTAL`, not `LISTING_IMPRESSION_TOTAL`.** `TOTAL_IMPRESSION_TOTAL` includes promoted-listing impressions; `LISTING_IMPRESSION_TOTAL` is organic only. The Seller Hub UI shows the total, so the organic-only metric will silently undercount and not match what Geoff sees. Used in `public/v2/js/views/analytics.js`.
 

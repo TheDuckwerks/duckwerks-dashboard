@@ -56,16 +56,21 @@ router.post('/search', async (req, res) => {
     const results = await Promise.all(items.map(async item => {
       const sources = item.sources || ['ebay'];
 
+      // a failed source surfaces in `errors` so the caller can tell
+      // "source down" from "genuinely zero comps"
+      const errors = [];
       const [ebayListings, reverbListings] = await Promise.all([
         sources.includes('ebay')
           ? searchItem(item).then(r => r.listings).catch(e => {
               console.warn(`eBay search failed for "${item.name}":`, e.message);
+              errors.push(`eBay: ${e.message}`);
               return [];
             })
           : Promise.resolve([]),
         sources.includes('reverb')
           ? searchReverb(item.name, item.minPrice).catch(e => {
               console.warn(`Reverb scrape failed for "${item.name}":`, e.message);
+              errors.push(`Reverb: ${e.message}`);
               return [];
             })
           : Promise.resolve([]),
@@ -74,6 +79,7 @@ router.post('/search', async (req, res) => {
         name:     item.name,
         hints:    item,
         listings: [...ebayListings, ...reverbListings],
+        errors,
       };
     }));
     res.json({ results });
@@ -102,7 +108,12 @@ async function searchItem(item) {
     throw new Error(`SerpAPI error for "${name}": ${res.status} — ${text}`);
   }
 
-  const data     = await res.json();
+  const data = await res.json();
+  // SerpAPI reports engine-level failures as HTTP 200 + an `error` field
+  // (seen 2026-07-09: eBay engine returning empty for every query) — surface it
+  if (data.error && !(data.organic_results || []).length) {
+    throw new Error(`SerpAPI: ${data.error}`);
+  }
   const listings = (data.organic_results || []).map(i => {
     const price    = i.price?.extracted || 0;
     const shipping = typeof i.shipping === 'object' ? (i.shipping.extracted || 0) : 0;
