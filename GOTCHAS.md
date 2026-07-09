@@ -16,6 +16,8 @@
 
 ## eBay
 
+**2026-07-09: Inventory API GET→PUT round-trips self-destruct on weight.** GET `inventory_item/{sku}` serializes a never-set package weight as `packageWeightAndSize.weight: { value: 0, unit: "POUND" }`, but PUT rejects `value: 0` (`25709 Invalid value for weight.value`) — so echoing eBay's own GET body back at it 400s. Bit the EQ title-revision pass: all 9 `update-item` calls failed identically. `update-item` in `server/ebay-listings.js` now strips a zero weight (and an emptied `packageWeightAndSize`) before the PUT. Any future GET→modify→PUT path needs the same sanitization.
+
 **Traffic API — use `TOTAL_IMPRESSION_TOTAL`, not `LISTING_IMPRESSION_TOTAL`.** `TOTAL_IMPRESSION_TOTAL` includes promoted-listing impressions; `LISTING_IMPRESSION_TOTAL` is organic only. The Seller Hub UI shows the total, so the organic-only metric will silently undercount and not match what Geoff sees. Used in `public/v2/js/views/analytics.js`.
 
 **eBay rejects a `scope` parameter in the refresh-token request body.** `refreshAccessToken()` in `server/ebay-auth.js` sends only `grant_type` and `refresh_token`; the refreshed access token inherits whatever scopes the original grant had. There's no way to add a new scope via refresh; a scope change needs a full browser re-auth with the new scope list.
