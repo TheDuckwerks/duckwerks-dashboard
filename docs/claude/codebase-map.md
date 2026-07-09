@@ -25,6 +25,7 @@
 - `server/inventory.js` — local inventory CRUD (`GET /api/inventory`, `GET /api/inventory/:sku`, `PATCH /api/inventory/:sku`); `GET /api/inventory` LEFT JOINs items+listings to return `item_name`, `item_status`, `listing_id`, `ebay_listing_id`, `listing_price`, `listed_at` per row. PATCH re-materializes `items.name` from the blob for non-Sold disc rows (#134)
 - `server/flight-numbers.js` — flight number lookup (`GET /api/flight-numbers?manufacturer=X&mold=Y`) from the `flight_numbers` reference table, keyed on normalized manufacturer/mold strings
 - `server/inventory-schemas.js` — canonical per-category inventory blob schemas (`SCHEMAS.disc`); `normalizeBlob()` overlays a blob onto its schema so every key is present, missing values null
+- `server/shipping-defaults.js` — per-category `shipping_estimate` defaults (`defaultShippingEstimate(itemId)`, #137); every listing INSERT path fills the column through it
 - `server/shippo.js` — Shippo shipping proxy (`/api/shippo/*`): `GET /usage` (30-day label count against the free-tier limit), `POST /rates`, `POST /purchase`, plus a generic authenticated GET/POST passthrough for other Shippo endpoints
 
 ## Scripts

@@ -9,6 +9,7 @@ const multer  = require('multer');
 const path    = require('path');
 const fs      = require('fs');
 const db      = require('./db');
+const { defaultShippingEstimate } = require('./shipping-defaults');
 
 const {
   ebayHeaders, fetchPolicies, getMerchantLocationKey,
@@ -145,8 +146,8 @@ function dbWriteDiscListing(title, listPrice, listingId, sku) {
   }
 
   const result = db.prepare(
-    'INSERT INTO listings (item_id, site_id, platform_listing_id, list_price, shipping_estimate, url) VALUES (?, ?, ?, ?, 7, ?)'
-  ).run(itemId, ebaySite.id, String(listingId), listPrice, `https://ebay.com/itm/${listingId}`);
+    'INSERT INTO listings (item_id, site_id, platform_listing_id, list_price, shipping_estimate, url) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(itemId, ebaySite.id, String(listingId), listPrice, defaultShippingEstimate(itemId), `https://ebay.com/itm/${listingId}`);
 
   if (listPrice != null) {
     db.prepare(
@@ -174,8 +175,8 @@ function dbWriteSkillListing(item, listingId) {
   ).run(item.title, cat.id, item.lot_id || null, item.sku);
 
   const result = db.prepare(
-    'INSERT INTO listings (item_id, site_id, platform_listing_id, list_price, shipping_estimate, url) VALUES (?, ?, ?, ?, 0, ?)'
-  ).run(ins.lastInsertRowid, ebaySite.id, String(listingId), item.price, `https://ebay.com/itm/${listingId}`);
+    'INSERT INTO listings (item_id, site_id, platform_listing_id, list_price, shipping_estimate, url) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(ins.lastInsertRowid, ebaySite.id, String(listingId), item.price, defaultShippingEstimate(ins.lastInsertRowid), `https://ebay.com/itm/${listingId}`);
 
   if (item.price != null) {
     db.prepare(

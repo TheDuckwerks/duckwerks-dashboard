@@ -235,7 +235,7 @@ document.addEventListener('alpine:init', () => {
       if (!active.length) return r.listings?.[0] || null;
       const estNet = l => {
         const lp   = l.list_price || 0;
-        const ship = l.shipping_estimate ?? 7;
+        const ship = l.shipping_estimate ?? 0;   // stored at list time (#137); ?? is a guard, not a default
         return lp - ship - this.siteFee(l.site, lp, ship);
       };
       return active.reduce((best, l) => estNet(l) > estNet(best) ? l : best, active[0]);
@@ -273,22 +273,13 @@ document.addEventListener('alpine:init', () => {
     },
 
     // Est. profit for a listed item.
-    // Uses shipment cost if shipped, else listing shipping_estimate, else $7 placeholder.
+    // Uses actual shipment cost if shipped, else the stored listing shipping_estimate (#137).
     // Fees come from listing.site.
     estProfit(r) {
       const listing = this.activeListing(r);
       const lp      = listing?.list_price || 0;
       const cost    = r.cost || 0;
-
-      let ship;
-      if (r.shipment?.shipping_cost != null) {
-        ship = r.shipment.shipping_cost;
-      } else if (listing?.shipping_estimate != null) {
-        ship = listing.shipping_estimate;
-      } else {
-        ship = 7; // placeholder
-      }
-
+      const ship    = r.shipment?.shipping_cost ?? listing?.shipping_estimate ?? 0;
       return lp - cost - ship - this.siteFee(listing?.site, lp, ship);
     },
 
@@ -296,7 +287,7 @@ document.addEventListener('alpine:init', () => {
     payout(r) {
       const listing = this.activeListing(r);
       const lp      = listing?.list_price || 0;
-      const ship    = listing?.shipping_estimate ?? 7;
+      const ship    = listing?.shipping_estimate ?? 0;
       return lp - this.siteFee(listing?.site, lp, ship);
     },
 

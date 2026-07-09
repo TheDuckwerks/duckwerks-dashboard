@@ -164,7 +164,7 @@ document.addEventListener('alpine:init', () => {
       const inPerson = ['Facebook', 'Craigslist'].includes(sold?.site?.name);
       if (inPerson) return dw.fmt0(0);
       const l = dw.activeListing(r);
-      return l?.shipping_estimate != null ? dw.fmt0(l.shipping_estimate) : '~$7';
+      return l?.shipping_estimate != null ? dw.fmt0(l.shipping_estimate) : '—';
     },
     shipIsEst(r) {
       if (r.shipment?.shipping_cost != null) return false;

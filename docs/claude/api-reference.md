@@ -80,7 +80,7 @@ All credentials injected server-side from `.env` — never exposed to the browse
 - `DELETE /api/lots/:id` — delete lot; 409 if it still has items
 
 **server/listings.js** (mounted at `/api/listings`)
-- `POST /api/listings` — create listing; auto-sets item status=Listed. Body: `{ item_id, site_id, list_price, shipping_estimate, url, platform_listing_id }`
+- `POST /api/listings` — create listing; auto-sets item status=Listed. Body: `{ item_id, site_id, list_price, shipping_estimate, url, platform_listing_id }`. Omitted `shipping_estimate` is filled server-side from the item's category (`server/shipping-defaults.js`, #137) — the column is never null through the app
 - `PATCH /api/listings/:id` — update listing fields (`site_id`, `platform_listing_id`, `list_price`, `shipping_estimate`, `url`, `status`, `ended_at`)
 
 **server/orders.js** (mounted at `/api/orders`)

@@ -2,15 +2,17 @@
 const express = require('express');
 const router  = express.Router();
 const db      = require('./db');
+const { defaultShippingEstimate } = require('./shipping-defaults');
 
 // POST create listing (also sets item.status = 'Listed')
 router.post('/', (req, res) => {
   const { item_id, site_id, platform_listing_id, list_price, shipping_estimate, url, offer_id } = req.body;
   if (!item_id || !site_id) return res.status(400).json({ error: 'item_id and site_id are required' });
+  const shipEst = shipping_estimate ?? defaultShippingEstimate(item_id);
   const result = db.prepare(`
     INSERT INTO listings (item_id, site_id, platform_listing_id, list_price, shipping_estimate, url, offer_id)
     VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).run(item_id, site_id, platform_listing_id || null, list_price || null, shipping_estimate || null, url || null, offer_id || null);
+  `).run(item_id, site_id, platform_listing_id || null, list_price || null, shipEst, url || null, offer_id || null);
   // Set item status to Listed
   db.prepare("UPDATE items SET status = 'Listed' WHERE id = ?").run(item_id);
   if (list_price) {
