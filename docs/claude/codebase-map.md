@@ -53,6 +53,6 @@
 - `public/v2/js/views/` — Alpine component definitions for each view
   - `analytics.js` — fetches eBay traffic via `POST /api/ebay/traffic`; uses `TOTAL_IMPRESSION_TOTAL` (includes promoted); writes result into `$store.dw.trafficMap` for sharing
   - `catalog.js` — DG intake form + inventory list; `loadTraffic()` reads `trafficMap` if already populated, otherwise fetches and writes it; `sortedInventory` getter sorts by any column incl. traffic metrics; drives the web bulk-list UI (#139) via `POST /api/ebay/bulk-list` + `bulk-list-photos`
-  - `sites.js` — Sites view: eBay + Reverb order fetch/combine-ship, unlinked-listing import/link (`POST /api/ebay/migrate-listing`), live-vs-local detail diff and sync
+  - `sites.js` — Sites view: eBay + Reverb order fetch/combine-ship/ship-queue (`labelQueue`, one label per selected order stepped in the label modal), unlinked-listing import/link (`POST /api/ebay/migrate-listing`), live-vs-local detail diff and sync
 - `public/v2/js/modals/` — Alpine component definitions for each modal (item, add, lot, label, shipping, multi-unit)
   - `multi-unit-modal.js` — per-order breakdown for multi-quantity items: remaining units, recovered/realized/forecasted profit, progress bar

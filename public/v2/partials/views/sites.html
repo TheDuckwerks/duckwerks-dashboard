@@ -76,6 +76,11 @@
               <div x-show="!reverbOrdersErr && reverbOrders.length === 0" style="color:var(--muted);font-size:11px;letter-spacing:1px">nothing to ship on Reverb</div>
               <template x-for="entry in reverbOrders" :key="entry.order.order_number">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+                  <div style="display:flex;align-items:flex-start;gap:10px">
+                    <input type="checkbox" x-show="entry.rec" :checked="reverbSel[String(entry.order.order_number)]"
+                      @change="toggleReverbSel(String(entry.order.order_number))"
+                      title="select for ship queue"
+                      style="margin-top:2px;cursor:pointer;flex-shrink:0">
                   <div>
                     <div style="font-size:12px;font-weight:700;letter-spacing:.05em" x-text="entry.order.shipping_address?.name || entry.order.order_number"></div>
                     <div style="font-size:11px;color:var(--ink-2);margin-top:2px" x-text="entry.order.title"></div>
@@ -89,12 +94,22 @@
                     </template>
                     <div style="font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:.05em" x-text="'Order #' + entry.order.order_number"></div>
                   </div>
+                  </div>
                   <button @click="openReverbShip(entry)"
                     style="padding:5px 14px;background:var(--blue);color:#fff;border:none;font:700 10px/1 var(--mono);letter-spacing:.12em;cursor:pointer;flex-shrink:0;margin-left:16px">
                     SHIP
                   </button>
                 </div>
               </template>
+            </div>
+
+            <!-- Queue bar: one label per selected order, stepped in the modal -->
+            <div x-show="queueCount >= 1" style="display:flex;align-items:center;gap:14px;padding:14px 0 0;margin-top:16px;border-top:1px solid var(--border)">
+              <button @click="queueSelectedOrders()"
+                style="padding:5px 14px;background:var(--blue);color:#fff;border:none;font:700 10px/1 var(--mono);letter-spacing:.12em;cursor:pointer;flex-shrink:0"
+                x-text="`SHIP QUEUE (${queueCount})`">
+              </button>
+              <span style="font-size:10px;color:var(--muted);letter-spacing:.05em">one label per order, stepped in sequence</span>
             </div>
           </div>
         </template>

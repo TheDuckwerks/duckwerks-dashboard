@@ -9,7 +9,8 @@ document.addEventListener('alpine:init', () => {
     ebayOrdersErr:   '',
     reverbOrdersErr: '',
     locations:       {},
-    orderSel:        {},   // combine-ship selection: { [orderId]: true }
+    orderSel:        {},   // eBay selection (combine + queue): { [orderId]: true }
+    reverbSel:       {},   // Reverb selection (queue only): { [order_number]: true }
 
     // ── Listings ──────────────────────────────────────────────────────────────
     listingsLoading:  false,
@@ -51,6 +52,7 @@ document.addEventListener('alpine:init', () => {
       if (this.ordersLoading) return;   // coalesce concurrent/re-entrant triggers (view-enter, modal-close, tick)
       this.ordersLoading   = true;
       this.orderSel        = {};
+      this.reverbSel       = {};
       this.ebayOrdersErr   = '';
       this.reverbOrdersErr = '';
       try {
@@ -191,6 +193,45 @@ document.addEventListener('alpine:init', () => {
       dw.previousView = 'sites';
       const primaryRec = dw.activeEbayOrderGroups[0].recs[0];
       if (primaryRec) dw.openModal('label', primaryRec.id);
+    },
+
+    // ── Ship queue (one label per order, stepped in the modal) ────────────────
+
+    toggleReverbSel(orderNum) {
+      this.reverbSel = { ...this.reverbSel, [orderNum]: !this.reverbSel[orderNum] };
+    },
+
+    get selectedReverbOrders() {
+      return this.reverbOrders.filter(e => e.rec && this.reverbSel[String(e.order.order_number)]);
+    },
+
+    get queueCount() {
+      return this.selectedEbayOrders.length + this.selectedReverbOrders.length;
+    },
+
+    queueSelectedOrders() {
+      const dw = Alpine.store('dw');
+      const entries = [
+        ...this.selectedEbayOrders
+          .filter(e => e.items.some(i => i.rec))
+          .map(e => ({
+            type:        'ebay',
+            orderId:     e.order.orderId,
+            lineItemIds: e.items.map(i => i.lineItem.lineItemId),
+            recs:        e.items.filter(i => i.rec).map(i => i.rec),
+          })),
+        ...this.selectedReverbOrders.map(e => ({
+          type:     'reverb',
+          orderNum: String(e.order.order_number),
+          rec:      e.rec,
+        })),
+      ];
+      if (!entries.length) return;
+      dw.labelQueue      = entries.slice(1);
+      dw.labelQueueTotal = entries.length;
+      dw.previousView    = 'sites';
+      dw.openLabelEntry(entries[0]);
+      dw.openModal('label', dw.activeRecordId);
     },
 
     // ── Listings ──────────────────────────────────────────────────────────────

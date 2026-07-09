@@ -30,6 +30,8 @@ document.addEventListener('alpine:init', () => {
     },
 
     async _open() {
+      // parcel is deliberately NOT reset — weight/dims carry across queue steps
+      // (and reopens) so same-size runs fill the package once
       this.step              = 'form';
       this.addrText          = '';
       this.insureEnabled     = true;
@@ -389,6 +391,24 @@ document.addEventListener('alpine:init', () => {
         this.ebayShipMsg = 'eBay error: ' + e.message;
         console.error('[markShippedEbay] error:', e);
       }
+    },
+
+    // advance the ship queue in place — same modal, no close, no interim order refetch
+    nextInQueue() {
+      const dw = Alpine.store('dw');
+      const [entry, ...rest] = dw.labelQueue;
+      if (!entry) return;
+      dw.labelQueue = rest;
+      dw.openLabelEntry(entry);
+      this._open();   // activeModal stays 'label', so the $watch won't refire — call directly
+    },
+
+    // block advancing while the previous label's writes are still in flight —
+    // saveShipping/markShippedEbay read component state that _open() would reset under them
+    get queueBusy() {
+      return this.savingShip
+        || this.ebayShipMsg   === 'Notifying eBay...'
+        || this.reverbShipMsg === 'Notifying Reverb...';
     },
 
     carrierColor(carrier) {

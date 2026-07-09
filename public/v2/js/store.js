@@ -20,6 +20,8 @@ document.addEventListener('alpine:init', () => {
     activeEbayOrderRecs:   [],
     activeEbayOrderGroups: [],  // combine-ship: [{ orderId, recs[], lineItemIds[] }]; empty = single-order ship
     activeReverbOrderNum: null,
+    labelQueue:      [],   // pending ship entries: {type:'ebay',orderId,lineItemIds,recs} | {type:'reverb',orderNum,rec}
+    labelQueueTotal: 0,    // queue size at launch — drives the "label N of M" header
     activeLotName:    null,
     previousModal:    null,
     previousView:     null,
@@ -99,6 +101,19 @@ document.addEventListener('alpine:init', () => {
       this.activeRecordId = recordId;
       this.activeLotName  = lotName;
     },
+    // Stage one labelQueue entry into the scalar fields the label modal's _open() consumes.
+    // Used by sites view (first entry) and the modal's nextInQueue() (each advance).
+    openLabelEntry(entry) {
+      if (entry.type === 'ebay') {
+        this.activeEbayOrderId     = entry.orderId;
+        this.activeEbayLineItemIds = [...entry.lineItemIds];
+        this.activeEbayOrderRecs   = [...entry.recs];
+        this.activeRecordId        = entry.recs[0]?.id ?? null;
+      } else {
+        this.activeReverbOrderNum = entry.orderNum;
+        this.activeRecordId       = entry.rec?.id ?? null;
+      }
+    },
     trapTab(e, el) {
       const sel = 'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
       const els = Array.from(el.querySelectorAll(sel)).filter(e => e.offsetParent !== null);
@@ -113,6 +128,9 @@ document.addEventListener('alpine:init', () => {
       }
     },
     closeModal() {
+      // closing mid-queue abandons the rest — the close-watcher refetch picks up whatever shipped
+      this.labelQueue      = [];
+      this.labelQueueTotal = 0;
       if (this.previousView) {
         const view = this.previousView;
         this.previousView   = null;

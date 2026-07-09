@@ -152,6 +152,12 @@ Three independent filter axes, all applied in `itemsView.rows` getter:
 
 **Insurance toggle**: `insureEnabled` defaults to `false` when the item's category is "Disc Golf" (case-insensitive match, set in `_open()`), `true` otherwise. Unchecked, `/api/label/purchase` omits the `insurance` field from the request body entirely rather than sending `0`.
 
+**Ship queue (eBay + Reverb)**: the Sites view builds `$store.dw.labelQueue` (one entry per selected order: `{type:'ebay',orderId,lineItemIds,recs}` / `{type:'reverb',orderNum,rec}`, `queueSelectedOrders()` in sites.js) and opens the label modal on the first entry. Each entry is its own label — no same-address requirement, unlike combine-ship.
+- The result step's NEXT LABEL button (`nextInQueue()`) shifts the next entry, stages it via `dw.openLabelEntry()`, and re-runs `_open()` in place — the modal never closes mid-queue, so the modal-close → `fetchOrders` refetch fires once, at the end
+- NEXT is disabled while `queueBusy` (save/notify writes from the previous label still in flight — `_open()` would reset state under them)
+- `parcel` (weight/dims/type) is deliberately not reset by `_open()`, so package data carries across queue steps; address, insurance, rates, and messages reset per entry
+- `labelQueueTotal` drives the "label N of M" header line; `closeModal()` clears both fields, so closing mid-queue abandons the rest
+
 ### Shipping Modal: In Transit
 - Shows sold+tracked items not yet delivered, or delivered within last 3 days
 - Membership lives in `store.isInTransit(r)` — a pure function of stored shipment fields (`tracking_status`/`delivered_at`), no live data needed; update the window there, not in each view (#160)
@@ -167,6 +173,7 @@ The primary order-fulfillment surface (`sites.js` / `sitesView`). Three sections
 
 - **Orders**: `fetchOrders()` pulls eBay + Reverb orders awaiting shipment and matches them to local records by `platform_listing_id`. SHIP opens the label modal (`openEbayShip()` / `openReverbShip()`). eBay orders sort by buyer name so same-buyer orders cluster.
   - **Combine & ship**: select 2+ eBay orders (`orderSel`); `combineReady` requires every selected order to share one normalized shipping-address key (buyer name + address line 1 + postal code). `combineSelectedEbay()` builds `$store.dw.activeEbayOrderGroups` and opens the label modal once for the whole group.
+  - **Ship queue**: the same checkboxes (plus `reverbSel` on Reverb rows) feed `queueSelectedOrders()` — one label per order, stepped inside the modal via `$store.dw.labelQueue` (see Label Modal → Ship queue). Available from 1+ selected, any addresses.
 - **Listings**: `fetchListings()` diffs live eBay/Reverb listings against locally-linked `platform_listing_id`s to find unlinked ones. **Link** an unlinked listing to an existing local record (`linkSelections` dropdown, `saveLinks()`), or **import** it as a brand-new item + listing (`importAll()`, with optional lot/category assignment).
 - **Listing Details**: `fetchDetails()` computes name/price diffs between local records and live listings; `syncAllDetails()` applies the selected changes.
   - Listings are fetched with full pagination (Reverb: follows `_links.next.href`)

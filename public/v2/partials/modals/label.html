@@ -7,6 +7,8 @@
           <div x-show="itemSku" style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:2px" x-text="itemSku"></div>
           <div x-show="shipItems.length > 1" style="font-size:11px;color:var(--ebay);letter-spacing:.05em;margin-top:4px"
             x-text="`one label · ${shipItems.length} items: ${shipItems.join(', ')}`"></div>
+          <div x-show="$store.dw.labelQueueTotal" style="font-size:11px;color:var(--blue);letter-spacing:.1em;margin-top:4px"
+            x-text="`label ${$store.dw.labelQueueTotal - $store.dw.labelQueue.length} of ${$store.dw.labelQueueTotal}`"></div>
         </div>
         <button class="modal-close" @click="$store.dw.closeModal()">✕</button>
       </div>
@@ -174,6 +176,11 @@
 
           <div class="modal-divider"></div>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:4px 0 8px">
+            <button x-show="$store.dw.labelQueue.length" @click="nextInQueue()" :disabled="queueBusy"
+              x-text="queueBusy ? 'SAVING...' : `NEXT LABEL (${$store.dw.labelQueue.length} LEFT) →`"
+              :style="queueBusy ? 'background:var(--ink-4);color:var(--muted);cursor:wait' : 'background:var(--blue);color:#fff;cursor:pointer'"
+              style="padding:10px 24px;border:none;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px">
+            </button>
             <button @click="saveShipping()" :disabled="savingShip || saveMsg.startsWith('✓')"
               x-text="savingShip ? 'SAVING...' : saveMsg.startsWith('✓') ? '✓ SAVED' : 'SAVE SHIPPING COST'"
               :style="saveMsg.startsWith('✓') ? 'background:var(--surface);border:1px solid var(--green);color:var(--green);cursor:default' : 'background:var(--green);color:#000;border:none;cursor:pointer'"
