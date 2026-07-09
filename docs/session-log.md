@@ -1,6 +1,10 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-09 (metagame) — Cooldown cleanups (v2.0.56)
+
+Three fixes out of the session retro: zero-weight PUT guard hoisted from `update-item` into `putInventoryItem` (all GET→PUT round-trips safe by construction, GOTCHAS updated); comps search surfaces per-source errors to caller + UI instead of swallowing them (incl. SerpAPI's 200-with-embedded-error mode — verified against the live outage); list-item skill fully swept to the pond vhost (9 refs, first pass had caught only 2). Also flagged upstream: cross-project doc-rot on infra changes (fedora.local:3000 firewalled → skill rotted silently) wants a grep-siblings line in Duck Ops's close ritual.
+
 ### 2026-07-09 (later) — Triage sweep, stale report, shipping estimates, EQ recall pass (v2.0.55)
 
 Big housekeeping + build day after the morning's ship queue. **Triage:** 5 subagents checked all 37 open tickets against code/git; 27 closed (verified-done, superseded, moot, or Geoff-ruled), including the whole 07-02 docs batch and the money cluster resolved by the post-fee reframe. Board is now 4: #159/#135 awaiting clocks, #140/#142 backlog. #135 retitled to re-measure on/after 2026-07-23; its 07-09 check confirmed the DG keyword thesis (zero-view 24→13, velocity +25%, the worklog-named Wave sold). **#151 slim rescope shipped:** days-on-market column + STALE (n) toggle on catalog (spec: `catalog-stale-report.md`). **#137 finished:** per-category shipping_estimate defaults from label actuals (`shipping-defaults.js`), ~200 nulls/zeros backfilled, read-time magic 7s deleted (spec: `shipping-estimate-lifecycle.md`). **EQ recall pass:** all 9 comic-lot titles rewritten with "Comic Lot"/"Pini" (same disease as the DG titles), pushed via update-item after fixing eBay's GET→PUT zero-weight self-rejection (25709, GOTCHAS'd). Comps blocked: SerpAPI's eBay engine returns empty for everything while their status page reads 99.997% — retry later. Also: #138 pond-domain docs sweep, #141 Duck Ops ingress.md cleanup (their repo, bb8a70a), fedora.local:3000 firewalled → list-item skill API base now the pond vhost.
