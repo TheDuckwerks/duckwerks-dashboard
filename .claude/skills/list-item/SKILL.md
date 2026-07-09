@@ -212,7 +212,7 @@ On error: show the error message and tell the user what to fix. Do not mark list
 ## All API Calls Use
 
 ```
-http://fedora.local:3000
+https://dash.pond.duckwerks.com
 ```
 
-Local network only. NUC must be reachable. `dash.pond.duckwerks.com` also works for API calls on-LAN; `fedora.local:3000` is the direct path.
+Local network only. NUC must be reachable. Use `https://dash.pond.duckwerks.com` — port 3000 is firewalled off-box, so the nginx vhost is the only path.

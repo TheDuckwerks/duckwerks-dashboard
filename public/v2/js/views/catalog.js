@@ -4,6 +4,11 @@ function _traffic(row) {
   return lid ? (Alpine.store('dw').trafficMap[lid] || null) : null;
 }
 
+function _domDays(row) {
+  if (!row.listed_at) return null;
+  return Math.floor((Date.now() - new Date(row.listed_at).getTime()) / 86400000);
+}
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('catalogView', () => ({
     // form state
@@ -41,6 +46,7 @@ document.addEventListener('alpine:init', () => {
     inventoryErr:     '',
     inventoryShowSold: false,
     invStatusFilter:  'all',   // all | Prepping | Listed — catalog list status scope
+    staleOnly:        false,   // stale report toggle (#151) — composes with invStatusFilter
     editingSku:       null,
     editLocation:     '',
     editPairs:        [],  // [{ key, value }] — flattened metadata blob
@@ -79,11 +85,26 @@ document.addEventListener('alpine:init', () => {
       return this.manufacturers.filter(m => m.toLowerCase().includes(q));
     },
 
+    domDays(row) { return _domDays(row); },
+
+    // stale = active listing, on market STALE_DOM_DAYS+, <= STALE_MAX_VIEWS views in 30d.
+    // A listing with no traffic row counts as 0 views — that IS the dead cohort.
+    isStale(row) {
+      const d = _domDays(row);
+      return !!row.listing_id && d !== null && d >= STALE_DOM_DAYS
+        && (_traffic(row)?.views ?? 0) <= STALE_MAX_VIEWS;
+    },
+
+    get staleCount() {
+      return this.inventory.filter(r => this.isStale(r)).length;
+    },
+
     get sortedInventory() {
       const dir = this.invSortDir === 'asc' ? 1 : -1;
-      const rows = this.invStatusFilter === 'all'
+      let rows = this.invStatusFilter === 'all'
         ? this.inventory
         : this.inventory.filter(r => r.item_status === this.invStatusFilter);
+      if (this.staleOnly) rows = rows.filter(r => this.isStale(r));
       return [...rows].sort((a, b) => {
         let av, bv;
         const k = this.invSortKey;
@@ -97,6 +118,7 @@ document.addEventListener('alpine:init', () => {
         if (k === 'mold')         { av = a.metadata?.mold || '';         bv = b.metadata?.mold || ''; }
         if (k === 'title')        { av = this.inventoryDisplayTitle(a);  bv = this.inventoryDisplayTitle(b); }
         if (k === 'price')        { return dir * ((this.displayPrice(a) || 0) - (this.displayPrice(b) || 0)); }
+        if (k === 'dom')          { return dir * ((_domDays(a) ?? -1) - (_domDays(b) ?? -1)); }
         if (k === 'views')        { return dir * ((_traffic(a)?.views ?? -1) - (_traffic(b)?.views ?? -1)); }
         if (k === 'impressions')  { return dir * ((_traffic(a)?.impressions ?? -1) - (_traffic(b)?.impressions ?? -1)); }
         if (k === 'ctr')          { return dir * ((_traffic(a)?.ctr ?? -1) - (_traffic(b)?.ctr ?? -1)); }

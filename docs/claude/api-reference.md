@@ -62,7 +62,7 @@ All credentials injected server-side from `.env` — never exposed to the browse
 - `GET /api/flight-numbers?manufacturer=&mold=` — flight-number lookup by normalized manufacturer/mold key. Returns `{ found: false }` or `{ found: true, speed, glide, turn, fade, stability }`
 
 **server/inventory.js** (mounted at `/api/inventory`)
-- `GET /api/inventory` — all inventory rows joined to item/listing state. Optional `?ids=1-20,25` (disc numbers, ranges or CSV), `?category=disc`, or `?excludeStatus=sold,...` (matched against `items.status`, case-insensitive)
+- `GET /api/inventory` — all inventory rows joined to item/listing state (`item_name`, `item_status`, `listing_id`, `ebay_listing_id`, `listing_price`, `listed_at`). Optional `?ids=1-20,25` (disc numbers, ranges or CSV), `?category=disc`, or `?excludeStatus=sold,...` (matched against `items.status`, case-insensitive)
 - `GET /api/inventory/:sku` — single row
 - `POST /api/inventory` — upsert by SKU. Body: `{ sku, location, category, status, metadata }` (`sku` required; omitted fields keep their prior value on conflict)
 - `PATCH /api/inventory/:sku` — partial update; merges `metadata` rather than replacing it, then re-normalizes it via `normalizeBlob`. Also re-materializes `items.name` for disc categories via `resolveDiscTitle` (never touches a `Sold` item's name)

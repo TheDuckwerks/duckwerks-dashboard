@@ -247,6 +247,10 @@
                 style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
                 x-text="f[1]"></button>
             </template>
+            <button @click="staleOnly = !staleOnly"
+              :style="staleOnly ? 'border-color:var(--red);color:var(--red)' : ''"
+              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+              x-text="'STALE (' + staleCount + ')'"></button>
             <button @click="inventoryShowSold = !inventoryShowSold; loadInventory()"
               style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
               x-text="inventoryShowSold ? 'HIDE SOLD' : 'SHOW SOLD'"></button>
@@ -280,6 +284,7 @@
                   <th class="sortable" :class="{'sort-active': invSortKey==='mold'}"          @click="invSortBy('mold')"         style="width:110px">Mold<span x-text="invSortGlyph('mold')"></span></th>
                   <th class="sortable" :class="{'sort-active': invSortKey==='title'}"         @click="invSortBy('title')"        >Title<span x-text="invSortGlyph('title')"></span></th>
                   <th class="sortable r" :class="{'sort-active': invSortKey==='price'}"       @click="invSortBy('price')"        style="width:64px">Price<span x-text="invSortGlyph('price')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='dom'}"         @click="invSortBy('dom')"          style="width:48px" title="days on market">Days<span x-text="invSortGlyph('dom')"></span></th>
                   <th class="sortable r" :class="{'sort-active': invSortKey==='views'}"       @click="invSortBy('views')"        style="width:54px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">Views<span x-text="invSortGlyph('views')"></span></th>
                   <th class="sortable r" :class="{'sort-active': invSortKey==='impressions'}" @click="invSortBy('impressions')"  style="width:54px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">Imp<span x-text="invSortGlyph('impressions')"></span></th>
                   <th class="sortable r" :class="{'sort-active': invSortKey==='ctr'}"         @click="invSortBy('ctr')"          style="width:44px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">CTR<span x-text="invSortGlyph('ctr')"></span></th>
@@ -333,6 +338,9 @@
                       </button>
                     </span>
                   </td>
+                  <!-- DAYS ON MARKET -->
+                  <td class="r num" :style="isStale(row) ? 'color:var(--red)' : 'color:var(--muted)'"
+                      x-text="domDays(row) ?? '—'"></td>
                   <!-- TRAFFIC cols -->
                   <td class="r num" x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : (row.ebay_listing_id ? ($store.dw.trafficMap[row.ebay_listing_id]?.views ?? '—') : '—')"></td>
                   <td class="r num" x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : (row.ebay_listing_id ? ($store.dw.trafficMap[row.ebay_listing_id]?.impressions ?? '—') : '—')"></td>
@@ -355,7 +363,7 @@
                 <!-- eBay preview panel -->
                 <template x-if="ebayPreview[row.sku]">
                   <tr>
-                    <td colspan="10" style="padding:10px 10px 14px;border-top:1px solid var(--border)">
+                    <td colspan="11" style="padding:10px 10px 14px;border-top:1px solid var(--border)">
                       <template x-if="ebayPreview[row.sku] === 'loading'">
                         <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">FETCHING PREVIEW...</span>
                       </template>
@@ -398,7 +406,7 @@
                 <!-- Edit panel -->
                 <template x-if="editingSku === row.sku">
                   <tr>
-                    <td colspan="10" style="padding:12px 10px 16px">
+                    <td colspan="11" style="padding:12px 10px 16px">
                       <div style="display:grid;gap:6px">
                         <div style="display:grid;grid-template-columns:160px 1fr;gap:8px;align-items:center">
                           <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">location</span>

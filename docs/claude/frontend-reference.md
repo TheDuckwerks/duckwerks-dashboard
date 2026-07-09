@@ -90,7 +90,9 @@ Those are estimates for listed items (yellow). Realized numbers never use the fo
 
 This is the canonical pattern for any new sortable table, used by `itemsView`, `lotsView`, `analyticsView`, and `compsView`. Each view keeps its own `sortKey`/`sortDir`/`sortBy(key)`/`sortGlyph(key)` (returns `'↕'`, `'↑'`, or `'↓'`); `dwSortable` only persists the `(col, dir)` pair.
 
-The catalog inventory table (`catalogView.invSortKey`/`invSortDir`) is the one holdout: local state that resets on reload instead of going through `dwSortable`. Moving it onto the shared utility is tracked under #153.
+The catalog inventory table (`catalogView.invSortKey`/`invSortDir`) persists through `dwSortable` like the rest (view key `'catalog'`), with its own sortable-column dispatch in `sortedInventory` covering blob fields (mfg/mold), traffic metrics, and days-on-market.
+
+**Catalog stale report (#151):** the inventory table doubles as the stale-listing report. `listed_at` (from `GET /api/inventory`) drives a sortable Days column; `isStale(row)` = active listing, `STALE_DOM_DAYS`+ days on market, `<= STALE_MAX_VIEWS` views in the 30-day traffic window (both thresholds in `config.js`; a listing with no traffic row counts as 0 views). A `STALE (n)` toggle chip composes with the status filter chips; stale rows tint the Days cell red even when the toggle is off.
 
 Table header markup pattern:
 ```html

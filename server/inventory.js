@@ -19,7 +19,8 @@ const listAll  = db.prepare(`
          it.status             AS item_status,
          l.id                  AS listing_id,
          l.platform_listing_id AS ebay_listing_id,
-         l.list_price          AS listing_price
+         l.list_price          AS listing_price,
+         l.listed_at           AS listed_at
   FROM   inventory inv
   LEFT JOIN items it   ON it.sku = inv.sku
   LEFT JOIN listings l ON l.item_id = it.id AND l.status = 'active'
