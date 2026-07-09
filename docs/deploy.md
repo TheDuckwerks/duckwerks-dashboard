@@ -5,7 +5,7 @@
 ## How dash runs now
 
 - Production is an **immutable artifact** under `/srv/duckwerks/dash/releases/<timestamp>/`, with `current` a symlink pointing at the live release. PM2 runs it (`duckwerks`, fork mode, port 3000) from `/srv/duckwerks/dash/current`.
-- Ingress is unchanged: ZT / Cloudflare Tunnel still points at `localhost:3000`, so the move was transparent to `dash.duckwerks.com`.
+- Ingress: the `dash.pond.duckwerks.com` nginx vhost proxies to `localhost:3000` (LAN-allowlisted, `client_max_body_size 512M` for photo uploads); deploys never touch it.
 - The old checkout at `/home/geoff/projects/duckwerksdash` is kept as a fallback. Retire it once you are confident (it is not running anything).
 
 ## Releasing a new version

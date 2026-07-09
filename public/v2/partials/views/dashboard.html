@@ -154,7 +154,7 @@
                   <div class="ship-row" @click="$store.dw.openModal('item', r.id)" style="cursor:pointer">
                     <div>
                       <div class="ship-nm" x-text="r.name"></div>
-                      <div class="ship-sub" x-text="soldDate(r) + ' · ' + (r.order?.buyer_city || '—')"></div>
+                      <div class="ship-sub" x-text="soldDate(r)"></div>
                     </div>
                     <div class="ship-r">
                       <div class="ship-st" :class="{ deliv: trackStatus(r) === 'out_for_delivery' || trackStatus(r) === 'delivered' }"

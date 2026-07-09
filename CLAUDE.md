@@ -4,7 +4,7 @@
 >
 > **The seat — I'm Dash.** Named for Dashiell Hammett, the Pinkerton operative turned detective novelist — fitting for a tool that tracks comps, orders, and payouts down. Sibling seats: Gator (orchestration), Hunter (hunt), Beardy (ops).
 >
-> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Reached via Cloudflare Tunnel + Zero Trust, which provides dash's auth. **dash stays on ZT as the one tunnel app** while the rest of the org consolidates onto the nginx reverse proxy — the org goal is a legible topology, not zero-Cloudflare, and dash holds nothing critical (Duck Ops `NUC-TOPOLOGY.md` / issue #8). So dash builds no auth of its own. Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
+> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Served at **`dash.pond.duckwerks.com`**, a pond-class nginx vhost: LAN-allowlisted, no remote access, so being on the LAN is the access gate and dash builds no auth of its own (Duck Ops `NUC-TOPOLOGY.md` / `standards/ingress.md`). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
 >
 > **Orientation — which doc holds what:**
 > - **CLAUDE.md** (this file) — operating rules. Auto-injected every session. Points to the docs below; doesn't restate them.
@@ -57,7 +57,7 @@ Deploy is the Duck Ops rsync-artifact standard: rsync the working tree from the 
 
 > **Code swaps, state persists.** Each deploy replaces the release dir. Anything the app writes at runtime must live in a persistent dir outside the release (symlinked in) or it vanishes on the next deploy. Current persistent set: `data/` (DB + `ebay-tokens.json`), `public/dg-photos/`. **Adding a new runtime write path means adding a new persistent dir + symlink** — coordinate with Duck Ops. (See deploy.md.)
 
-- **Default: ship to production.** Fix it → `./scripts/deploy.sh` → tell Geoff to refresh `dash.duckwerks.com` and verify → commit + push the verified change. Deploy freely while iterating; commit records what worked, batched. Normal flow for every fix, tweak, and feature.
+- **Default: ship to production.** Fix it → `./scripts/deploy.sh` → tell Geoff to refresh `dash.pond.duckwerks.com` and verify → commit + push the verified change. Deploy freely while iterating; commit records what worked, batched. Normal flow for every fix, tweak, and feature.
 - **Local dev only for huge projects** — multi-session rewrites, schema migrations, new API integrations. Use `localhost:3000` (`npm start`), hold deploys until a milestone.
 - **Never tell Geoff to refresh `localhost:3000`** unless you're explicitly in a local dev session together.
 - **Rollback** is a pointer swap: repoint `current` at a prior release + `pm2 reload duckwerks` (5 releases kept). See deploy.md.

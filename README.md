@@ -47,7 +47,7 @@ Requires a `.env` with EasyPost tokens, eBay OAuth credentials, a from-address, 
 
 ## Deployment
 
-Runs persistently on an Intel NUC (Fedora) under PM2, served at `dash.duckwerks.com` through a Cloudflare Tunnel with Cloudflare Access auth. Operational notes (PM2, systemd, tunnel) live in [`GOTCHAS.md`](GOTCHAS.md).
+Runs persistently on an Intel NUC (Fedora) under PM2, served at `dash.pond.duckwerks.com` behind nginx. The vhost is LAN-allowlisted, so being on the local network is the access gate; the app carries no auth of its own. Operational notes (PM2, systemd, nginx) live in [`GOTCHAS.md`](GOTCHAS.md).
 
 ---
 

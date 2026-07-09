@@ -215,4 +215,4 @@ On error: show the error message and tell the user what to fix. Do not mark list
 http://fedora.local:3000
 ```
 
-Local network only. NUC must be reachable. Do not use `dash.duckwerks.com` for POST calls — blocked by Cloudflare Zero Trust from MBA.
+Local network only. NUC must be reachable. `dash.pond.duckwerks.com` also works for API calls on-LAN; `fedora.local:3000` is the direct path.
