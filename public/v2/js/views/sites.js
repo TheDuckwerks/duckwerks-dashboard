@@ -156,6 +156,17 @@ document.addEventListener('alpine:init', () => {
       this.orderSel = { ...this.orderSel, [orderId]: !this.orderSel[orderId] };
     },
 
+    get allEbaySelected() {
+      return this.ebayOrders.length > 0 && this.ebayOrders.every(e => this.orderSel[e.order.orderId]);
+    },
+
+    toggleAllEbay() {
+      const on = !this.allEbaySelected;
+      const sel = {};
+      if (on) this.ebayOrders.forEach(e => { sel[e.order.orderId] = true; });
+      this.orderSel = sel;
+    },
+
     get selectedEbayOrders() {
       return this.ebayOrders.filter(e => this.orderSel[e.order.orderId]);
     },
@@ -199,6 +210,22 @@ document.addEventListener('alpine:init', () => {
 
     toggleReverbSel(orderNum) {
       this.reverbSel = { ...this.reverbSel, [orderNum]: !this.reverbSel[orderNum] };
+    },
+
+    get selectableReverbOrders() {
+      return this.reverbOrders.filter(e => e.rec);
+    },
+
+    get allReverbSelected() {
+      const sel = this.selectableReverbOrders;
+      return sel.length > 0 && sel.every(e => this.reverbSel[String(e.order.order_number)]);
+    },
+
+    toggleAllReverb() {
+      const on = !this.allReverbSelected;
+      const sel = {};
+      if (on) this.selectableReverbOrders.forEach(e => { sel[String(e.order.order_number)] = true; });
+      this.reverbSel = sel;
     },
 
     get selectedReverbOrders() {

@@ -23,11 +23,17 @@
           <div>
             <!-- eBay block -->
             <div style="margin-bottom:24px">
-              <div style="font:700 10px/1 var(--mono);letter-spacing:.15em;color:var(--ebay);margin-bottom:10px">EBAY</div>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+                <div style="font:700 10px/1 var(--mono);letter-spacing:.15em;color:var(--ebay)">EBAY</div>
+                <button x-show="ebayOrders.length > 1" @click="toggleAllEbay()"
+                  style="padding:3px 10px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);font:700 9px/1 var(--mono);letter-spacing:.12em;cursor:pointer"
+                  x-text="allEbaySelected ? 'CLEAR ALL' : 'SELECT ALL'">
+                </button>
+              </div>
               <div x-show="ebayOrdersErr" x-text="ebayOrdersErr" style="color:var(--red);font-size:11px;letter-spacing:1px;margin-bottom:8px"></div>
               <div x-show="!ebayOrdersErr && ebayOrders.length === 0" style="color:var(--muted);font-size:11px;letter-spacing:1px">nothing to ship on eBay</div>
               <template x-for="entry in ebayOrders" :key="entry.order.orderId">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
                   <div style="display:flex;align-items:flex-start;gap:10px">
                     <input type="checkbox" :checked="orderSel[entry.order.orderId]"
                       @change="toggleOrderSel(entry.order.orderId)"
@@ -52,7 +58,7 @@
                   </div>
                   </div>
                   <button @click="openEbayShip(entry)"
-                    style="padding:5px 14px;background:var(--blue);color:#fff;border:none;font:700 10px/1 var(--mono);letter-spacing:.12em;cursor:pointer;flex-shrink:0;margin-left:16px">
+                    style="padding:5px 14px;background:var(--blue);color:#fff;border:none;font:700 10px/1 var(--mono);letter-spacing:.12em;cursor:pointer;flex-shrink:0;margin-left:32px;align-self:center">
                     SHIP
                   </button>
                 </div>
@@ -71,11 +77,17 @@
 
             <!-- Reverb block -->
             <div>
-              <div style="font:700 10px/1 var(--mono);letter-spacing:.15em;color:var(--reverb);margin-bottom:10px">REVERB</div>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+                <div style="font:700 10px/1 var(--mono);letter-spacing:.15em;color:var(--reverb)">REVERB</div>
+                <button x-show="selectableReverbOrders.length > 1" @click="toggleAllReverb()"
+                  style="padding:3px 10px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);font:700 9px/1 var(--mono);letter-spacing:.12em;cursor:pointer"
+                  x-text="allReverbSelected ? 'CLEAR ALL' : 'SELECT ALL'">
+                </button>
+              </div>
               <div x-show="reverbOrdersErr" x-text="reverbOrdersErr" style="color:var(--red);font-size:11px;letter-spacing:1px;margin-bottom:8px"></div>
               <div x-show="!reverbOrdersErr && reverbOrders.length === 0" style="color:var(--muted);font-size:11px;letter-spacing:1px">nothing to ship on Reverb</div>
               <template x-for="entry in reverbOrders" :key="entry.order.order_number">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
                   <div style="display:flex;align-items:flex-start;gap:10px">
                     <input type="checkbox" x-show="entry.rec" :checked="reverbSel[String(entry.order.order_number)]"
                       @change="toggleReverbSel(String(entry.order.order_number))"
@@ -96,7 +108,7 @@
                   </div>
                   </div>
                   <button @click="openReverbShip(entry)"
-                    style="padding:5px 14px;background:var(--blue);color:#fff;border:none;font:700 10px/1 var(--mono);letter-spacing:.12em;cursor:pointer;flex-shrink:0;margin-left:16px">
+                    style="padding:5px 14px;background:var(--blue);color:#fff;border:none;font:700 10px/1 var(--mono);letter-spacing:.12em;cursor:pointer;flex-shrink:0;margin-left:32px;align-self:center">
                     SHIP
                   </button>
                 </div>
