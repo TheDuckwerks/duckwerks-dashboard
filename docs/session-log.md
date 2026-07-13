@@ -1,6 +1,15 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-13 — Label modal midstate + stale-inventory reprice (v2.0.57)
+
+- Sites orders: select-all/clear-all toggle per marketplace; SHIP buttons moved inline next to order text (was far right).
+- Label modal result step reworked: single PRINT LABEL + SLIP primary action (prints label, opens packing slip(s)), small ↗ raw / ↗ slip re-open links, packing-slip buttons removed from the bottom bar, ✓ SAVED / ✓ SHIPPED chips quieted to plain text. Queue button gains a green DONE ✓ end-state that closes the modal; fixed the "(0 LEFT)" ghost (`:style` string binding clobbers `x-show` — used `x-if`).
+- `update-item` fix: price/title-only updates no longer wipe the live eBay description (falls back to `offer.listingDescription`).
+- Stale-inventory reprice, comps-backed where possible: 16 comics/media/card listings cut $414 → $277 via update-item (eBay + dash + price_history in sync). EQ comps saved to `docs/notes/eq-comps-2026-07-11.json`; titles judged fine — price/market problem, not titles.
+- SerpAPI saga closed: 7/09 empty-results episode was a compromised key burning the monthly quota (429). Key rotated (Duck Ops), full git-history scan clean, GOTCHAS entry added. Card comps blocked until quota reset; cards cut on judgment instead.
+- Breadcrumb: EQ mega-lot consolidation (~90 issues, comps say $80–90 buyer exists) if the repriced lots still don't move.
+
 ### 2026-07-09 (metagame) — Cooldown cleanups (v2.0.56)
 
 Three fixes out of the session retro: zero-weight PUT guard hoisted from `update-item` into `putInventoryItem` (all GET→PUT round-trips safe by construction, GOTCHAS updated); comps search surfaces per-source errors to caller + UI instead of swallowing them (incl. SerpAPI's 200-with-embedded-error mode — verified against the live outage); list-item skill fully swept to the pond vhost (9 refs, first pass had caught only 2). Also flagged upstream: cross-project doc-rot on infra changes (fedora.local:3000 firewalled → skill rotted silently) wants a grep-siblings line in Duck Ops's close ritual.
