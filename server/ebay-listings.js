@@ -480,10 +480,17 @@ router.post('/update-item', async (req, res) => {
 
   try {
     const headers  = await ebayHeaders();
-    const descHtml = renderSkillDescriptionHtml(item.description || '');
 
     const existing = await getInventoryItem(item.sku, headers);
     if (!existing) return res.status(404).json({ error: `No inventory item found for SKU ${item.sku}` });
+
+    const offer = await getOfferBySku(item.sku, headers);
+    if (!offer) return res.status(404).json({ error: `No offer found for SKU ${item.sku}` });
+
+    // no description in the payload = keep the live one (price/title-only updates must not wipe it)
+    const descHtml = item.description
+      ? renderSkillDescriptionHtml(item.description)
+      : offer.listingDescription || existing.product?.description || '';
 
     await putInventoryItem(item.sku, {
       ...existing,
@@ -500,9 +507,6 @@ router.post('/update-item', async (req, res) => {
       ...(item.ebayConditionId && { condition: item.ebayConditionId }),
       ...(item.conditionNotes  && { conditionDescription: item.conditionNotes }),
     }, headers);
-
-    const offer = await getOfferBySku(item.sku, headers);
-    if (!offer) return res.status(404).json({ error: `No offer found for SKU ${item.sku}` });
 
     // Explicit policy IDs on every PUT (same trap as bulk-update; see GOTCHAS 2026-07-01)
     const updPolicies = await fetchPolicies(headers);
