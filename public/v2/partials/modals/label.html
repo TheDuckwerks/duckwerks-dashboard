@@ -157,13 +157,17 @@
 
           <div class="modal-row">
             <span class="modal-field">LABEL</span>
-            <span class="modal-val" style="display:flex;gap:10px;align-items:center">
-              <button @click="printLabel()"
+            <span class="modal-val" style="display:flex;gap:12px;align-items:center">
+              <button @click="printLabelAndSlip()"
+                x-text="packingSlipUrls.length ? 'PRINT LABEL + SLIP' : 'PRINT LABEL'"
                 style="padding:6px 16px;background:var(--blue);color:#fff;border:none;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer">
-                PRINT LABEL
               </button>
               <a :href="purchaseResult?.labelUrl" target="_blank"
                 style="font-size:11px;color:var(--muted)">↗ raw</a>
+              <template x-for="(url, si) in packingSlipUrls" :key="url">
+                <a :href="url" target="_blank" style="font-size:11px;color:var(--muted)"
+                  x-text="packingSlipUrls.length > 1 ? `↗ slip ${si + 1}` : '↗ slip'"></a>
+              </template>
             </span>
           </div>
 
@@ -176,48 +180,38 @@
 
           <div class="modal-divider"></div>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:4px 0 8px">
-            <button x-show="$store.dw.labelQueue.length" @click="nextInQueue()" :disabled="queueBusy"
-              x-text="queueBusy ? 'SAVING...' : `NEXT LABEL (${$store.dw.labelQueue.length} LEFT) →`"
-              :style="queueBusy ? 'background:var(--ink-4);color:var(--muted);cursor:wait' : 'background:var(--blue);color:#fff;cursor:pointer'"
-              style="padding:10px 24px;border:none;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px">
-            </button>
+            <template x-if="$store.dw.labelQueueTotal > 0">
+              <button @click="$store.dw.labelQueue.length ? nextInQueue() : $store.dw.closeModal()" :disabled="queueBusy"
+                x-text="queueBusy ? 'SAVING...' : $store.dw.labelQueue.length ? `NEXT LABEL (${$store.dw.labelQueue.length} LEFT) →` : 'DONE ✓'"
+                :style="queueBusy ? 'background:var(--ink-4);color:var(--muted);cursor:wait' : $store.dw.labelQueue.length ? 'background:var(--blue);color:#fff;cursor:pointer' : 'background:var(--green);color:#000;cursor:pointer'"
+                style="padding:10px 24px;border:none;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px">
+              </button>
+            </template>
             <button @click="saveShipping()" :disabled="savingShip || saveMsg.startsWith('✓')"
               x-text="savingShip ? 'SAVING...' : saveMsg.startsWith('✓') ? '✓ SAVED' : 'SAVE SHIPPING COST'"
-              :style="saveMsg.startsWith('✓') ? 'background:var(--surface);border:1px solid var(--green);color:var(--green);cursor:default' : 'background:var(--green);color:#000;border:none;cursor:pointer'"
+              :style="saveMsg.startsWith('✓') ? 'background:transparent;border:none;color:var(--green);cursor:default;padding:10px 0' : 'background:var(--green);color:#000;border:none;cursor:pointer'"
               style="padding:10px 24px;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px">
             </button>
             <button x-show="reverbLinks?.ship && purchaseResult?.trackingNumber"
               @click="markShipped()"
               :disabled="reverbShipMsg === 'Notifying Reverb...' || reverbShipMsg === '✓ buyer notified'"
-              :style="reverbShipMsg === '✓ buyer notified' ? 'background:var(--surface);border:1px solid var(--reverb);color:var(--reverb);cursor:default;opacity:.6' : 'background:transparent;border:1px solid var(--reverb);color:var(--reverb);cursor:pointer'"
+              :style="reverbShipMsg === '✓ buyer notified' ? 'background:transparent;border:none;color:var(--reverb);cursor:default;padding:10px 0' : 'background:transparent;border:1px solid var(--reverb);color:var(--reverb);cursor:pointer'"
               x-text="reverbShipMsg === 'Notifying Reverb...' ? 'NOTIFYING...' : reverbShipMsg === '✓ buyer notified' ? '✓ SHIPPED ON REVERB' : 'MARK SHIPPED ON REVERB'"
               style="padding:10px 24px;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px">
-            </button>
-            <button x-show="reverbLinks?.packing_slip"
-              @click="window.open(reverbLinks.packing_slip.web.href, '_blank')"
-              style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
-              PACKING SLIP
             </button>
             <button x-show="orderGroups.length && purchaseResult?.trackingNumber"
               @click="markShippedEbay()"
               :disabled="ebayShipMsg === 'Notifying eBay...' || ebayShipMsg === '✓ buyer notified'"
-              :style="ebayShipMsg === '✓ buyer notified' ? 'background:var(--surface);border:1px solid var(--green);color:var(--green);cursor:default' : 'background:transparent;border:1px solid var(--ebay);color:var(--ebay);cursor:pointer'"
+              :style="ebayShipMsg === '✓ buyer notified' ? 'background:transparent;border:none;color:var(--green);cursor:default;padding:10px 0' : 'background:transparent;border:1px solid var(--ebay);color:var(--ebay);cursor:pointer'"
               x-text="ebayShipMsg === 'Notifying eBay...' ? 'NOTIFYING...' : ebayShipMsg === '✓ buyer notified' ? (orderGroups.length > 1 ? '✓ ALL SHIPPED ON EBAY' : '✓ SHIPPED ON EBAY') : (orderGroups.length > 1 ? `MARK ${orderGroups.length} SHIPPED ON EBAY` : 'MARK SHIPPED ON EBAY')"
               style="padding:10px 24px;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px">
             </button>
             <template x-for="(g, gi) in orderGroups" :key="g.orderId">
-              <span style="display:contents">
-                <button x-show="ebayShipMsg.startsWith('eBay error')"
-                  @click="window.open(`https://www.ebay.com/sh/ord/details?orderid=${g.orderId}`, '_blank')"
-                  x-text="orderGroups.length > 1 ? `ORDER DETAILS ${gi + 1}` : 'ORDER DETAILS'"
-                  style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
-                </button>
-                <button
-                  @click="window.open(`https://www.ebay.com/sh/ord/prt?module=PACKING_SLIP_MODULE&orderId=${g.orderId}`, '_blank')"
-                  x-text="orderGroups.length > 1 ? `PACKING SLIP ${gi + 1}` : 'PACKING SLIP'"
-                  style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
-                </button>
-              </span>
+              <button x-show="ebayShipMsg.startsWith('eBay error')"
+                @click="window.open(`https://www.ebay.com/sh/ord/details?orderid=${g.orderId}`, '_blank')"
+                x-text="orderGroups.length > 1 ? `ORDER DETAILS ${gi + 1}` : 'ORDER DETAILS'"
+                style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
+              </button>
             </template>
             <span x-show="saveMsg && !saveMsg.startsWith('✓')" x-text="saveMsg"
               style="color:var(--red);font-size:12px;letter-spacing:1px"></span>

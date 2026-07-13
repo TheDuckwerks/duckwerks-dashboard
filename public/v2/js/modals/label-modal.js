@@ -420,6 +420,19 @@ document.addEventListener('alpine:init', () => {
       Alpine.store('dw').printLabel(this.purchaseResult?.labelZplUrl, this.purchaseResult?.labelUrl);
     },
 
+    get packingSlipUrls() {
+      if (this.orderGroups.length) {
+        return this.orderGroups.map(g => `https://www.ebay.com/sh/ord/prt?module=PACKING_SLIP_MODULE&orderId=${g.orderId}`);
+      }
+      if (this.reverbLinks?.packing_slip) return [this.reverbLinks.packing_slip.web.href];
+      return [];
+    },
+
+    printLabelAndSlip() {
+      this.printLabel();
+      this.packingSlipUrls.forEach(u => window.open(u, '_blank'));
+    },
+
 
     async markShipped() {
       if (!this.reverbLinks?.ship?.href || !this.purchaseResult?.trackingNumber) return;
