@@ -11,7 +11,7 @@
 set -euo pipefail
 
 APP="dash"
-NUC="geoff@fedora.local"
+NUC="duckops@fedora.local"
 APP_ROOT="/srv/duckwerks/${APP}"
 KEEP=5
 TS="$(date +%Y%m%d-%H%M%S)"
