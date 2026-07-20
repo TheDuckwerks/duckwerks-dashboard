@@ -32,7 +32,7 @@ Built with Alpine.js, served by a local Express server, backed by SQLite. Stack,
 
 The production server is an Intel NUC at `fedora.local`. Claude has SSH access and should use it directly.
 
-- **SSH:** `ssh geoff@fedora.local`
+- **SSH:** `ssh duckops@fedora.local` — duckops is the NUC's operating principal (owns `/srv`, pm2, the db); `geoff@` is the human's rescue account, not the ops rail.
 - **App (live):** `/srv/duckwerks/dash/current` — the active release (PM2 `duckwerks`, fork, `:3000`). Releases live under `/srv/duckwerks/dash/releases/<ts>/`; `current` symlinks the live one.
 - **Database:** `/srv/duckwerks/dash/data/duckwerks.db` — the source of truth (persistent dir, symlinked into each release). The local `data/duckwerks.db` is stale and useless. Never query it. Use `scripts/db.sh`, which targets it.
 - The old checkout `/home/geoff/projects/duckwerksdash` is a **retired fallback** — runs nothing; don't deploy or query there.

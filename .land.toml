@@ -1,0 +1,26 @@
+# .land.toml -- dash's fills for the org `land` ritual (config/skills/land).
+# The skill holds the beats; this holds the commands. Empty = skip that beat.
+
+[project]
+name    = "duckwerks-dashboard"
+tracker = "TheDuckwerks/duckwerksdash"
+
+[version]
+command = "npm version {level} --no-git-tag-version"
+# Also bump APP_VERSION in public/v2/js/config.js -- the sidebar reads it.
+
+[log]
+mode = "manual"
+file = "docs/session-log.md"
+command = ""
+
+[docs]
+regen = ""
+build = ""
+
+[lint]
+command = ""
+
+[deploy]
+docs = ""
+app  = "./scripts/deploy.sh"

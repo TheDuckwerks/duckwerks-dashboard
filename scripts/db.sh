@@ -16,7 +16,7 @@
 # bypass of the confirm step.
 set -euo pipefail
 
-NUC_HOST="geoff@fedora.local"
+NUC_HOST="duckops@fedora.local"   # duckops owns /srv and the db file
 NUC_DB="/srv/duckwerks/dash/data/duckwerks.db"   # persistent state dir (post Duck Ops cutover)
 LOCAL_DB="$(cd "$(dirname "$0")/.." && pwd)/data/duckwerks.db"
 

@@ -75,14 +75,16 @@ Miss any of these and the modal renders on top of everything at load.
 
 ## NUC / PM2
 
+**(2026-07-19) The NUC's operating principal is `duckops`, not `geoff` — a `Permission denied` from a deploy or db write means you're on the wrong account.** Ops re-owned `/srv/duckwerks` and moved all pm2 services to the duckops user (ops `#30`). `geoff@` still ssh-es (rescue account, reads work — the group bit is read-only) but can't mkdir under `releases/` or write the db (WAL needs dir write). `deploy.sh` and `db.sh` both ride `duckops@fedora.local`; key auth is provisioned. If a new script grows an ssh target, it's duckops.
+
 **systemd kills PM2 on restart because of a stale `PIDFile=` directive.** If the server is randomly restarting or 502ing, check the PM2 systemd service first:
 
 ```bash
-sudo journalctl -u pm2-geoff.service -n 20
-sudo systemctl status pm2-geoff.service
+sudo journalctl -u pm2-duckops.service -n 20
+sudo systemctl status pm2-duckops.service
 ```
 
-Look for "Can't open PID file" or a climbing restart counter. Root cause: the `PIDFile=` directive in `/etc/systemd/system/pm2-geoff.service` makes systemd kill PM2 when it can't read the PID file. Fix: remove `PIDFile=`, set `Type=oneshot` + `RemainAfterExit=yes`.
+Look for "Can't open PID file" or a climbing restart counter. Root cause: the `PIDFile=` directive in `/etc/systemd/system/pm2-duckops.service` makes systemd kill PM2 when it can't read the PID file. Fix: remove `PIDFile=`, set `Type=oneshot` + `RemainAfterExit=yes`.
 
 ---
 
