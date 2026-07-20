@@ -19,7 +19,7 @@
                       @click="toggleListedSite(site)" x-text="site"></button>
             </template>
           </div>
-          <div x-show="listedLoading" style="padding:40px; text-align:center; color:var(--muted)">Loading…</div>
+          <div x-show="listedLoading" style="padding:40px; text-align:center; color:var(--text-tertiary)">Loading…</div>
           <div x-show="listedError" x-text="listedError" style="padding:20px; color:var(--red)"></div>
           <table class="data-table" x-show="!listedLoading && !listedError">
             <thead>
@@ -53,7 +53,7 @@
                 </tr>
               </template>
               <tr x-show="sortedListedRows.length === 0 && !listedLoading">
-                <td colspan="9" style="color:var(--muted); text-align:center">No listings found</td>
+                <td colspan="9" style="color:var(--text-tertiary); text-align:center">No listings found</td>
               </tr>
             </tbody>
           </table>
@@ -68,7 +68,7 @@
                       @click="toggleSoldSite(site)" x-text="site"></button>
             </template>
           </div>
-          <div x-show="soldLoading" style="padding:40px; text-align:center; color:var(--muted)">Loading…</div>
+          <div x-show="soldLoading" style="padding:40px; text-align:center; color:var(--text-tertiary)">Loading…</div>
           <div x-show="soldError" x-text="soldError" style="padding:20px; color:var(--red)"></div>
           <table class="data-table" x-show="!soldLoading && !soldError">
             <thead>
@@ -87,18 +87,18 @@
                 <tr :style="row.itemId ? 'cursor:pointer' : ''" @click="openItem(row.itemId)">
                   <td style="text-align:left" x-text="row.name"></td>
                   <td><span :class="row.site === 'Reverb' ? 'badge-reverb' : 'badge-ebay'" x-text="row.site"></span></td>
-                  <td style="color:var(--muted); white-space:nowrap" x-text="row.soldDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })"></td>
+                  <td style="color:var(--text-tertiary); white-space:nowrap" x-text="row.soldDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })"></td>
                   <td class="num-col" x-text="row.daysSince + 'd'"></td>
                   <td class="num-col green" x-text="row.salePrice ? $store.dw.fmt0(row.salePrice) : '—'"></td>
                   <td class="num-col" :class="row.profit > 0 ? 'green' : row.profit < 0 ? 'red' : ''" x-text="row.profit != null ? (row.profit >= 0 ? '+' : '') + $store.dw.fmt0(row.profit) : '—'"></td>
                   <td @click.stop>
                     <a x-show="row.orderUrl" :href="row.orderUrl" target="_blank" style="color:var(--blue)">View</a>
-                    <span x-show="!row.orderUrl" style="color:var(--muted)">—</span>
+                    <span x-show="!row.orderUrl" style="color:var(--text-tertiary)">—</span>
                   </td>
                 </tr>
               </template>
               <tr x-show="sortedSoldRows.length === 0 && !soldLoading">
-                <td colspan="7" style="color:var(--muted); text-align:center">No orders pending feedback</td>
+                <td colspan="7" style="color:var(--text-tertiary); text-align:center">No orders pending feedback</td>
               </tr>
             </tbody>
           </table>

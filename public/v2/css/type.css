@@ -1,0 +1,46 @@
+/* vendored from duckwerks-plumage @ 6885cf6 — do not edit here; edit plumage and re-preen */
+/* ============================================================
+   PLUMAGE — type.css
+   The one org type stack:
+     Azeret Mono   — display (headlines, big numerals)
+     Space Grotesk — body (prose, internal and external)
+     IBM Plex Mono — labels, data, code
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --font-display: 'Azeret Mono', ui-monospace, monospace;
+  --font-body:    'Space Grotesk', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* The calibrated base — proven on duckwerks.com against real content, canon for
+   every surface. Override freely where a surface has reason (dense terminal UIs
+   run smaller; a docsite theme maps these onto its own variables). */
+html {
+  font-size: 18px;   /* mono-forward body wants a bigger root; 16px reads small in this stack */
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;            /* Azeret's display weight: 700 shouts, 400 is spindly */
+  letter-spacing: 0.04em;      /* mono glyphs carry built-in air; more tracking gaps the words */
+  line-height: 1.1;
+  text-transform: uppercase;   /* the display voice is all-caps (Bebas gave this for free; Azeret must say it) */
+}
+
+/* The scale: Azeret runs ~15% wider than a condensed display face; these clamps
+   are sized for it. Headers and body meet in the middle on purpose. */
+h1 { font-size: clamp(1.9rem, 3.8vw, 3rem); }
+h2 { font-size: clamp(1.5rem, 2.8vw, 2.2rem); }
+h3 { font-size: clamp(1.25rem, 2vw, 1.6rem); }
+h4 { font-size: 1.2rem; }
+
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+}

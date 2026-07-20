@@ -4,7 +4,7 @@
       <div class="modal-header">
         <div>
           <div class="modal-title" x-text="itemName"></div>
-          <div x-show="itemSku" style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:2px" x-text="itemSku"></div>
+          <div x-show="itemSku" style="font-size:11px;color:var(--text-tertiary);letter-spacing:1px;margin-top:2px" x-text="itemSku"></div>
           <div x-show="shipItems.length > 1" style="font-size:11px;color:var(--ebay);letter-spacing:.05em;margin-top:4px"
             x-text="`one label · ${shipItems.length} items: ${shipItems.join(', ')}`"></div>
           <div x-show="$store.dw.labelQueueTotal" style="font-size:11px;color:var(--blue);letter-spacing:.1em;margin-top:4px"
@@ -23,7 +23,7 @@
           <div class="modal-row" style="flex-direction:column;align-items:stretch;gap:6px">
             <textarea x-model="addrText" rows="5"
               placeholder="Name&#10;Street Address&#10;City State Zip&#10;Country (optional)"
-              style="width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:10px;resize:vertical;box-sizing:border-box;line-height:1.6"></textarea>
+              style="width:100%;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:10px;resize:vertical;box-sizing:border-box;line-height:1.6"></textarea>
           </div>
 
           <div class="modal-divider"></div>
@@ -33,10 +33,10 @@
             <span class="modal-field">TYPE</span>
             <span class="modal-val" style="display:flex;gap:8px">
               <button @click="setType('box')"
-                :style="parcel.type==='box' ? 'border-color:var(--blue);color:var(--blue)' : 'border-color:var(--border2);color:var(--muted)'"
+                :style="parcel.type==='box' ? 'border-color:var(--blue);color:var(--blue)' : 'border-color:var(--border-default);color:var(--text-tertiary)'"
                 style="padding:5px 14px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;background:transparent">BOX</button>
               <button @click="setType('poly')"
-                :style="parcel.type==='poly' ? 'border-color:var(--blue);color:var(--blue)' : 'border-color:var(--border2);color:var(--muted)'"
+                :style="parcel.type==='poly' ? 'border-color:var(--blue);color:var(--blue)' : 'border-color:var(--border-default);color:var(--text-tertiary)'"
                 style="padding:5px 14px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;background:transparent">POLY BAG</button>
             </span>
           </div>
@@ -45,11 +45,11 @@
             <span class="modal-field">WEIGHT</span>
             <span class="modal-val" style="display:flex;gap:8px;align-items:center">
               <input x-model="parcel.weightLbs" type="number" min="0" step="1" placeholder="0"
-                style="width:60px;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
-              <span style="color:var(--muted);font-size:11px">LBS</span>
+                style="width:60px;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
+              <span style="color:var(--text-tertiary);font-size:11px">LBS</span>
               <input x-model="parcel.weightOz" type="number" min="0" max="15" step="1" placeholder="0"
-                style="width:60px;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
-              <span style="color:var(--muted);font-size:11px">OZ</span>
+                style="width:60px;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
+              <span style="color:var(--text-tertiary);font-size:11px">OZ</span>
             </span>
           </div>
 
@@ -57,13 +57,13 @@
             <span class="modal-field">DIMENSIONS (IN)</span>
             <span class="modal-val" style="display:flex;gap:8px;align-items:center">
               <input x-model="parcel.length" type="number" step="0.5" min="0.1" placeholder="L"
-                style="width:60px;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
-              <span style="color:var(--muted)">×</span>
+                style="width:60px;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
+              <span style="color:var(--text-tertiary)">×</span>
               <input x-model="parcel.width" type="number" step="0.5" min="0.1" placeholder="W"
-                style="width:60px;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
-              <span style="color:var(--muted)">×</span>
+                style="width:60px;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
+              <span style="color:var(--text-tertiary)">×</span>
               <input x-model="parcel.height" type="number" step="0.5" min="0.1" placeholder="H"
-                style="width:60px;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
+                style="width:60px;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
             </span>
           </div>
 
@@ -72,10 +72,10 @@
               <span class="modal-field">LENGTH (IN)</span>
               <span class="modal-val" style="display:flex;gap:8px;align-items:center">
                 <input x-model="parcel.length" type="number" step="0.5" min="0.1" placeholder="e.g. 12"
-                  style="width:80px;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
-                <span style="color:var(--muted);font-size:11px">×</span>
+                  style="width:80px;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
+                <span style="color:var(--text-tertiary);font-size:11px">×</span>
                 <input x-model="parcel.width" type="number" step="0.5" min="0.1" placeholder="W e.g. 9"
-                  style="width:80px;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
+                  style="width:80px;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
               </span>
             </div>
             <div class="modal-row" style="margin-top:-8px">
@@ -88,7 +88,7 @@
             <span class="modal-val" style="display:flex;gap:10px;align-items:center">
               <input type="checkbox" x-model="insureEnabled" style="cursor:pointer;width:14px;height:14px">
               <input x-show="insureEnabled" x-model="insuredAmount" type="number" min="0" step="50" placeholder="100"
-                style="width:100px;background:var(--surface);border:1px solid var(--border2);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
+                style="width:100px;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:'Space Mono',monospace;font-size:12px;padding:8px 10px">
             </span>
           </div>
 
@@ -108,12 +108,12 @@
           <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
             <template x-for="r in rates" :key="r.object_id">
               <div @click="purchase(r.object_id, r.price, r.carrier)"
-                style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:1px solid var(--border2);cursor:pointer;transition:border-color .15s"
-                @mouseover="$el.style.borderColor='var(--blue)'" @mouseout="$el.style.borderColor='var(--border2)'">
+                style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:1px solid var(--border-default);cursor:pointer;transition:border-color .15s"
+                @mouseover="$el.style.borderColor='var(--blue)'" @mouseout="$el.style.borderColor='var(--border-default)'">
                 <div>
                   <div style="font-size:13px;letter-spacing:1px">
                     <span :style="'color:' + carrierColor(r.carrier)" x-text="r.carrier"></span>
-                    <span style="color:var(--white)" x-text="' - ' + r.service"></span>
+                    <span style="color:var(--text-primary)" x-text="' - ' + r.service"></span>
                   </div>
                   <div x-show="r.days" style="font-size:11px;color:#888;margin-top:3px;letter-spacing:1px"
                     x-text="r.days + ' BUSINESS DAY' + (r.days !== 1 ? 'S' : '')"></div>
@@ -125,12 +125,12 @@
           <template x-if="carrierWarnings.length">
             <div style="margin-bottom:12px">
               <template x-for="w in carrierWarnings" :key="w">
-                <div x-text="w" style="font-size:11px;color:var(--yellow);letter-spacing:1px;margin-bottom:4px"></div>
+                <div x-text="w" style="font-size:11px;color:var(--warn);letter-spacing:1px;margin-bottom:4px"></div>
               </template>
             </div>
           </template>
           <button @click="step = 'form'"
-            style="padding:8px 20px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;cursor:pointer">
+            style="padding:8px 20px;background:transparent;border:1px solid var(--border-default);color:var(--text-tertiary);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;cursor:pointer">
             ← BACK
           </button>
         </div>
@@ -146,10 +146,10 @@
           <div class="modal-row">
             <span class="modal-field">TRACKING #</span>
             <span class="modal-val" style="display:flex;gap:8px;align-items:center">
-              <span style="font-size:12px;color:var(--white)" x-text="purchaseResult?.trackingNumber || 'n/a'"></span>
+              <span style="font-size:12px;color:var(--text-primary)" x-text="purchaseResult?.trackingNumber || 'n/a'"></span>
               <button x-show="purchaseResult?.trackingNumber"
                 @click="navigator.clipboard.writeText(purchaseResult.trackingNumber); $el.textContent='✓'"
-                style="padding:3px 8px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer">
+                style="padding:3px 8px;background:transparent;border:1px solid var(--border-default);color:var(--text-tertiary);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer">
                 COPY
               </button>
             </span>
@@ -163,9 +163,9 @@
                 style="padding:6px 16px;background:var(--blue);color:#fff;border:none;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer">
               </button>
               <a :href="purchaseResult?.labelUrl" target="_blank"
-                style="font-size:11px;color:var(--muted)">↗ raw</a>
+                style="font-size:11px;color:var(--text-tertiary)">↗ raw</a>
               <template x-for="(url, si) in packingSlipUrls" :key="url">
-                <a :href="url" target="_blank" style="font-size:11px;color:var(--muted)"
+                <a :href="url" target="_blank" style="font-size:11px;color:var(--text-tertiary)"
                   x-text="packingSlipUrls.length > 1 ? `↗ slip ${si + 1}` : '↗ slip'"></a>
               </template>
             </span>
@@ -174,7 +174,7 @@
           <div class="modal-row" x-show="purchaseResult?.trackingUrl">
             <span class="modal-field">TRACK</span>
             <span class="modal-val">
-              <a :href="purchaseResult?.trackingUrl" target="_blank" style="color:var(--muted);font-size:11px">↗ TRACKING PAGE</a>
+              <a :href="purchaseResult?.trackingUrl" target="_blank" style="color:var(--text-tertiary);font-size:11px">↗ TRACKING PAGE</a>
             </span>
           </div>
 
@@ -183,7 +183,7 @@
             <template x-if="$store.dw.labelQueueTotal > 0">
               <button @click="$store.dw.labelQueue.length ? nextInQueue() : $store.dw.closeModal()" :disabled="queueBusy"
                 x-text="queueBusy ? 'SAVING...' : $store.dw.labelQueue.length ? `NEXT LABEL (${$store.dw.labelQueue.length} LEFT) →` : 'DONE ✓'"
-                :style="queueBusy ? 'background:var(--ink-4);color:var(--muted);cursor:wait' : $store.dw.labelQueue.length ? 'background:var(--blue);color:#fff;cursor:pointer' : 'background:var(--green);color:#000;cursor:pointer'"
+                :style="queueBusy ? 'background:var(--text-muted);color:var(--text-tertiary);cursor:wait' : $store.dw.labelQueue.length ? 'background:var(--blue);color:#fff;cursor:pointer' : 'background:var(--green);color:#000;cursor:pointer'"
                 style="padding:10px 24px;border:none;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px">
               </button>
             </template>
@@ -210,7 +210,7 @@
               <button x-show="ebayShipMsg.startsWith('eBay error')"
                 @click="window.open(`https://www.ebay.com/sh/ord/details?orderid=${g.orderId}`, '_blank')"
                 x-text="orderGroups.length > 1 ? `ORDER DETAILS ${gi + 1}` : 'ORDER DETAILS'"
-                style="padding:10px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
+                style="padding:10px 24px;background:transparent;border:1px solid var(--border-default);color:var(--text-tertiary);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;cursor:pointer">
               </button>
             </template>
             <span x-show="saveMsg && !saveMsg.startsWith('✓')" x-text="saveMsg"

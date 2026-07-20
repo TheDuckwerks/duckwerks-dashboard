@@ -5,7 +5,7 @@
         <div x-show="!renaming" class="modal-title" x-text="lot ? lot.name : ''"></div>
         <div x-show="renaming" style="display:flex;gap:6px;align-items:center;flex:1">
           <input x-ref="renameInput" x-model="renameValue" type="text"
-            style="background:var(--surface);border:1px solid var(--border2);color:var(--white);font:700 14px/1 var(--mono);padding:4px 8px;flex:1"
+            style="background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font:700 14px/1 var(--font-mono);padding:4px 8px;flex:1"
             @keydown.enter="saveRename()" @keydown.escape="renaming=false">
           <button class="btn" style="font-size:10px;padding:4px 10px" @click="saveRename()" :disabled="renameSaving" x-text="renameSaving ? '…' : 'SAVE'"></button>
           <button class="btn btn-muted" style="font-size:10px;padding:4px 10px" @click="renaming=false">CANCEL</button>
@@ -46,14 +46,14 @@
 
         <!-- Break-even progress bar -->
         <div style="margin-bottom:16px">
-          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:6px">
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-tertiary); margin-bottom:6px">
             <span>RECOVERY PROGRESS</span>
             <span :class="recoveryBarClass()" x-text="recoveryPct() + '%'"></span>
           </div>
           <div class="progress-bar" style="height:10px">
             <div class="progress-fill" :class="recoveryBarClass()" :style="'width:' + recoveryPct() + '%'"></div>
           </div>
-          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:4px">
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-tertiary); margin-top:4px">
             <span x-text="countByStatus('Sold') + ' sold · ' + countByStatus('Listed') + ' listed · ' + countByStatus('Prepping') + ' prepping'"></span>
             <span x-text="items.length + ' items total'"></span>
           </div>
@@ -94,7 +94,7 @@
               </tr>
             </template>
             <tr x-show="items.length === 0">
-              <td colspan="7" style="color:var(--muted); text-align:center">No items in this lot</td>
+              <td colspan="7" style="color:var(--text-tertiary); text-align:center">No items in this lot</td>
             </tr>
           </tbody>
         </table>
@@ -118,7 +118,7 @@
                   <td class="num-col" x-text="row.listPrice > 0 ? '$' + row.listPrice.toFixed(2) : '—'"></td>
                   <td class="num-col">
                     <input type="number" x-model.number="reallocRows[i].editCost" min="0" step="0.01"
-                      style="width:80px; background:var(--surface); border:1px solid var(--border2); color:var(--white); font-family:'Space Mono',monospace; font-size:12px; padding:3px 6px; text-align:right">
+                      style="width:80px; background:var(--bg-surface); border:1px solid var(--border-default); color:var(--text-primary); font-family:'Space Mono',monospace; font-size:12px; padding:3px 6px; text-align:right">
                   </td>
                 </tr>
               </template>
@@ -126,9 +126,9 @@
           </table>
 
           <!-- Running total -->
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-top:1px solid var(--border); margin-bottom:12px">
-            <div style="font-size:11px; color:var(--muted); letter-spacing:1px">
-              LOT TOTAL: <span style="color:var(--white)" x-text="'$' + reallocOriginalTotal.toFixed(2)"></span>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-top:1px solid var(--border-subtle); margin-bottom:12px">
+            <div style="font-size:11px; color:var(--text-tertiary); letter-spacing:1px">
+              LOT TOTAL: <span style="color:var(--text-primary)" x-text="'$' + reallocOriginalTotal.toFixed(2)"></span>
               &nbsp;&nbsp;
               ALLOCATED: <span :class="reallocColorClass()" x-text="'$' + reallocAllocated().toFixed(2)"></span>
               &nbsp;&nbsp;
@@ -142,7 +142,7 @@
               <button class="btn" style="font-size:10px; padding:4px 10px" @click="saveRealloc()" :disabled="reallocSaving" x-text="reallocSaving ? 'SAVING…' : 'SAVE'"></button>
             </div>
           </div>
-          <div x-show="Math.abs(reallocDiff()) >= 0.01" style="font-size:11px; color:var(--yellow); margin-bottom:8px">
+          <div x-show="Math.abs(reallocDiff()) >= 0.01" style="font-size:11px; color:var(--warn); margin-bottom:8px">
             Warning: allocated total doesn't match lot cost.
           </div>
           <div x-show="reallocError" x-text="reallocError" style="font-size:11px; color:var(--red); margin-bottom:8px"></div>

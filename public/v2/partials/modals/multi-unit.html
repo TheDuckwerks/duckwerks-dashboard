@@ -39,14 +39,14 @@
 
         <!-- Progress bar -->
         <div style="margin-bottom:16px">
-          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:6px">
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-tertiary); margin-bottom:6px">
             <span>UNITS SOLD</span>
             <span :class="progressClass()" x-text="progressPct() + '%'"></span>
           </div>
           <div class="progress-bar" style="height:10px">
             <div class="progress-fill" :class="progressClass()" :style="'width:' + progressPct() + '%'"></div>
           </div>
-          <div style="font-size:11px; color:var(--muted); margin-top:4px">
+          <div style="font-size:11px; color:var(--text-tertiary); margin-top:4px">
             <span x-text="item ? item.quantity_sold + ' sold · ' + remaining() + ' remaining' : ''"></span>
           </div>
         </div>
@@ -74,10 +74,10 @@
               </tr>
             </template>
             <tr x-show="orders().length === 0">
-              <td colspan="4" style="color:var(--muted); text-align:center">No sales yet</td>
+              <td colspan="4" style="color:var(--text-tertiary); text-align:center">No sales yet</td>
             </tr>
             <tr x-show="remaining() > 0">
-              <td colspan="4" style="color:var(--muted); font-size:11px; text-align:left"
+              <td colspan="4" style="color:var(--text-tertiary); font-size:11px; text-align:left"
                 x-text="remaining() + ' units remaining · Listed at ' + listPrice()"></td>
             </tr>
           </tbody>

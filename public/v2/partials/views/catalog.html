@@ -19,20 +19,20 @@
 
         <!-- Disc # -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px">DISC #</label>
-          <span style="color:var(--yellow); font-family:'Bebas Neue',sans-serif; font-size:22px" x-text="nextDiscNum ?? '…'"></span>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px">DISC #</label>
+          <span style="color:var(--warn); font-family:'Bebas Neue',sans-serif; font-size:22px" x-text="nextDiscNum ?? '…'"></span>
         </div>
 
         <!-- Box -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">BOX</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">BOX</label>
           <input data-focus type="text" x-model="box" placeholder="e.g. S1"
-                 style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
+                 style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
         </div>
 
         <!-- Manufacturer typeahead -->
         <div style="display:flex; gap:16px; align-items:flex-start">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0; padding-top:8px">MANUFACTURER</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0; padding-top:8px">MANUFACTURER</label>
           <div style="position:relative">
             <input type="text" x-model="manufacturerQuery"
                    @input="manufacturerOpen = true; manufacturerIndex = -1"
@@ -40,14 +40,14 @@
                    @keydown="mfgKeydown($event)"
                    @keydown.escape="manufacturerOpen = false"
                    placeholder="type to search…"
-                   style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:260px">
+                   style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:260px">
             <div x-show="manufacturerOpen && mfgFiltered.length > 0" x-cloak
                  @click.outside="manufacturerOpen = false"
-                 style="position:absolute; top:100%; left:0; width:260px; background:var(--surface); border:1px solid var(--border); border-top:none; border-radius:0 0 4px 4px; max-height:200px; overflow-y:auto; z-index:50">
+                 style="position:absolute; top:100%; left:0; width:260px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-top:none; border-radius:0 0 4px 4px; max-height:200px; overflow-y:auto; z-index:50">
               <template x-for="(m, i) in mfgFiltered" :key="m">
                 <div @click="selectManufacturer(m)" x-text="m"
-                     :style="i === manufacturerIndex ? 'background:var(--border)' : ''"
-                     style="padding:6px 10px; font-size:13px; cursor:pointer; color:var(--white)"
+                     :style="i === manufacturerIndex ? 'background:var(--border-subtle)' : ''"
+                     style="padding:6px 10px; font-size:13px; cursor:pointer; color:var(--text-primary)"
                      @mouseenter="manufacturerIndex = i"
                      @mouseleave="manufacturerIndex = -1"></div>
               </template>
@@ -57,21 +57,21 @@
 
         <!-- Mold -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">MOLD</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">MOLD</label>
           <select x-model="mold"
-                  style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
+                  style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
             <option value="">— select —</option>
             <template x-for="m in molds" :key="m"><option :value="m" x-text="m"></option></template>
           </select>
           <input type="text" x-model="moldNew" placeholder="or new mold"
-                 style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:180px">
+                 style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:180px">
         </div>
 
         <!-- Type -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">TYPE</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">TYPE</label>
           <select x-model="type"
-                  style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
+                  style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
             <option value="">— select —</option>
             <template x-for="t in TYPES" :key="t">
               <option :value="t" x-text="t"></option>
@@ -81,60 +81,60 @@
 
         <!-- Plastic -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">PLASTIC</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">PLASTIC</label>
           <select x-model="plastic"
-                  style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
+                  style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
             <option value="">— select —</option>
             <template x-for="p in plastics" :key="p.plastic">
               <option :value="p.plastic" x-text="p.tier === 'Baseline' ? p.plastic + ' (base)' : p.plastic"></option>
             </template>
           </select>
           <input type="text" x-model="plasticNew" placeholder="or new plastic"
-                 style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:180px">
+                 style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:180px">
         </div>
 
         <!-- Run/Edition -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">RUN / EDITION</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">RUN / EDITION</label>
           <input type="text" x-model="run" placeholder="optional"
-                 style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
+                 style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
         </div>
 
         <!-- Notes -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">NOTES</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">NOTES</label>
           <input type="text" x-model="notes" placeholder="optional"
-                 style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
+                 style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
         </div>
 
         <!-- Condition -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">CONDITION</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">CONDITION</label>
           <div style="display:flex; gap:0">
             <button type="button" @click="condition = 'NEW'"
-                    :style="condition === 'NEW' ? 'background:var(--green); color:#000' : 'background:var(--surface); color:var(--muted)'"
-                    style="padding:6px 14px; border:1px solid var(--border); border-radius:4px 0 0 4px; font-family:inherit; font-size:13px; cursor:pointer">NEW</button>
+                    :style="condition === 'NEW' ? 'background:var(--green); color:#000' : 'background:var(--bg-surface); color:var(--text-tertiary)'"
+                    style="padding:6px 14px; border:1px solid var(--border-subtle); border-radius:4px 0 0 4px; font-family:inherit; font-size:13px; cursor:pointer">NEW</button>
             <button type="button" @click="condition = 'NEW_OTHER'"
-                    :style="condition === 'NEW_OTHER' ? 'background:var(--green); color:#000; opacity:0.7' : 'background:var(--surface); color:var(--muted)'"
-                    style="padding:6px 14px; border:1px solid var(--border); border-left:none; font-family:inherit; font-size:13px; cursor:pointer">NEW_OTHER</button>
+                    :style="condition === 'NEW_OTHER' ? 'background:var(--green); color:#000; opacity:0.7' : 'background:var(--bg-surface); color:var(--text-tertiary)'"
+                    style="padding:6px 14px; border:1px solid var(--border-subtle); border-left:none; font-family:inherit; font-size:13px; cursor:pointer">NEW_OTHER</button>
             <button type="button" @click="condition = 'USED'"
-                    :style="condition === 'USED' ? 'background:var(--yellow); color:#000' : 'background:var(--surface); color:var(--muted)'"
-                    style="padding:6px 14px; border:1px solid var(--border); border-left:none; border-radius:0 4px 4px 0; font-family:inherit; font-size:13px; cursor:pointer">USED</button>
+                    :style="condition === 'USED' ? 'background:var(--warn); color:#000' : 'background:var(--bg-surface); color:var(--text-tertiary)'"
+                    style="padding:6px 14px; border:1px solid var(--border-subtle); border-left:none; border-radius:0 4px 4px 0; font-family:inherit; font-size:13px; cursor:pointer">USED</button>
           </div>
         </div>
 
         <!-- Weight -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">WEIGHT (g)</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">WEIGHT (g)</label>
           <input type="number" x-model.number="weight" min="100" max="200"
-                 style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:100px">
+                 style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:100px">
         </div>
 
         <!-- Color -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">COLOR</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">COLOR</label>
           <select x-model="color"
-                  style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
+                  style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:200px">
             <option value="">— select —</option>
             <template x-for="c in COLORS" :key="c">
               <option :value="c" x-text="c"></option>
@@ -144,14 +144,14 @@
 
         <!-- List Price -->
         <div style="display:flex; gap:16px; align-items:center">
-          <label style="color:var(--muted); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">LIST PRICE ($)</label>
+          <label style="color:var(--text-tertiary); font-size:11px; letter-spacing:1px; width:140px; flex-shrink:0">LIST PRICE ($)</label>
           <input type="number" x-model.number="listPrice" min="0" step="1"
-                 style="background:var(--surface); border:1px solid var(--border); color:var(--white); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:100px">
+                 style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:6px 10px; border-radius:4px; font-family:inherit; font-size:13px; width:100px">
         </div>
 
         <!-- Flight numbers (auto-populated from lookup, read-only) -->
-        <div x-show="flightData" x-cloak style="font-size:11px; color:var(--muted); margin-top:-4px">
-          <span style="color:var(--white); letter-spacing:1px">FLIGHT:</span>
+        <div x-show="flightData" x-cloak style="font-size:11px; color:var(--text-tertiary); margin-top:-4px">
+          <span style="color:var(--text-primary); letter-spacing:1px">FLIGHT:</span>
           Speed <span x-text="flightData?.speed"></span> &nbsp;|&nbsp;
           Glide <span x-text="flightData?.glide"></span> &nbsp;|&nbsp;
           Turn <span x-text="flightData?.turn"></span> &nbsp;|&nbsp;
@@ -173,28 +173,28 @@
         <div class="modal-section-label" style="margin-bottom:12px">Bulk List to eBay</div>
 
         <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;margin-bottom:8px">
-          <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">DWG range</span>
+          <span style="font:700 10px/1 var(--font-mono);letter-spacing:.08em;color:var(--text-tertiary)">DWG range</span>
           <div style="display:flex;gap:10px;align-items:center">
             <input type="text" x-model="blkRange" @input="blkResolveDiscs()" placeholder="e.g. 293-298 or 293,295"
-              style="font-size:12px;padding:4px 8px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:200px">
-            <span style="font:700 10px/1 var(--mono);color:var(--muted)" x-text="blkDiscs.length + ' Prepping disc(s)'"></span>
+              style="font-size:12px;padding:4px 8px;border:1px solid var(--border-subtle);background:var(--bg-base);color:var(--text-primary);width:200px">
+            <span style="font:700 10px/1 var(--font-mono);color:var(--text-tertiary)" x-text="blkDiscs.length + ' Prepping disc(s)'"></span>
           </div>
         </div>
 
         <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;margin-bottom:8px">
-          <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">photos / disc</span>
+          <span style="font:700 10px/1 var(--font-mono);letter-spacing:.08em;color:var(--text-tertiary)">photos / disc</span>
           <input type="number" min="1" x-model.number="blkPerDisc"
-            style="font-size:12px;padding:4px 8px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:60px">
+            style="font-size:12px;padding:4px 8px;border:1px solid var(--border-subtle);background:var(--bg-base);color:var(--text-primary);width:60px">
         </div>
 
         <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;margin-bottom:12px">
-          <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">photos</span>
+          <span style="font:700 10px/1 var(--font-mono);letter-spacing:.08em;color:var(--text-tertiary)">photos</span>
           <div style="display:flex;gap:10px;align-items:center">
             <input type="file" multiple accept="image/jpeg,image/jpg"
               @change="blkFiles = Array.from($event.target.files)"
-              style="font-size:11px;color:var(--ink-2)">
+              style="font-size:11px;color:var(--text-secondary)">
             <button @click="blkUploadPhotos()" :disabled="blkUploading || !blkDiscs.length || !blkFiles.length"
-              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer;opacity:1"
+              style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer;opacity:1"
               :style="(blkUploading || !blkDiscs.length || !blkFiles.length) ? 'opacity:.4;cursor:not-allowed' : ''"
               x-text="blkUploading ? 'UPLOADING…' : 'UPLOAD + MAP'"></button>
           </div>
@@ -202,22 +202,22 @@
 
         <!-- disk-backed preview (accumulates across ranges) -->
         <template x-if="blkPreview.length">
-          <div style="border:1px solid var(--border);margin-bottom:12px">
+          <div style="border:1px solid var(--border-subtle);margin-bottom:12px">
             <template x-for="d in blkPreview" :key="d.id">
-              <div style="display:flex;gap:12px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border)">
-                <span style="font:700 11px/1 var(--mono);white-space:nowrap;width:70px" x-text="d.sku"></span>
+              <div style="display:flex;gap:12px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border-subtle)">
+                <span style="font:700 11px/1 var(--font-mono);white-space:nowrap;width:70px" x-text="d.sku"></span>
                 <div style="display:flex;gap:4px;width:150px">
                   <template x-for="url in blkPhotoUrls(d)" :key="url">
-                    <img :src="url" loading="lazy" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border)">
+                    <img :src="url" loading="lazy" style="width:40px;height:40px;object-fit:cover;border:1px solid var(--border-subtle)">
                   </template>
-                  <span x-show="!blkPhotoUrls(d).length" style="font:700 9px/1 var(--mono);color:var(--muted);align-self:center">no photos</span>
+                  <span x-show="!blkPhotoUrls(d).length" style="font:700 9px/1 var(--font-mono);color:var(--text-tertiary);align-self:center">no photos</span>
                 </div>
-                <span :title="d.title" style="font-size:11px;color:var(--ink-2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="d.title"></span>
-                <span style="font:700 11px/1 var(--mono);color:var(--ink-1);width:50px;text-align:right" x-text="d.price ? '$' + d.price : '—'"></span>
+                <span :title="d.title" style="font-size:11px;color:var(--text-secondary);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="d.title"></span>
+                <span style="font:700 11px/1 var(--font-mono);color:var(--text-primary);width:50px;text-align:right" x-text="d.price ? '$' + d.price : '—'"></span>
                 <span style="width:110px;text-align:right">
-                  <span x-show="blkResults[d.id]?.ok" style="font:700 9px/1 var(--mono);color:var(--green)">LISTED ✓</span>
-                  <a x-show="blkResults[d.id]?.ok" :href="blkResults[d.id]?.url" target="_blank" style="font:700 9px/1 var(--mono);color:var(--blue);text-decoration:none;margin-left:6px">VIEW →</a>
-                  <span x-show="blkResults[d.id]?.error" style="font:700 9px/1 var(--mono);color:var(--red)" x-text="blkResults[d.id]?.error"></span>
+                  <span x-show="blkResults[d.id]?.ok" style="font:700 9px/1 var(--font-mono);color:var(--green)">LISTED ✓</span>
+                  <a x-show="blkResults[d.id]?.ok" :href="blkResults[d.id]?.url" target="_blank" style="font:700 9px/1 var(--font-mono);color:var(--blue);text-decoration:none;margin-left:6px">VIEW →</a>
+                  <span x-show="blkResults[d.id]?.error" style="font:700 9px/1 var(--font-mono);color:var(--red)" x-text="blkResults[d.id]?.error"></span>
                 </span>
               </div>
             </template>
@@ -228,10 +228,10 @@
         <template x-if="blkPreview.length">
           <div style="display:flex;gap:10px;align-items:center">
             <button @click="blkList()" :disabled="blkListing || !blkReadyDiscs.length"
-              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:6px 18px;background:var(--green);color:#03110a;border:none;cursor:pointer"
+              style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:6px 18px;background:var(--green);color:#03110a;border:none;cursor:pointer"
               :style="(blkListing || !blkReadyDiscs.length) ? 'opacity:.5;cursor:not-allowed' : ''"
               x-text="blkListing ? ('LISTING… ' + blkProgress.done + '/' + blkProgress.total) : ('BULK LIST ' + blkReadyDiscs.length + ' WITH PHOTOS')"></button>
-            <span style="font:700 9px/1 var(--mono);color:var(--muted)">creates + publishes NEW eBay offers — goes live</span>
+            <span style="font:700 9px/1 var(--font-mono);color:var(--text-tertiary)">creates + publishes NEW eBay offers — goes live</span>
           </div>
         </template>
       </div>
@@ -244,34 +244,34 @@
             <template x-for="f in [['all','ALL'],['Prepping','INTAKE'],['Listed','LISTED']]" :key="f[0]">
               <button @click="invStatusFilter = f[0]"
                 :style="invStatusFilter === f[0] ? 'border-color:var(--blue);color:var(--blue)' : ''"
-                style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+                style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--text-tertiary);color:var(--text-secondary);cursor:pointer"
                 x-text="f[1]"></button>
             </template>
             <button @click="staleOnly = !staleOnly"
               :style="staleOnly ? 'border-color:var(--red);color:var(--red)' : ''"
-              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+              style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--text-tertiary);color:var(--text-secondary);cursor:pointer"
               x-text="'STALE (' + staleCount + ')'"></button>
             <button @click="inventoryShowSold = !inventoryShowSold; loadInventory()"
-              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+              style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--text-tertiary);color:var(--text-secondary);cursor:pointer"
               x-text="inventoryShowSold ? 'HIDE SOLD' : 'SHOW SOLD'"></button>
           </div>
         </div>
         <!-- Batch update banner -->
         <template x-if="ebayQueue.length > 0 || ebayBatchRunning">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:12px;background:var(--surface);border:1px solid var(--blue)">
-            <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--blue)"
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:12px;background:var(--bg-surface);border:1px solid var(--blue)">
+            <span style="font:700 10px/1 var(--font-mono);letter-spacing:.08em;color:var(--blue)"
                   x-text="ebayBatchRunning ? ebayBatchProgress.done + ' / ' + ebayBatchProgress.total + ' UPDATED...' : ebayQueue.length + ' ITEM' + (ebayQueue.length === 1 ? '' : 'S') + ' QUEUED'"></span>
             <button @click="ebayBatchUpdate()" :disabled="ebayBatchRunning"
-              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer">
+              style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer">
               UPDATE ALL ON EBAY
             </button>
           </div>
         </template>
 
-        <div x-show="inventoryLoading" style="color:var(--muted);font-size:11px;letter-spacing:1px">Loading...</div>
+        <div x-show="inventoryLoading" style="color:var(--text-tertiary);font-size:11px;letter-spacing:1px">Loading...</div>
         <div x-show="inventoryErr" x-text="inventoryErr" style="color:var(--red);font-size:11px"></div>
         <template x-if="!inventoryLoading && inventory.length === 0">
-          <div style="color:var(--muted);font-size:11px">No inventory records.</div>
+          <div style="color:var(--text-tertiary);font-size:11px">No inventory records.</div>
         </template>
         <template x-if="!inventoryLoading && inventory.length > 0">
           <div>
@@ -285,9 +285,9 @@
                   <th class="sortable" :class="{'sort-active': invSortKey==='title'}"         @click="invSortBy('title')"        >Title<span x-text="invSortGlyph('title')"></span></th>
                   <th class="sortable r" :class="{'sort-active': invSortKey==='price'}"       @click="invSortBy('price')"        style="width:64px">Price<span x-text="invSortGlyph('price')"></span></th>
                   <th class="sortable r" :class="{'sort-active': invSortKey==='dom'}"         @click="invSortBy('dom')"          style="width:48px" title="days on market">Days<span x-text="invSortGlyph('dom')"></span></th>
-                  <th class="sortable r" :class="{'sort-active': invSortKey==='views'}"       @click="invSortBy('views')"        style="width:54px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">Views<span x-text="invSortGlyph('views')"></span></th>
-                  <th class="sortable r" :class="{'sort-active': invSortKey==='impressions'}" @click="invSortBy('impressions')"  style="width:54px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">Imp<span x-text="invSortGlyph('impressions')"></span></th>
-                  <th class="sortable r" :class="{'sort-active': invSortKey==='ctr'}"         @click="invSortBy('ctr')"          style="width:44px" :style="$store.dw.trafficLoading ? 'color:var(--ink-4)' : ''">CTR<span x-text="invSortGlyph('ctr')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='views'}"       @click="invSortBy('views')"        style="width:54px" :style="$store.dw.trafficLoading ? 'color:var(--text-muted)' : ''">Views<span x-text="invSortGlyph('views')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='impressions'}" @click="invSortBy('impressions')"  style="width:54px" :style="$store.dw.trafficLoading ? 'color:var(--text-muted)' : ''">Imp<span x-text="invSortGlyph('impressions')"></span></th>
+                  <th class="sortable r" :class="{'sort-active': invSortKey==='ctr'}"         @click="invSortBy('ctr')"          style="width:44px" :style="$store.dw.trafficLoading ? 'color:var(--text-muted)' : ''">CTR<span x-text="invSortGlyph('ctr')"></span></th>
                   <th style="width:170px"></th>
                 </tr>
               </thead>
@@ -295,17 +295,17 @@
               <tbody>
                 <!-- Summary row -->
                 <tr :style="ebayQueue.includes(row.sku) ? 'border-left:2px solid var(--blue)' : ebayBatchResults[row.sku]?.ok ? 'border-left:2px solid var(--green)' : ebayBatchResults[row.sku]?.error ? 'border-left:2px solid var(--red)' : ''">
-                  <td style="font:700 11px/1 var(--mono);white-space:nowrap" x-text="row.sku"></td>
-                  <td style="font-size:11px;color:var(--muted)" x-text="row.location || '—'"></td>
-                  <td style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="row.metadata?.manufacturer || '—'"></td>
-                  <td style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="row.metadata?.mold || '—'"></td>
-                  <td style="font-size:11px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                  <td style="font:700 11px/1 var(--font-mono);white-space:nowrap" x-text="row.sku"></td>
+                  <td style="font-size:11px;color:var(--text-tertiary)" x-text="row.location || '—'"></td>
+                  <td style="font-size:11px;color:var(--text-tertiary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="row.metadata?.manufacturer || '—'"></td>
+                  <td style="font-size:11px;color:var(--text-tertiary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="row.metadata?.mold || '—'"></td>
+                  <td style="font-size:11px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
                     <span x-text="inventoryDisplayTitle(row)"></span>
-                    <span x-show="row.item_status === 'Prepping'" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--yellow);margin-left:6px">INTAKE</span>
-                    <span x-show="ebayQueue.includes(row.sku)" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--blue);margin-left:6px">QUEUED</span>
+                    <span x-show="row.item_status === 'Prepping'" style="font:700 9px/1 var(--font-mono);letter-spacing:.08em;color:var(--warn);margin-left:6px">INTAKE</span>
+                    <span x-show="ebayQueue.includes(row.sku)" style="font:700 9px/1 var(--font-mono);letter-spacing:.08em;color:var(--blue);margin-left:6px">QUEUED</span>
                     <a x-show="ebayBatchResults[row.sku]?.ok" :href="ebayBatchResults[row.sku]?.url" target="_blank"
-                       style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--green);margin-left:6px;text-decoration:none">UPDATED →</a>
-                    <span x-show="ebayBatchResults[row.sku]?.error" style="font:700 9px/1 var(--mono);letter-spacing:.08em;color:var(--red);margin-left:6px" x-text="ebayBatchResults[row.sku]?.error"></span>
+                       style="font:700 9px/1 var(--font-mono);letter-spacing:.08em;color:var(--green);margin-left:6px;text-decoration:none">UPDATED →</a>
+                    <span x-show="ebayBatchResults[row.sku]?.error" style="font:700 9px/1 var(--font-mono);letter-spacing:.08em;color:var(--red);margin-left:6px" x-text="ebayBatchResults[row.sku]?.error"></span>
                   </td>
                   <!-- PRICE: inline edit -->
                   <td class="r">
@@ -316,8 +316,8 @@
                           @keydown.enter.prevent="startPriceEdit(row)"
                           @keydown="if(/^\d$/.test($event.key)){ $event.preventDefault(); startPriceEdit(row, $event.key) }"
                           @click="startPriceEdit(row)"
-                          :style="displayPrice(row) ? 'color:var(--ink-1)' : 'color:var(--muted)'"
-                          style="font-size:11px;cursor:pointer;outline:none;border-bottom:1px dotted var(--ink-3)"
+                          :style="displayPrice(row) ? 'color:var(--text-primary)' : 'color:var(--text-tertiary)'"
+                          style="font-size:11px;cursor:pointer;outline:none;border-bottom:1px dotted var(--text-tertiary)"
                           x-text="displayPrice(row) ? '$' + displayPrice(row) : '—'"></span>
                     <span x-show="priceEditSku === row.sku" style="display:flex;gap:4px;align-items:center;justify-content:flex-end">
                       <input type="number" min="0" step="1"
@@ -325,21 +325,21 @@
                              :id="'price-input-' + row.sku"
                              @keydown.enter.prevent="focusPriceQueue(row.sku)"
                              @keydown.escape="cancelPriceEdit()"
-                             style="font-size:11px;width:54px;padding:1px 4px;border:1px solid var(--blue);background:var(--bg);color:var(--ink-1)">
+                             style="font-size:11px;width:54px;padding:1px 4px;border:1px solid var(--blue);background:var(--bg-base);color:var(--text-primary)">
                       <button :id="'price-queue-' + row.sku"
                               @click="savePriceEdit(row)"
                               @keydown.tab.prevent="savePriceEditAndAdvance(row, $event)"
-                              style="font:700 9px/1 var(--mono);letter-spacing:.08em;padding:2px 8px;background:var(--blue);color:#fff;border:none;cursor:pointer">
+                              style="font:700 9px/1 var(--font-mono);letter-spacing:.08em;padding:2px 8px;background:var(--blue);color:#fff;border:none;cursor:pointer">
                         QUEUE
                       </button>
                       <button @click="cancelPriceEdit()"
-                              style="font:700 9px/1 var(--mono);letter-spacing:.08em;padding:2px 6px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer">
+                              style="font:700 9px/1 var(--font-mono);letter-spacing:.08em;padding:2px 6px;background:transparent;border:1px solid var(--text-tertiary);color:var(--text-secondary);cursor:pointer">
                         ✕
                       </button>
                     </span>
                   </td>
                   <!-- DAYS ON MARKET -->
-                  <td class="r num" :style="isStale(row) ? 'color:var(--red)' : 'color:var(--muted)'"
+                  <td class="r num" :style="isStale(row) ? 'color:var(--red)' : 'color:var(--text-tertiary)'"
                       x-text="domDays(row) ?? '—'"></td>
                   <!-- TRAFFIC cols -->
                   <td class="r num" x-text="$store.dw.trafficLoading && !$store.dw.trafficMap[row.ebay_listing_id] ? '…' : (row.ebay_listing_id ? ($store.dw.trafficMap[row.ebay_listing_id]?.views ?? '—') : '—')"></td>
@@ -350,11 +350,11 @@
                     <div style="display:flex;gap:6px;justify-content:flex-end">
                       <button @click="ebayPreviewDisc(row)"
                         x-show="!ebayPreview[row.sku] && row.ebay_listing_id"
-                        style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--blue);color:var(--blue);cursor:pointer">
+                        style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--blue);color:var(--blue);cursor:pointer">
                         UPDATE EBAY
                       </button>
                       <button @click="editingSku === row.sku ? cancelEdit() : startEdit(row)"
-                        style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer"
+                        style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:3px 8px;background:transparent;border:1px solid var(--text-tertiary);color:var(--text-secondary);cursor:pointer"
                         x-text="editingSku === row.sku ? '✕ CLOSE' : 'EDIT'"></button>
                     </div>
                   </td>
@@ -363,9 +363,9 @@
                 <!-- eBay preview panel -->
                 <template x-if="ebayPreview[row.sku]">
                   <tr>
-                    <td colspan="11" style="padding:10px 10px 14px;border-top:1px solid var(--border)">
+                    <td colspan="11" style="padding:10px 10px 14px;border-top:1px solid var(--border-subtle)">
                       <template x-if="ebayPreview[row.sku] === 'loading'">
-                        <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">FETCHING PREVIEW...</span>
+                        <span style="font:700 10px/1 var(--font-mono);letter-spacing:.08em;color:var(--text-tertiary)">FETCHING PREVIEW...</span>
                       </template>
                       <template x-if="ebayPreview[row.sku] !== 'loading'">
                         <div style="display:grid;gap:6px">
@@ -374,8 +374,8 @@
                           </template>
                           <template x-if="!ebayPreview[row.sku].error">
                             <div style="display:grid;gap:4px">
-                              <div style="font-size:11px"><span style="color:var(--muted);font:700 10px/1 var(--mono)">TITLE </span><span x-text="ebayPreview[row.sku].title"></span></div>
-                              <div style="font-size:11px"><span style="color:var(--muted);font:700 10px/1 var(--mono)">PRICE </span><span x-text="'$' + ebayPreview[row.sku].price"></span><span style="color:var(--muted)"> (auto-decline $<span x-text="ebayPreview[row.sku].autoDecline"></span>)</span></div>
+                              <div style="font-size:11px"><span style="color:var(--text-tertiary);font:700 10px/1 var(--font-mono)">TITLE </span><span x-text="ebayPreview[row.sku].title"></span></div>
+                              <div style="font-size:11px"><span style="color:var(--text-tertiary);font:700 10px/1 var(--font-mono)">PRICE </span><span x-text="'$' + ebayPreview[row.sku].price"></span><span style="color:var(--text-tertiary)"> (auto-decline $<span x-text="ebayPreview[row.sku].autoDecline"></span>)</span></div>
                             </div>
                           </template>
                           <template x-if="ebayPreview[row.sku].result">
@@ -384,16 +384,16 @@
                                     x-text="ebayPreview[row.sku].result === 'updated' ? 'POSTED TO EBAY' : ebayPreview[row.sku].result"></span>
                               <template x-if="ebayPreview[row.sku].result === 'updated' && ebayPreview[row.sku].url">
                                 <a :href="ebayPreview[row.sku].url" target="_blank"
-                                   style="font:700 9px/1 var(--mono);letter-spacing:.1em;color:var(--blue);text-decoration:none">VIEW →</a>
+                                   style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;color:var(--blue);text-decoration:none">VIEW →</a>
                               </template>
                             </div>
                           </template>
                           <div style="display:flex;gap:8px;margin-top:4px">
                             <button @click="ebayConfirmUpdate(row)" :disabled="ebayUpdating[row.sku] || !!ebayPreview[row.sku].error || !!ebayPreview[row.sku].result"
-                              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer"
+                              style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer"
                               x-text="ebayUpdating[row.sku] ? 'POSTING TO EBAY...' : 'CONFIRM'"></button>
                             <button @click="ebayCancelPreview(row.sku)"
-                              style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer">
+                              style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:4px 14px;background:transparent;border:1px solid var(--text-tertiary);color:var(--text-secondary);cursor:pointer">
                               CANCEL
                             </button>
                           </div>
@@ -409,25 +409,25 @@
                     <td colspan="11" style="padding:12px 10px 16px">
                       <div style="display:grid;gap:6px">
                         <div style="display:grid;grid-template-columns:160px 1fr;gap:8px;align-items:center">
-                          <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)">location</span>
+                          <span style="font:700 10px/1 var(--font-mono);letter-spacing:.08em;color:var(--text-tertiary)">location</span>
                           <input type="text" x-model="editLocation"
-                            style="font-size:12px;padding:3px 6px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:100%"
+                            style="font-size:12px;padding:3px 6px;border:1px solid var(--border-subtle);background:var(--bg-base);color:var(--text-primary);width:100%"
                             @keydown.escape="cancelEdit()">
                         </div>
                         <template x-for="(pair, idx) in editPairs" :key="idx">
                           <div style="display:grid;grid-template-columns:160px 1fr;gap:8px;align-items:center">
-                            <span style="font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--muted)" x-text="pair.key"></span>
+                            <span style="font:700 10px/1 var(--font-mono);letter-spacing:.08em;color:var(--text-tertiary)" x-text="pair.key"></span>
                             <input type="text" x-model="editPairs[idx].value"
-                              style="font-size:12px;padding:3px 6px;border:1px solid var(--border);background:var(--bg);color:var(--ink-1);width:100%"
+                              style="font-size:12px;padding:3px 6px;border:1px solid var(--border-subtle);background:var(--bg-base);color:var(--text-primary);width:100%"
                               @keydown.escape="cancelEdit()">
                           </div>
                         </template>
                         <div style="display:flex;gap:8px;margin-top:4px">
                           <button @click="saveEdit()" :disabled="editSaving"
-                            style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer"
+                            style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:4px 14px;background:var(--blue);color:#fff;border:none;cursor:pointer"
                             x-text="editSaving ? '...' : 'SAVE'"></button>
                           <button @click="cancelEdit()"
-                            style="font:700 9px/1 var(--mono);letter-spacing:.1em;padding:4px 14px;background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);cursor:pointer">
+                            style="font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:4px 14px;background:transparent;border:1px solid var(--text-tertiary);color:var(--text-secondary);cursor:pointer">
                             CANCEL
                           </button>
                         </div>

@@ -12,9 +12,9 @@
         </div>
       </div>
       <div class="modal-body">
-        <div x-show="loading" style="color:var(--muted);font-size:12px;padding:16px 0">Loading...</div>
+        <div x-show="loading" style="color:var(--text-tertiary);font-size:12px;padding:16px 0">Loading...</div>
         <div x-show="errMsg" style="color:var(--red);font-size:12px" x-text="errMsg"></div>
-        <div x-show="!loading && inTransitRecords.length === 0" style="color:var(--muted);font-size:12px;padding:16px 0">
+        <div x-show="!loading && inTransitRecords.length === 0" style="color:var(--text-tertiary);font-size:12px;padding:16px 0">
           No shipments with tracking data.
         </div>
         <template x-if="!loading && inTransitRecords.length > 0">
@@ -34,13 +34,13 @@
                   <td style="text-align:left" x-text="r.name"></td>
                   <td>
                     <span x-show="trackStatus(r)" :class="'badge ' + statusBadgeClass(trackStatus(r))" x-text="statusLabel(trackStatus(r))"></span>
-                    <span x-show="!trackStatus(r)" style="color:var(--muted);font-size:11px">—</span>
+                    <span x-show="!trackStatus(r)" style="color:var(--text-tertiary);font-size:11px">—</span>
                   </td>
-                  <td style="color:var(--muted);font-size:12px" x-text="trackCarrier(r)"></td>
-                  <td style="color:var(--muted);font-size:12px" x-text="trackEstDelivery(r) || 'n/a'"></td>
+                  <td style="color:var(--text-tertiary);font-size:12px" x-text="trackCarrier(r)"></td>
+                  <td style="color:var(--text-tertiary);font-size:12px" x-text="trackEstDelivery(r) || 'n/a'"></td>
                   <td style="font-size:12px">
-                    <span x-show="locations[r.sku]" style="background:var(--ink-4);color:var(--ink-1);font:700 9px/1 var(--mono);letter-spacing:.1em;padding:2px 5px" x-text="locations[r.sku]"></span>
-                    <span x-show="!locations[r.sku]" style="color:var(--muted)">—</span>
+                    <span x-show="locations[r.sku]" style="background:var(--text-muted);color:var(--text-primary);font:700 9px/1 var(--font-mono);letter-spacing:.1em;padding:2px 5px" x-text="locations[r.sku]"></span>
+                    <span x-show="!locations[r.sku]" style="color:var(--text-tertiary)">—</span>
                   </td>
                 </tr>
               </template>

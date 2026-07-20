@@ -12,10 +12,10 @@
 
           <!-- Column headers -->
           <div style="display:grid; grid-template-columns:1fr 90px 80px 1fr 28px; gap:6px; margin-bottom:4px; padding:0 2px">
-            <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em">Item Name</div>
-            <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em">Source</div>
-            <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em">Min $</div>
-            <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em">Notes</div>
+            <div style="font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.05em">Item Name</div>
+            <div style="font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.05em">Source</div>
+            <div style="font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.05em">Min $</div>
+            <div style="font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.05em">Notes</div>
             <div></div>
           </div>
 
@@ -24,23 +24,23 @@
             <div style="margin-bottom:8px">
               <div style="display:grid; grid-template-columns:1fr 90px 80px 1fr 28px; gap:6px; margin-bottom:3px">
                 <input type="text" x-model="item.name" placeholder="e.g. Fender Stratocaster MIM" :disabled="running"
-                       style="background:var(--surface); border:1px solid var(--border); color:var(--white); font-family:'Space Mono',monospace; font-size:12px; padding:6px 8px; border-radius:4px; min-width:0">
+                       style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); font-family:'Space Mono',monospace; font-size:12px; padding:6px 8px; border-radius:4px; min-width:0">
                 <select x-model="item.sources" :disabled="running"
-                        style="background:var(--surface); border:1px solid var(--border); color:var(--white); font-family:'Space Mono',monospace; font-size:12px; padding:6px 4px; border-radius:4px">
+                        style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); font-family:'Space Mono',monospace; font-size:12px; padding:6px 4px; border-radius:4px">
                   <option value="ebay">eBay</option>
                   <option value="reverb">Reverb</option>
                   <option value="ebay,reverb">Both</option>
                 </select>
                 <input type="number" x-model="item.minPrice" placeholder="0" min="0" :disabled="running"
-                       style="background:var(--surface); border:1px solid var(--border); color:var(--white); font-family:'Space Mono',monospace; font-size:12px; padding:6px 8px; border-radius:4px; min-width:0">
+                       style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); font-family:'Space Mono',monospace; font-size:12px; padding:6px 8px; border-radius:4px; min-width:0">
                 <input type="text" x-model="item.notes" placeholder="e.g. no charger, parts only" :disabled="running"
-                       style="background:var(--surface); border:1px solid var(--border); color:var(--white); font-family:'Space Mono',monospace; font-size:12px; padding:6px 8px; border-radius:4px; min-width:0">
+                       style="background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); font-family:'Space Mono',monospace; font-size:12px; padding:6px 8px; border-radius:4px; min-width:0">
                 <button x-show="items.length > 1" @click="removeItem(idx)" :disabled="running" title="Remove"
-                        style="background:none; border:1px solid var(--border); color:var(--muted); border-radius:4px; cursor:pointer; font-size:14px; padding:0; line-height:1">×</button>
+                        style="background:none; border:1px solid var(--border-subtle); color:var(--text-tertiary); border-radius:4px; cursor:pointer; font-size:14px; padding:0; line-height:1">×</button>
                 <div x-show="items.length === 1"></div>
               </div>
               <input type="text" x-model="item.searchQuery" placeholder="eBay search query (optional — defaults to item name above)" :disabled="running"
-                     style="width:100%; box-sizing:border-box; background:var(--surface); border:1px solid var(--border2); color:var(--muted); font-family:'Space Mono',monospace; font-size:11px; padding:4px 8px; border-radius:4px">
+                     style="width:100%; box-sizing:border-box; background:var(--bg-surface); border:1px solid var(--border-default); color:var(--text-tertiary); font-family:'Space Mono',monospace; font-size:11px; padding:4px 8px; border-radius:4px">
             </div>
           </template>
 
@@ -59,13 +59,13 @@
 
         <!-- Results -->
         <template x-for="(result, idx) in results" :key="idx">
-          <div style="margin-bottom:32px; border:1px solid var(--border); border-radius:6px; padding:16px">
+          <div style="margin-bottom:32px; border:1px solid var(--border-subtle); border-radius:6px; padding:16px">
 
             <!-- Card header -->
             <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px">
-              <div style="font-size:14px; font-weight:bold; color:var(--white)" x-text="result.name"></div>
+              <div style="font-size:14px; font-weight:bold; color:var(--text-primary)" x-text="result.name"></div>
               <div style="font-size:11px"
-                   :style="result.status === 'done' ? 'color:var(--green)' : result.status === 'error' ? 'color:var(--red)' : 'color:var(--yellow)'"
+                   :style="result.status === 'done' ? 'color:var(--green)' : result.status === 'error' ? 'color:var(--red)' : 'color:var(--warn)'"
                    x-text="result.status === 'searching' ? 'Searching…' : result.status === 'analyzing' ? 'Analyzing…' : result.status === 'done' ? 'Done' : 'Error'">
               </div>
             </div>
@@ -75,13 +75,13 @@
 
             <!-- Analysis paragraph -->
             <div x-show="result.analysis" x-text="result.analysis"
-                 style="font-size:12px; color:var(--white); line-height:1.6; margin-bottom:16px; padding:10px; background:rgba(255,255,255,0.04); border-radius:4px">
+                 style="font-size:12px; color:var(--text-primary); line-height:1.6; margin-bottom:16px; padding:10px; background:rgba(255,255,255,0.04); border-radius:4px">
             </div>
 
             <!-- CSV table -->
             <div x-show="result.csv">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
-                <div style="font-size:11px; color:var(--muted)">Comp table</div>
+                <div style="font-size:11px; color:var(--text-tertiary)">Comp table</div>
                 <button class="btn btn-muted" style="font-size:11px; padding:3px 8px" @click="copyCSV(result.csv); $el.textContent='✓ Copied'">Copy CSV</button>
                 <button class="btn btn-muted" style="font-size:11px; padding:3px 8px; margin-left:4px" @click="downloadTXT(result)">Download</button>
               </div>
@@ -103,13 +103,13 @@
                     <template x-for="(row, ri) in sortedComps(csvRows(result.csv))" :key="ri">
                       <tr>
                         <td x-text="row.title" style="max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis"></td>
-                        <td x-text="row.condition" style="color:var(--muted)"></td>
+                        <td x-text="row.condition" style="color:var(--text-tertiary)"></td>
                         <td class="num-col" x-text="row.sold_price ? '$' + parseFloat(row.sold_price).toFixed(2) : 'n/a'" style="color:var(--green)"></td>
-                        <td class="num-col" x-text="parseFloat(row.shipping) > 0 ? '$' + parseFloat(row.shipping).toFixed(2) : 'Free'" style="color:var(--muted)"></td>
-                        <td class="num-col" x-text="row.total_landed ? '$' + parseFloat(row.total_landed).toFixed(2) : 'n/a'" style="color:var(--white); font-weight:bold"></td>
-                        <td x-show="showTypeCol" x-text="row.sale_type" style="color:var(--muted)"></td>
-                        <td x-text="row.listing_status" :style="row.listing_status === 'sold' ? 'color:var(--green)' : 'color:var(--yellow)'"></td>
-                        <td x-text="row.notes" style="color:var(--muted); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis"></td>
+                        <td class="num-col" x-text="parseFloat(row.shipping) > 0 ? '$' + parseFloat(row.shipping).toFixed(2) : 'Free'" style="color:var(--text-tertiary)"></td>
+                        <td class="num-col" x-text="row.total_landed ? '$' + parseFloat(row.total_landed).toFixed(2) : 'n/a'" style="color:var(--text-primary); font-weight:bold"></td>
+                        <td x-show="showTypeCol" x-text="row.sale_type" style="color:var(--text-tertiary)"></td>
+                        <td x-text="row.listing_status" :style="row.listing_status === 'sold' ? 'color:var(--green)' : 'color:var(--warn)'"></td>
+                        <td x-text="row.notes" style="color:var(--text-tertiary); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis"></td>
                       </tr>
                     </template>
                   </tbody>

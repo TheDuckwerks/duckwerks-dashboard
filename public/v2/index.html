@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Duckwerks Dash</title>
   <link rel="icon" type="image/svg+xml" href="/v2/favicon.svg">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/type.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
@@ -69,7 +71,7 @@
     <button x-data
       @click="$store.dw.orderCount > 0 ? ($store.dw.activeView = 'sites', $store.dw.orderCount = null, $store.dw.ordersRefreshTick++) : (DwNotifications.requestPermission(), $store.dw.checkOrders())"
       :disabled="$store.dw.checkingOrders"
-      style="background:transparent;border:1px solid var(--ink-3);color:var(--ink-2);font:700 9px/1 var(--mono);letter-spacing:.12em;padding:3px 7px;cursor:pointer;margin-left:8px"
+      style="background:transparent;border:1px solid var(--text-tertiary);color:var(--text-secondary);font:700 9px/1 var(--font-mono);letter-spacing:.12em;padding:3px 7px;cursor:pointer;margin-left:8px"
       x-text="$store.dw.checkingOrders ? '...' : $store.dw.orderCount > 0 ? $store.dw.orderCount + ($store.dw.orderCount === 1 ? ' ORDER' : ' ORDERS') : 'ORDERS'">
     </button>
   </div>
@@ -114,7 +116,7 @@
     <div class="rail-env" x-data
       :style="$store.dw.environment === 'Production' ? 'color:var(--pos)' : 'color:var(--warn)'"
       x-text="$store.dw.environment === 'Production' ? '● PROD' : '● DEV'"></div>
-    <div style="text-align:center;padding:6px 4px 10px;font:500 9px/1 var(--mono);letter-spacing:.1em;color:var(--ink-4)" x-data x-text="'v' + APP_VERSION"></div>
+    <div style="text-align:center;padding:6px 4px 10px;font:500 9px/1 var(--font-mono);letter-spacing:.1em;color:var(--text-muted)" x-data x-text="'v' + APP_VERSION"></div>
 
     <!-- ── Search overlay ──────────────────────────────────────────────── -->
     <template x-teleport="body">

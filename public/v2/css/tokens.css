@@ -1,0 +1,78 @@
+/* vendored from duckwerks-plumage @ 6885cf6 — do not edit here; edit plumage and re-preen */
+/* ============================================================
+   PLUMAGE — tokens.css
+   The Duckwerks house palette. This repo is canon; consumers
+   vendor a copy via bin/preen and never edit it in place.
+   Deep-black ground, warm-white text, four accent channels.
+   ============================================================ */
+
+:root {
+  /* Backgrounds */
+  --bg-base:        #080808;
+  --bg-surface:     #0f0f0f;
+  --bg-raised:      #161616;
+  --bg-overlay:     #1e1e1e;
+
+  /* Borders */
+  --border-subtle:  #1f1f1f;
+  --border-default: #2a2a2a;
+  --border-strong:  #3a3a3a;
+
+  /* Text */
+  --text-primary:   #ede8e0;   /* warm white — aged paper */
+  --text-secondary: #b8b3ac;
+  --text-tertiary:  #98938c;   /* labels, table headers — the murmur tier */
+  --text-muted:     #6a6560;
+  --text-inverse:   #080808;
+
+  /* Accent channels — the full set is always defined; a surface
+     claims its vertical's channel via --accent below. */
+  --amber:          #f5a623;   /* internal tooling (dash, hunt, nestegg) */
+  --amber-dim:      #f5a6231a;
+  --amber-mid:      #f5a62340;
+
+  --red:            #f87171;   /* publishing */
+  --red-dim:        #f871711a;
+  --red-mid:        #f8717140;
+
+  --cyan:           #00c8d4;   /* portfolio / work */
+  --cyan-dim:       #00c8d41a;
+  --cyan-mid:       #00c8d440;
+
+  --green:          #4ade80;   /* data-positive / status, shared by all */
+  --green-dim:      #4ade801a;
+  --green-mid:      #4ade8040;
+
+  /* The claim: components style with var(--accent) and inherit
+     their vertical's channel. Default is amber (internal tooling);
+     a publishing or portfolio surface overrides these two lines. */
+  --accent:         var(--amber);
+  --accent-dim:     var(--amber-dim);
+  --accent-mid:     var(--amber-mid);
+
+  /* Semantic status — the shared state vocabulary. pos/neg lean on
+     the green/red channels; warn is its own yellow, distinct from
+     amber: amber is an accent (the surface's voice), warn is a
+     state (you have a move to make). */
+  --pos:            var(--green);   /* good / done / healthy */
+  --neg:            var(--red);     /* error / broken / stale */
+  --warn:           #ffcf5c;        /* attention — your move */
+  --blue:           #7bb4ff;        /* informational / links / in-flight */
+  --purple:         #a87cf3;        /* waiting on others */
+
+  /* Spacing scale */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+  --space-10: 128px;
+
+  /* Transitions */
+  --transition-fast: 120ms ease;
+  --transition-base: 220ms ease;
+}

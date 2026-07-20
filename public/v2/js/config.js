@@ -13,11 +13,11 @@ const CAT_COLOR = {
   Music:                'var(--blue)',
   Computer:             'var(--purple)',
   Gaming:               'var(--orange)',
-  'A/V Gear':           'var(--yellow)',
+  'A/V Gear':           'var(--warn)',
   Camera:               'var(--green)',
   'Comics/Books/Media': 'var(--red)',
   Home:                 '#60b0b0',
-  'Junk Drawer':        'var(--muted)',
+  'Junk Drawer':        'var(--text-tertiary)',
 };
 
 const CAT_BADGE = {

@@ -79,7 +79,7 @@
           <div class="dw-cell" style="grid-column:span 12;flex-direction:row;padding:0;position:relative">
 
             <!-- Left col: Income waterfall + Lot Recovery stacked — drives container height -->
-            <div style="width:58.33%;display:flex;flex-direction:column;border-right:1px solid var(--line)">
+            <div style="width:58.33%;display:flex;flex-direction:column;border-right:1px solid var(--border-subtle)">
               <div class="cell-head">
                 <span class="cell-title">Income</span>
                 <span class="cell-meta">gross → cost → ship → net · goal $3k/mo</span>
@@ -88,13 +88,13 @@
                 x-data="{ tip: null, tipX: 0, tipY: 0 }"
                 @mousemove="tipX = $event.clientX; tipY = $event.clientY">
                 <div x-show="tip" x-text="tip"
-                  style="position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--border2);color:var(--white);font:500 11px/1 var(--mono);padding:4px 8px;border-radius:3px;z-index:999;transform:translate(10px,-50%)"
-                  :style="'position:fixed;left:' + tipX + 'px;top:' + tipY + 'px;pointer-events:none;background:var(--surface);border:1px solid var(--border2);color:var(--white);font:500 11px/1 var(--mono);padding:4px 8px;border-radius:3px;z-index:999;transform:translate(10px,-50%)'"></div>
+                  style="position:fixed;pointer-events:none;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font:500 11px/1 var(--font-mono);padding:4px 8px;border-radius:3px;z-index:999;transform:translate(10px,-50%)"
+                  :style="'position:fixed;left:' + tipX + 'px;top:' + tipY + 'px;pointer-events:none;background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font:500 11px/1 var(--font-mono);padding:4px 8px;border-radius:3px;z-index:999;transform:translate(10px,-50%)'"></div>
                 <template x-for="w in incomeWindows" :key="w.label">
                   <div class="inc-row">
                     <div class="inc-lbl">
                       <span x-text="w.label"></span>
-                      <span style="font-size:9px;color:var(--muted)" x-text="windowDateRange(w.days)"></span>
+                      <span style="font-size:9px;color:var(--text-tertiary)" x-text="windowDateRange(w.days)"></span>
                       <span x-text="w.gross > 0 ? fmtWnd(w.gross) + ' gross' : 'no data'"></span>
                     </div>
                     <div class="inc-track">
@@ -120,7 +120,7 @@
                 <span style="margin-left:auto"><span class="sw" style="background:rgba(255,255,255,.8)"></span>$3k/mo goal</span>
               </div>
               <!-- Lot Recovery below income -->
-              <div class="cell-head" style="border-top:1px solid var(--line)">
+              <div class="cell-head" style="border-top:1px solid var(--border-subtle)">
                 <span class="cell-title">Lot Recovery</span>
                 <span class="cell-meta" x-text="lotRows.length + ' active'"></span>
               </div>
@@ -142,14 +142,14 @@
             </div>
 
             <!-- Right col: absolutely positioned — fills left col's height, doesn't add to it -->
-            <div style="position:absolute;top:0;right:0;bottom:0;width:41.67%;display:flex;flex-direction:column;overflow:hidden;background:var(--panel);border-left:1px solid var(--line)">
+            <div style="position:absolute;top:0;right:0;bottom:0;width:41.67%;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-surface);border-left:1px solid var(--border-subtle)">
               <div class="cell-head">
                 <span class="cell-title">In Transit</span>
                 <span class="cell-meta" x-text="inTransitRows.length + ' pkg'"></span>
               </div>
               <div style="flex:1;overflow-y:auto">
-                <div x-show="trackingLoading" style="padding:12px 14px;color:var(--ink-4);font:500 11px/1 var(--mono)">Loading…</div>
-                <div x-show="!trackingLoading && inTransitRows.length === 0" style="padding:12px 14px;color:var(--ink-4);font:500 11px/1 var(--mono)">No packages in transit</div>
+                <div x-show="trackingLoading" style="padding:12px 14px;color:var(--text-muted);font:500 11px/1 var(--font-mono)">Loading…</div>
+                <div x-show="!trackingLoading && inTransitRows.length === 0" style="padding:12px 14px;color:var(--text-muted);font:500 11px/1 var(--font-mono)">No packages in transit</div>
                 <template x-for="r in inTransitRows" :key="r.id">
                   <div class="ship-row" @click="$store.dw.openModal('item', r.id)" style="cursor:pointer">
                     <div>
@@ -231,7 +231,7 @@
                       <td><span class="pmark" :class="platformMark(r)" x-text="platformLabel(r)"></span></td>
                       <td class="num r" x-text="$store.dw.activeListing(r)?.list_price ? '$' + $store.dw.activeListing(r).list_price.toLocaleString('en-US',{maximumFractionDigits:0}) : '—'"></td>
                       <td class="num r est" x-text="$store.dw.estProfit(r) !== 0 ? (($store.dw.estProfit(r)>0?'+':'')+$store.dw.estProfit(r).toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0})) : '—'"></td>
-                      <td class="num r" style="color:var(--ink-4)"
+                      <td class="num r" style="color:var(--text-muted)"
                         x-text="Math.floor((Date.now()-new Date(r.created_at))/(86400000)) + 'd'"></td>
                     </tr>
                   </template>

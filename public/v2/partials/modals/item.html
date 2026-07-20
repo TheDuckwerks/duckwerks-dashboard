@@ -7,7 +7,7 @@
       <div class="modal-header">
         <div>
           <div class="modal-title" x-text="record.name"></div>
-          <div x-show="itemSku" style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:2px" x-text="itemSku"></div>
+          <div x-show="itemSku" style="font-size:11px;color:var(--text-tertiary);letter-spacing:1px;margin-top:2px" x-text="itemSku"></div>
         </div>
         <button class="modal-close" @click="$store.dw.closeModal()">✕</button>
       </div>
@@ -39,7 +39,7 @@
             <div style="flex:1; margin-left:16px">
               <table style="width:100%; border-collapse:collapse">
                 <template x-for="l in record.listings" :key="l.id">
-                  <tr style="border-bottom:1px solid var(--border)">
+                  <tr style="border-bottom:1px solid var(--border-subtle)">
                     <td style="padding:4px 8px 4px 0; width:1%; white-space:nowrap">
                       <span class="badge" :class="$store.dw.siteBadgeClass(l.site?.name)" x-text="l.site?.name"></span>
                     </td>
@@ -47,10 +47,10 @@
                       <span class="badge" :class="listingStatusBadge(l.status)" x-text="l.status"></span>
                     </td>
                     <td style="padding:4px 8px; width:1%; white-space:nowrap; text-align:right; font-size:12px"
-                        :style="l.list_price > 0 ? 'color:var(--yellow)' : 'color:var(--muted)'"
+                        :style="l.list_price > 0 ? 'color:var(--warn)' : 'color:var(--text-tertiary)'"
                         x-text="l.list_price > 0 ? '$' + l.list_price.toFixed(0) : '—'"></td>
-                    <td style="padding:4px 0 4px 6px; font-size:11px; color:var(--muted); text-align:right">
-                      <a x-show="listingUrl(l)" :href="listingUrl(l)" target="_blank" style="color:var(--muted)"
+                    <td style="padding:4px 0 4px 6px; font-size:11px; color:var(--text-tertiary); text-align:right">
+                      <a x-show="listingUrl(l)" :href="listingUrl(l)" target="_blank" style="color:var(--text-tertiary)"
                          x-text="l.platform_listing_id ? '↗ #' + l.platform_listing_id : '↗ link'"></a>
                       <span x-show="!listingUrl(l) && !l.platform_listing_id">—</span>
                     </td>
@@ -94,13 +94,13 @@
                      x-text="'↗ Order #' + record.order?.platform_order_num"></a>
                   <a x-show="orderSite === 'Reverb'" target="_blank"
                      :href="'https://reverb.com/my/orders/' + record.order?.platform_order_num + '/packing_slip.pdf'"
-                     style="font-size:11px; color:var(--muted)">↗ Packing Slip</a>
+                     style="font-size:11px; color:var(--text-tertiary)">↗ Packing Slip</a>
                   <a x-show="orderSite === 'eBay'" target="_blank"
                      :href="'https://www.ebay.com/sh/ord/details?orderid=' + record.order?.platform_order_num"
                      style="font-size:11px; color:var(--ebay)">↗ Order Details</a>
                   <a x-show="orderSite === 'eBay'" target="_blank"
                      :href="'https://www.ebay.com/sh/ord/prt?module=PACKING_SLIP_MODULE&orderId=' + record.order?.platform_order_num"
-                     style="font-size:11px; color:var(--muted)">↗ Packing Slip</a>
+                     style="font-size:11px; color:var(--text-tertiary)">↗ Packing Slip</a>
                 </span>
               </div>
             </div>
@@ -141,7 +141,7 @@
                 </div>
                 <div style="text-align:right">
                   <div class="modal-field" style="margin-bottom:6px">Margin</div>
-                  <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--muted)"
+                  <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--text-tertiary)"
                        x-text="record.cost > 0 ? Math.round((record.order?.profit / record.cost) * 100) + '%' : 'n/a'"></div>
                 </div>
               </div>
@@ -168,18 +168,18 @@
           <hr class="modal-divider">
           <div class="modal-row" style="padding:4px 0">
             <span class="modal-field" style="font-size:11px">Date Added</span>
-            <span style="font-size:11px; color:var(--muted)" x-text="record ? new Date(record.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : 'n/a'"></span>
+            <span style="font-size:11px; color:var(--text-tertiary)" x-text="record ? new Date(record.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : 'n/a'"></span>
           </div>
           <div class="modal-row" x-show="record.order?.date_sold" style="padding:4px 0">
             <span class="modal-field" style="font-size:11px">Date Sold</span>
-            <span style="font-size:11px; color:var(--muted)" x-text="record.order?.date_sold ? new Date(record.order.date_sold + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : ''"></span>
+            <span style="font-size:11px; color:var(--text-tertiary)" x-text="record.order?.date_sold ? new Date(record.order.date_sold + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : ''"></span>
           </div>
           <template x-if="record && (record.shipment?.tracking_id || record.shipment?.tracking_number || record.shipment?.tracker_url)">
             <div>
               <hr class="modal-divider">
               <div class="modal-section-label">Shipment</div>
               <div class="modal-row" x-show="trackingLoading">
-                <span style="color:var(--muted);font-size:12px">Loading tracking...</span>
+                <span style="color:var(--text-tertiary);font-size:12px">Loading tracking...</span>
               </div>
               <template x-if="trackingInfo && !trackingLoading">
                 <div>
@@ -191,11 +191,11 @@
                   </div>
                   <div class="modal-row" x-show="trackingInfo.carrier">
                     <span class="modal-field">Carrier</span>
-                    <span class="modal-val" style="color:var(--muted)" x-text="trackingInfo.carrier"></span>
+                    <span class="modal-val" style="color:var(--text-tertiary)" x-text="trackingInfo.carrier"></span>
                   </div>
                   <div class="modal-row" x-show="trackEstDelivery">
                     <span class="modal-field">Est. Delivery</span>
-                    <span class="modal-val" style="color:var(--muted)" x-text="trackEstDelivery"></span>
+                    <span class="modal-val" style="color:var(--text-tertiary)" x-text="trackEstDelivery"></span>
                   </div>
                   <div class="modal-row" x-show="trackingInfo.publicUrl">
                     <span class="modal-field">Track</span>
@@ -207,9 +207,9 @@
                     <div style="margin-top:8px">
                       <div class="modal-field" style="margin-bottom:6px;font-size:10px">TIMELINE</div>
                       <template x-for="(evt, i) in trackingInfo.events.slice().reverse()" :key="i">
-                        <div style="display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-top:1px solid var(--border)">
-                          <div style="font-size:10px;color:var(--muted);white-space:nowrap;min-width:60px" x-text="evt.datetime ? new Date(evt.datetime).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''"></div>
-                          <div style="font-size:11px;color:var(--muted)" x-text="evt.message"></div>
+                        <div style="display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-top:1px solid var(--border-subtle)">
+                          <div style="font-size:10px;color:var(--text-tertiary);white-space:nowrap;min-width:60px" x-text="evt.datetime ? new Date(evt.datetime).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''"></div>
+                          <div style="font-size:11px;color:var(--text-tertiary)" x-text="evt.message"></div>
                         </div>
                       </template>
                     </div>
@@ -219,15 +219,15 @@
               <div x-show="!trackingInfo && !trackingLoading">
                 <div class="modal-row" x-show="record.shipment?.tracking_number">
                   <span class="modal-field">Tracking #</span>
-                  <span class="modal-val" style="color:var(--muted);font-size:12px" x-text="record.shipment?.tracking_number"></span>
+                  <span class="modal-val" style="color:var(--text-tertiary);font-size:12px" x-text="record.shipment?.tracking_number"></span>
                 </div>
                 <div class="modal-row">
                   <a x-show="record.shipment?.tracker_url" :href="record.shipment?.tracker_url" target="_blank" style="font-size:11px">↗ View Tracker</a>
-                  <span x-show="!record.shipment?.tracker_url && !record.shipment?.tracking_number" style="color:var(--muted);font-size:11px">Tracking unavailable</span>
+                  <span x-show="!record.shipment?.tracker_url && !record.shipment?.tracking_number" style="color:var(--text-tertiary);font-size:11px">Tracking unavailable</span>
                 </div>
               </div>
               <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-                <button @click="clearTracking()" style="padding:4px 10px;background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer">CLEAR TRACKING</button>
+                <button @click="clearTracking()" style="padding:4px 10px;background:transparent;border:1px solid var(--border-default);color:var(--text-tertiary);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer">CLEAR TRACKING</button>
                 <button x-show="record.shipment?.label_url" @click="$store.dw.printLabel(record.shipment.label_url)"
                   style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;font-family:'Space Mono',monospace;padding:0">↗ Reprint Label</button>
               </div>
@@ -278,7 +278,7 @@
           <hr class="modal-divider">
           <div class="modal-section-label">Listings</div>
           <template x-for="(lf, idx) in form.listings" :key="lf.id || idx">
-            <div style="border:1px solid var(--border2); border-radius:4px; padding:10px 12px; margin-bottom:8px">
+            <div style="border:1px solid var(--border-default); border-radius:4px; padding:10px 12px; margin-bottom:8px">
               <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px">
                 <span class="badge" :class="$store.dw.siteBadgeClass(lf.site)" x-text="lf.site"></span>
                 <span class="badge badge-other" x-text="lf.status"></span>
@@ -306,10 +306,10 @@
             </div>
           </template>
           <template x-for="(pl, idx) in form.pendingListings" :key="idx">
-            <div style="border:1px solid var(--border2); border-radius:4px; padding:10px 12px; margin-bottom:8px">
+            <div style="border:1px solid var(--border-default); border-radius:4px; padding:10px 12px; margin-bottom:8px">
               <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px">
-                <span style="font-size:11px; color:var(--muted)">NEW LISTING</span>
-                <button class="btn btn-ghost" @click="form.pendingListings.splice(idx, 1)" style="font-size:10px; padding:2px 8px; color:var(--muted)">remove</button>
+                <span style="font-size:11px; color:var(--text-tertiary)">NEW LISTING</span>
+                <button class="btn btn-ghost" @click="form.pendingListings.splice(idx, 1)" style="font-size:10px; padding:2px 8px; color:var(--text-tertiary)">remove</button>
               </div>
               <div class="modal-row">
                 <span class="modal-field">Site</span>
