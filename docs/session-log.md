@@ -1,6 +1,10 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-19 (late) — deploy.sh retired: dash rides the Ops node-app rail
+
+- Ops flipped `[app:duckwerks]` to `rail = node-app` (ref #163; write-roots `data` + `public/dg-photos` declared in substrate.ini, dg-photos renamed on-box to the release-relative path). Dash's leg: `scripts/deploy.sh` deleted, `.land.toml` deploy → `ship duckwerks`, CLAUDE + `docs/deploy.md` rewritten for the new contract — **commit → ship** (the rail refuses a dirty tree; no more working-tree test deploys), and a new runtime write path is a `roots` line in the model, not a script edit. First ship from this seat: release 20260719-214924 stamped `00818dd`, health 200, watcher rebaselined. Root cause trail on ops `#30`: project-rail deploy user was invisible to the re-own checklist; the fix was retiring the copy — the `rail = project` category is now empty org-wide.
+
 ### 2026-07-19 — Plumage house-style migration + duckops deploy rail (v2.0.58)
 
 - Migrated to the canon house style (ref #162): `tokens.css` + `type.css` vendored from duckwerks-plumage @ `6885cf6` via `preen`; main.css keeps only dash-local tokens (`--ebay`, `--reverb`, `--orange`, px size scale). Full rename sweep to canon names across css/partials/index.html (`--ink` tiers → `--text-*`, `--panel`/`--surface` → `--bg-*`, `--line`/`--border` → `--border-*`, font vars → `--font-body`/`--font-mono`/`--font-display`, `--yellow` → `--warn`); legacy aliases retired. Accent gold → amber `#f5a623` (accent and warn are now distinct); favicon follows. Bonus fix: `var(--ink-1)` was used ~11× but never defined (silently inherited) — now `--text-primary`. Type-scale rules from type.css are inert here (no headings, no rem) by design; the px scale is the dense-UI carve-out. Verified by eye with Geoff — minimal visible drift, as expected: canon was cut from dash's look.
