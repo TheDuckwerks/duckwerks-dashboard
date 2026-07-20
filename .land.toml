@@ -23,4 +23,4 @@ command = ""
 
 [deploy]
 docs = ""
-app  = "./scripts/deploy.sh"
+app  = "/Users/Shared/duckwerks/projects/duckwerks-ops/infra-scripts/ship duckwerks"

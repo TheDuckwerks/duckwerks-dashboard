@@ -51,13 +51,13 @@ If the right approach isn't clear, sort it out before running anything. This app
 
 ## Dev vs Production
 
-Deploy is the Duck Ops rsync-artifact standard: rsync the working tree from the Mac (honoring `.gitignore`) → `npm ci --omit=dev` builds deps on the NUC → symlink persistent state → atomic swap → PM2 reload. No git on the NUC. Full procedure: [`docs/deploy.md`](docs/deploy.md).
+Deploy is the Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerks-ops/infra-scripts/ship duckwerks` — gitignore-filtered rsync to a timestamped release, `npm ci --omit=dev` on the NUC, write-roots symlinked in, atomic swap, PM2 reload, health check. Ops owns the rail; dash owns `ecosystem.config.js` (which process, which script, which env). Details: [`docs/deploy.md`](docs/deploy.md).
 
-> **deploy.sh ships the working tree, not a commit.** It rsyncs the live working dir filtered by `.gitignore` (node_modules/.env/data/ etc. excluded), so uncommitted edits ship as-is — deploy freely to test, no commit needed. `npm ci` on the NUC rebuilds node_modules from the lockfile (that target-build is why the native `better-sqlite3` binary is correct, and why node_modules is never shipped). Commit + push are how a *verified* change gets recorded (history + GitHub backup), not a deploy prerequisite; push never touches the deploy (Mac→NUC over ssh). Don't tell Geoff to check anything until the health check passes.
+> **The rail refuses a dirty tree (no override), so the flow is commit → ship.** A deploy always reflects a commit; there is no ship-the-working-tree-to-test path. `npm ci` on the NUC rebuilds node_modules from the lockfile (that target-build is why the native `better-sqlite3` binary is correct, and why node_modules is never shipped). Push is history + GitHub backup and never touches the deploy. Don't tell Geoff to check anything until the health check passes.
 
-> **Code swaps, state persists.** Each deploy replaces the release dir. Anything the app writes at runtime must live in a persistent dir outside the release (symlinked in) or it vanishes on the next deploy. Current persistent set: `data/` (DB + `ebay-tokens.json`), `public/dg-photos/`. **Adding a new runtime write path means adding a new persistent dir + symlink** — coordinate with Duck Ops. (See deploy.md.)
+> **Code swaps, state persists.** Each deploy replaces the release dir; runtime writes must land in a declared write-root or they vanish on the next deploy. Dash's write-roots are declared in Ops's `substrate.ini` (`roots = data public/dg-photos`, plus `.env`): the model links them into each release, and the backup guard covers them. **Adding a new runtime write path means a new `roots` entry in the model** — an ask to Duck Ops, not a script edit. Undeclared = unlinked and unbacked.
 
-- **Default: ship to production.** Fix it → `./scripts/deploy.sh` → tell Geoff to refresh `dash.pond.duckwerks.com` and verify → commit + push the verified change. Deploy freely while iterating; commit records what worked, batched. Normal flow for every fix, tweak, and feature.
+- **Default: ship to production.** Fix it → commit → `ship duckwerks` → tell Geoff to refresh `dash.pond.duckwerks.com` and verify. Commits stay small and honest since each deploy rides one; the health check gates the "go look" every time.
 - **Local dev only for huge projects** — multi-session rewrites, schema migrations, new API integrations. Use `localhost:3000` (`npm start`), hold deploys until a milestone.
 - **Never tell Geoff to refresh `localhost:3000`** unless you're explicitly in a local dev session together.
 - **Rollback** is a pointer swap: repoint `current` at a prior release + `pm2 reload duckwerks` (5 releases kept). See deploy.md.
@@ -110,12 +110,12 @@ Deploy is the Duck Ops rsync-artifact standard: rsync the working tree from the 
 ---
 
 ## Ship Procedure
-The **finalize** sequence, referenced by both checkpoint and close. (While iterating you deploy freely off the working tree to test — see Dev vs Production. This pass records the verified change; the final deploy reconciles live to the committed tree.)
+The **finalize** sequence, referenced by both checkpoint and close.
 1. Bump patch version in `config.js` + `package.json` (if something shipped)
 2. Update `docs/session-log.md`
 3. Commit with ticket refs (`ref #N`)
 4. `git push origin main`
-5. `./scripts/deploy.sh` — deploy to production (rsync-artifact standard; see `docs/deploy.md`)
+5. `ship duckwerks` (Ops rail; see `docs/deploy.md`) — deploy to production
 
 ## Session Start
 1. Read this CLAUDE.md

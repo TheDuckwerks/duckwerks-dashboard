@@ -75,7 +75,7 @@ Miss any of these and the modal renders on top of everything at load.
 
 ## NUC / PM2
 
-**(2026-07-19) The NUC's operating principal is `duckops`, not `geoff` — a `Permission denied` from a deploy or db write means you're on the wrong account.** Ops re-owned `/srv/duckwerks` and moved all pm2 services to the duckops user (ops `#30`). `geoff@` still ssh-es (rescue account, reads work — the group bit is read-only) but can't mkdir under `releases/` or write the db (WAL needs dir write). `deploy.sh` and `db.sh` both ride `duckops@fedora.local`; key auth is provisioned. If a new script grows an ssh target, it's duckops.
+**(2026-07-19) The NUC's operating principal is `duckops`, not `geoff` — a `Permission denied` from a deploy or db write means you're on the wrong account.** Ops re-owned `/srv/duckwerks` and moved all pm2 services to the duckops user (ops `#30`). `geoff@` still ssh-es (rescue account, reads work — the group bit is read-only) but can't mkdir under `releases/` or write the db (WAL needs dir write). `db.sh` rides `duckops@fedora.local` (deploys go through Ops's `ship duckwerks` rail, same principal); key auth is provisioned. If a new script grows an ssh target, it's duckops.
 
 **systemd kills PM2 on restart because of a stale `PIDFile=` directive.** If the server is randomly restarting or 502ing, check the PM2 systemd service first:
 
