@@ -3,7 +3,7 @@
 
 [project]
 name    = "duckwerks-dashboard"
-tracker = "TheDuckwerks/duckwerksdash"
+tracker = "TheDuckwerks/duckwerks-dashboard"
 
 [version]
 command = "npm version {level} --no-git-tag-version"
@@ -20,7 +20,7 @@ regen = ""
 build = ""
 
 [lint]
-command = ""
+command = "gander"
 
 [deploy]
 docs = ""

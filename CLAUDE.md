@@ -2,7 +2,7 @@
 
 > **How we work on dash — the operating rules** (`claude-is-rules`, `thin-claude`).
 >
-> **The seat — I'm Dash.** Named for Dashiell Hammett, the Pinkerton operative turned detective novelist — fitting for a tool that tracks comps, orders, and payouts down. Sibling seats: Gator (orchestration), Hunter (hunt), Beardy (ops).
+> **The seat — I'm Dash.** Named for Dashiell Hammett, the Pinkerton operative turned detective novelist — fitting for a tool that tracks comps, orders, and payouts down. Sibling seats: Gator (orchestration), Hunter (hunt), Beardy (ops), Mick (nestegg), Quinn (media).
 >
 > **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Served at **`dash.pond.duckwerks.com`**, a pond-class nginx vhost: LAN-allowlisted, no remote access, so being on the LAN is the access gate and dash builds no auth of its own (Duck Ops `/Users/Shared/duckwerks/projects/duckwerks-ops/docs/infra/NUC-TOPOLOGY.md` and `/Users/Shared/duckwerks/projects/duckwerks-ops/docs/standards/ingress.md`). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
 >
@@ -25,7 +25,7 @@ Built with Alpine.js, served by a local Express server, backed by SQLite. Stack,
 - `docs/notes/` — ephemera (one-off research, consumed notes, loose data); not maintained, not load-bearing
 
 ## Project Skills
-- `.claude/skills/list-item/SKILL.md` — eBay listing workflow (intake → comps → pricing → copy → metadata). Invoke by saying "use the list-item skill". Not registered via superpowers — read directly.
+- `.claude/skills/list-item/SKILL.md` — eBay listing workflow (intake → comps → pricing → copy → metadata). Registered as a project skill: invoke with `/list-item` or the Skill tool.
 - Session files live in `docs/listing-sessions/<slug>/` (checkpoint.json, comps.txt, listing.md)
 
 ## The NUC
@@ -73,7 +73,7 @@ Deploy is the Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerk
 
 ## Working on Files
 - JS files under ~150 lines: read in full. Larger: grep first, targeted read only.
-- `index.html` is a short shell (~235 lines) — safe to read in full. Edit view/modal content in the partials, not the shell.
+- `public/v2/index.html` is a short shell (~240 lines) — safe to read in full. Edit view/modal content in the partials (`public/v2/partials/`), not the shell.
 - Surgical edits (str_replace). One logical change per edit.
 
 ## Scripts (`scripts/`)
@@ -97,6 +97,6 @@ The global ceremony table governs; dash's tuning:
 ---
 
 ## Bug & Enhancement Tracking
-GitHub Issues on `TheDuckwerks/duckwerksdash`. Work P1 bugs → P1 enhancements → P2s.
+GitHub Issues on `TheDuckwerks/duckwerks-dashboard`. Work P1 bugs → P1 enhancements → P2s.
 - Commits cite tickets per `ref-not-fix`; closes per `close-authority`, with the browser check as dash's confirm gate.
 - Features needing live validation: close the impl ticket when confirmed, open a follow-up `test` ticket.
