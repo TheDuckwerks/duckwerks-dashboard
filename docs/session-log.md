@@ -3,7 +3,7 @@ _Most recent first. Update this at the end of every session._
 
 ### 2026-07-21 (eve) — Cold-eye verification of the doc-tier pass (#165)
 
-- Verdict: it holds up — gander clean before and after, tier verbs used correctly, no relitigation; NUC facts SSH-verified live. Four stale facts fixed (repo-rename lag in the tracker binds, seat roster, list-item registration, index.html path) at b1a9696; gander bound as the land lint beat. Field-test feedback on gander's error-tier scoping filed as gator-workspace#44. Graduation confirmed from the second eye; full findings in the #165 comment.
+- Verdict: it holds up — gander clean before and after, tier verbs used correctly, no relitigation; NUC facts SSH-verified live. Four stale facts fixed (repo-rename lag in the tracker binds, seat roster, list-item registration, index.html path) at b1a9696; gander bound as the land lint beat. Field-test feedback on gander's error-tier scoping filed as gator-workspace#44; Gator's answer was the `--doc` flag, and the bind now runs the scoped form (`gander --doc projects/duckwerks-dashboard/CLAUDE.md`, b011e03). Graduation confirmed from the second eye; full findings in the #165 comment.
 
 ### 2026-07-21 — Doc-tier pass: CLAUDE.md squared against the org tier standard
 
