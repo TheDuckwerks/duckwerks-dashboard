@@ -1,6 +1,10 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-21 (eve) — Cold-eye verification of the doc-tier pass (#165)
+
+- Verdict: it holds up — gander clean before and after, tier verbs used correctly, no relitigation; NUC facts SSH-verified live. Four stale facts fixed (repo-rename lag in the tracker binds, seat roster, list-item registration, index.html path) at b1a9696; gander bound as the land lint beat. Field-test feedback on gander's error-tier scoping filed as gator-workspace#44. Graduation confirmed from the second eye; full findings in the #165 comment.
+
 ### 2026-07-21 — Doc-tier pass: CLAUDE.md squared against the org tier standard
 
 - Ticket #164, worked from `gander` + the restatement map. CLAUDE.md 1704 → 1374 words: restatements collapsed to slug invocations (`thin-claude` preamble, GOTCHAS definition, four-surfaces paragraph, `ref #N`, Versioning section, Session Log section, ceremony table down to dash's tuning rows); Ship Procedure retired — Checkpoint + Session Close now invoke the org `land` skill, with the tag convention and patch cadence moved into `.land.toml`. Closing authority aligned to `close-authority` (confirm together, agent executes; browser check is dash's confirm gate) — the "never close / close when confirmed" self-contradiction is gone. Ops doc pointers fixed to full resolving paths. All local binds kept (NUC, db.sh, write-roots, rollback, scripts, README inversion). gander: file clean; commented for Gator to graduate dash from watch to error tier.
