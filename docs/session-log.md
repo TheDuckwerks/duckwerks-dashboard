@@ -1,7 +1,9 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
-### 2026-07-19 (late) — deploy.sh retired: dash rides the Ops node-app rail
+### 2026-07-21 — Doc-tier pass: CLAUDE.md squared against the org tier standard
+
+- Ticket #164, worked from `gander` + the restatement map. CLAUDE.md 1704 → 1374 words: restatements collapsed to slug invocations (`thin-claude` preamble, GOTCHAS definition, four-surfaces paragraph, `ref #N`, Versioning section, Session Log section, ceremony table down to dash's tuning rows); Ship Procedure retired — Checkpoint + Session Close now invoke the org `land` skill, with the tag convention and patch cadence moved into `.land.toml`. Closing authority aligned to `close-authority` (confirm together, agent executes; browser check is dash's confirm gate) — the "never close / close when confirmed" self-contradiction is gone. Ops doc pointers fixed to full resolving paths. All local binds kept (NUC, db.sh, write-roots, rollback, scripts, README inversion). gander: file clean; commented for Gator to graduate dash from watch to error tier.
 
 - Ops flipped `[app:duckwerks]` to `rail = node-app` (ref #163; write-roots `data` + `public/dg-photos` declared in substrate.ini, dg-photos renamed on-box to the release-relative path). Dash's leg: `scripts/deploy.sh` deleted, `.land.toml` deploy → `ship duckwerks`, CLAUDE + `docs/deploy.md` rewritten for the new contract — **commit → ship** (the rail refuses a dirty tree; no more working-tree test deploys), and a new runtime write path is a `roots` line in the model, not a script edit. First ship from this seat: release 20260719-214924 stamped `00818dd`, health 200, watcher rebaselined. Root cause trail on ops `#30`: project-rail deploy user was invisible to the re-own checklist; the fix was retiring the copy — the `rail = project` category is now empty org-wide.
 
