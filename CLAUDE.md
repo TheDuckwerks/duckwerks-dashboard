@@ -1,16 +1,16 @@
 # Duckwerks Dashboard — Claude Code Guide
 
-> **How we work on dash — the operating rules.** Keep this file thin; depth lives in the docs it points to. Update it when a *rule* changes.
+> **How we work on dash — the operating rules** (`claude-is-rules`, `thin-claude`).
 >
 > **The seat — I'm Dash.** Named for Dashiell Hammett, the Pinkerton operative turned detective novelist — fitting for a tool that tracks comps, orders, and payouts down. Sibling seats: Gator (orchestration), Hunter (hunt), Beardy (ops).
 >
-> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Served at **`dash.pond.duckwerks.com`**, a pond-class nginx vhost: LAN-allowlisted, no remote access, so being on the LAN is the access gate and dash builds no auth of its own (Duck Ops `NUC-TOPOLOGY.md` / `standards/ingress.md`). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
+> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's; see `/Users/Shared/duckwerks/projects/duckwerks-ops/`). Served at **`dash.pond.duckwerks.com`**, a pond-class nginx vhost: LAN-allowlisted, no remote access, so being on the LAN is the access gate and dash builds no auth of its own (Duck Ops `/Users/Shared/duckwerks/projects/duckwerks-ops/docs/infra/NUC-TOPOLOGY.md` and `/Users/Shared/duckwerks/projects/duckwerks-ops/docs/standards/ingress.md`). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`.
 >
 > **Orientation — which doc holds what:**
-> - **CLAUDE.md** (this file) — operating rules. Auto-injected every session. Points to the docs below; doesn't restate them.
+> - **CLAUDE.md** (this file) — operating rules; auto-injected every session.
 > - **README.md** — the *public* GitHub front page: a lean overview, not the agent spine. The repo is public (a portfolio piece), so README faces outward. **An agent orients from this CLAUDE + `docs/`, not the README.** (This deliberately inverts the org default where README is the hook-injected spine — here README is public-facing, so the spine lives in the always-injected CLAUDE plus on-demand `docs/`.)
 > - **`docs/index.md`** — the deeper-docs landing: codebase map, API + frontend reference, session-log, specs.
-> - **GOTCHAS.md** — dated war-stories by subsystem. Grep mid-task; don't read cover-to-cover.
+> - **GOTCHAS.md** — `gotchas-form`; grep it mid-task.
 
 ## Project Overview
 The CMS/analytics/comp tool for Geoff's resale business (Duckwerks Music) — the inventory, listing, order, and shipping engine behind his eBay and Reverb selling. (Who Geoff is: the global persona at `/Users/Shared/duckwerks/config/persona.md` — this file doesn't restate it.)
@@ -75,7 +75,6 @@ Deploy is the Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerk
 - JS files under ~150 lines: read in full. Larger: grep first, targeted read only.
 - `index.html` is a short shell (~235 lines) — safe to read in full. Edit view/modal content in the partials, not the shell.
 - Surgical edits (str_replace). One logical change per edit.
-- Never guess at API shapes — ask for the spec or docs before writing any call.
 
 ## Scripts (`scripts/`)
 - Default to dry-run; require `--confirm` to write (not `--apply`)
@@ -84,61 +83,20 @@ Deploy is the Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerk
 - Use `AND col IS NULL` (or equivalent) on UPDATE statements to make writes idempotent
 
 ## When to Brainstorm vs Just Build
-
-| Signal | Approach |
-|---|---|
-| Single file, obvious change | Just do it |
-| Known bug, root cause clear | Just do it |
-| UI tweak (font, color, layout) | Just do it |
-| Clear requirements, 2–3 files | Just do it |
-| Ticket already has impl notes | Just do it |
-| New data flow or API integration | Brainstorm → spec → build |
-| Multiple files with shared state | Brainstorm → spec → build |
-| Requirements fuzzy or design unclear | Brainstorm → spec → build |
-| Multi-session work, or >5 files with non-obvious sequencing | Brainstorm → spec → written plan → build |
-
-**"Brainstorm → spec → build"** means: align on design, write the spec (`docs/specs/`), then implement directly in-session without a written task plan. The spec is the artifact; the plan is overhead unless the work spans sessions or has tricky sequencing.
+The global ceremony table governs; dash's tuning:
+- UI tweaks and tickets that already carry impl notes are **just do it**.
+- The middle tier is **brainstorm → spec → build**: align on design, write the spec (`docs/specs/`), implement in-session. The spec is the artifact; a written plan is overhead unless the work is multi-session or >5 files with non-obvious sequencing.
 
 ---
 
-## Versioning
-- `public/v2/js/config.js` → `APP_VERSION` constant (shown in sidebar)
-- `package.json` → `version` field
-- Bump patch at end of every session that ships something.
-- Tag minor/major versions only — no tags per patch.
-
----
-
-## Ship Procedure
-The **finalize** sequence, referenced by both checkpoint and close.
-1. Bump patch version in `config.js` + `package.json` (if something shipped)
-2. Update `docs/session-log.md`
-3. Commit with ticket refs (`ref #N`)
-4. `git push origin main`
-5. `ship duckwerks` (Ops rail; see `docs/deploy.md`) — deploy to production
-
-## Session Start
-1. Read this CLAUDE.md
-2. React to Geoff's opening prompt — don't pre-fetch issues or run diagnostics unless asked
-
-## Checkpoint
-Geoff says "checkpoint" → run the **Ship Procedure**.
-
-## Session Close
-Run the **Ship Procedure**, plus: update this CLAUDE.md if a *rule* changed, and tell Geoff what changed in CLAUDE.md + session-log.md (one line each).
-
-**Where knowledge goes (four surfaces — memory is sunset).** Don't use memory; it's dead org-wide (see global `/Users/Shared/duckwerks/config/CLAUDE.md`). Durable knowledge lives in one of: **README** (lean public overview), **`docs/`** (technical facts — stack, schema, file roles, reference), **GOTCHAS.md** (dated war-stories by subsystem), this **CLAUDE.md** (how we work — operating rules only), or the **tracker** (GH Issues — backlog). Keep this CLAUDE thin: it points to the others, it doesn't restate them. Cross-project behavioral preferences and who-Geoff-is live in the global layer, not here.
+## Session Rituals
+- **Start:** react to Geoff's opening prompt — don't pre-fetch issues or run diagnostics unless asked.
+- **Checkpoint and close:** `land-is-the-close` — invoke the org `land` skill; dash's fills (version surfaces, log, deploy rail) live in `.land.toml`. Geoff saying "checkpoint" mid-session lands the chunk the same way.
+- Memory is dead here (`memory-not-durable`): durable knowledge goes to the doc-split homes above, never memory.
 
 ---
 
 ## Bug & Enhancement Tracking
-GitHub Issues on `TheDuckwerks/duckwerksdash`.
-- **Reference issues in commits** with `ref #N` — never `fix #N` or `closes #N` (auto-closes)
-- **Never close issues** — only Geoff closes after confirming in browser
-- Work P1 bugs → P1 enhancements → P2s
-- For features needing live validation: close impl ticket when confirmed, open follow-up `test` ticket
-
----
-
-## Session Log
-Full log: [`docs/session-log.md`](docs/session-log.md) — update at end of every session.
+GitHub Issues on `TheDuckwerks/duckwerksdash`. Work P1 bugs → P1 enhancements → P2s.
+- Commits cite tickets per `ref-not-fix`; closes per `close-authority`, with the browser check as dash's confirm gate.
+- Features needing live validation: close the impl ticket when confirmed, open a follow-up `test` ticket.

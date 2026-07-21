@@ -8,6 +8,7 @@ tracker = "TheDuckwerks/duckwerksdash"
 [version]
 command = "npm version {level} --no-git-tag-version"
 # Also bump APP_VERSION in public/v2/js/config.js -- the sidebar reads it.
+# Patch every land that ships something; tag minor/major only, never per patch.
 
 [log]
 mode = "manual"
