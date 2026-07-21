@@ -20,7 +20,7 @@ regen = ""
 build = ""
 
 [lint]
-command = "gander"
+command = "gander --doc projects/duckwerks-dashboard/CLAUDE.md"
 
 [deploy]
 docs = ""
