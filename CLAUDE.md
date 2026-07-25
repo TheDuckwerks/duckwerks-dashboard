@@ -1,3 +1,8 @@
+---
+seat: Dash
+vertical: dash
+---
+
 # Duckwerks Dashboard — Claude Code Guide
 
 > **How we work on dash — the operating rules** (`claude-is-rules`, `thin-claude`).
