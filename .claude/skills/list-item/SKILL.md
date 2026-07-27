@@ -89,47 +89,34 @@ Propose 2-3 eBay search term variants. Explain the tradeoffs (broad vs. specific
 
 Output: the exact search string(s) to use. Save to checkpoint. Then immediately proceed to Phase 4 — no manual step needed.
 
-### Phase 4 — Comp Data (automated)
-Run comps automatically via the local API:
+### Phase 4 — Comp Data
 
-**Step 1 — Search:** POST to `https://dash.pond.duckwerks.com/api/comps/search` with all confirmed search terms as separate items:
-```json
-{
-  "items": [
-    { "name": "search term one", "searchQuery": "search term one", "sources": ["ebay"] },
-    { "name": "search term two", "searchQuery": "search term two", "sources": ["ebay"] }
-  ]
-}
-```
-Returns `{ results: [{ name, listings: [...] }] }`.
+**Sold comps are a manual pull by Geoff.** eBay serves sold listings only to a logged-in browser session, so every automated path — `/api/comps/search`, SerpAPI, the COMP tab — returns a clean, successful, empty result. It is not a bug in dash, an API key, or a search term. GOTCHAS carries the diagnosis under Comp research and #168 tracks the reopen; do not spend a session rediscovering it.
 
-**Step 2 — Analyze:** For each result with listings, POST to `https://dash.pond.duckwerks.com/api/comps/analyze`:
-```json
-{ "item": { "name": "search term", "hints": {}, "listings": [...] } }
-```
-Returns `{ name, analysis, csv }`.
+The pull, per confirmed search term:
 
-**Step 3 — Write comps.txt:** Combine all results into `docs/listing-sessions/<slug>/comps.txt` using this format for each search term:
-```
-COMP RESEARCH: <search term>
-============================================================
+1. Geoff runs the term on eBay, filters to **Sold**, sorts by **Ended Recently**.
+2. Cmd+A, Cmd+C, paste into `docs/listing-sessions/<slug>/comps.txt`. Raw page text, no cleanup — the page carries date, title, price, and shipping in a consistent pattern.
+3. All terms go into the one file; separate them at parse time.
 
-<analysis paragraph>
+**Then read the file. All of it, top to bottom, before parsing or computing anything.** That read is the phase — a parser converts the page into rows, and the rows are not the comps. What matters lives in the title text: a "New Batt" or "new screen" marks a different product at a different tier, "for parts" and "cracked" mark the floor rather than the market, and eBay's own structured year/spec fields are frequently wrong (2013 chips tagged 2015, a 13" machine listed as 14.5"). A statistic computed before that read is a number about the wrong set.
 
-────────────────────────────────────────────────────────────
-
-<csv rows>
-```
-
-If the API is unreachable or returns an error, fall back: tell the user to go to `https://dash.pond.duckwerks.com` → COMP tab → run the searches manually → copy the result into `comps.txt` → tell you when it's there. Then read the file and proceed.
+Write the parsed rows alongside the raw paste, and report to Geoff how many entries parsed out of how many the page held. A parse that silently drops rows is the failure mode to catch here.
 
 Save file reference to checkpoint. Proceed to Phase 5.
 
 ### Phase 5 — Pricing
-Analyze the comp CSV using `docs/gear-comp-research.md` rules. Output:
-- Comp range: floor / midpoint / ceiling
-- Recommended list price with rationale
+Price off the rows read in Phase 4, using `docs/gear-comp-research.md` rules.
+
+Build the comparison set by title, not by field. Drop what does not comp — wrong year, parts-only, damaged, lots — and separate the tiers before taking any range: a refurbished or repaired unit sits above the market, a broken one below, and a median across all three describes nothing. Name the rows you excluded and why, so Geoff can see what left the set. A filter that reads a structured field instead of the title will drop the closest match in the file without saying so.
+
+Output:
+- Comp range: floor / midpoint / ceiling, each traceable to named rows
+- The nearest-config sales, quoted by title and landed price — these carry more weight than the range
+- Recommended list price, with the rationale stated against those rows
 - Confidence level (thin pool, stale comps, etc.)
+
+Sanity-check the recommendation against the item's own flaws before presenting it. If the number lands near the top of the range while the item carries the defects the top-of-range sellers fixed, the set is wrong, not the market.
 
 User confirms or overrides. Save confirmed price to checkpoint.
 
