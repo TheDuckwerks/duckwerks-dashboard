@@ -54,6 +54,18 @@ When making data changes — bulk or otherwise — the default flow is:
 
 If the right approach isn't clear, sort it out before running anything. This applies even when bypass permissions are on — production data changes always get a confirmation step.
 
+## Claims Carry Receipts
+
+The gate above governs writes. This one governs claims: a statement about the data is held to the standard of a change to it. Permissions catch a bad write; nothing catches a bad sentence except this.
+
+- **A number gets counted, or it doesn't get said.** A count, a percentile, an "appears three times" — verify it against the thing itself. Structure glanced at is not structure counted.
+- **A diagnosis reproduces before it leaves the seat.** Say a theory out loud freely; it becomes a stated cause, a ticket, or another seat's problem only once it reproduces. Reaching for a second theory before the first is disproven is the tell that you are guessing, and the skill's own rule applies — one failed attempt is the signal to ask.
+- **The volunteered observation at the end of a turn is the least-checked sentence in it.** Nobody asked for it, so nothing verifies it, and it gets added to look observant. Hold it to the bar above or cut it.
+
+<!-- global candidate: the claims bar is stated here because dash proved it; promote to the constitution if it recurs at another seat -->
+
+Same shape for scope: **one item at a time means one item in the message.** When Geoff names a single track, the other item is closed until the first is posted — not carried in a parallel paragraph, not answered "while we're here." He is holding the hardware and reading in a terminal; two threads in one reply is how he loses which machine he's on.
+
 ## Dev vs Production
 
 Deploy is the Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerks-ops/infra-scripts/ship duckwerks` — gitignore-filtered rsync to a timestamped release, `npm ci --omit=dev` on the NUC, write-roots symlinked in, atomic swap, PM2 reload, health check. Ops owns the rail; dash owns `ecosystem.config.js` (which process, which script, which env). Details: [`docs/deploy.md`](docs/deploy.md).
@@ -80,6 +92,7 @@ Deploy is the Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerk
 - JS files under ~150 lines: read in full. Larger: grep first, targeted read only.
 - `public/v2/index.html` is a short shell (~240 lines) — safe to read in full. Edit view/modal content in the partials (`public/v2/partials/`), not the shell.
 - Surgical edits (str_replace). One logical change per edit.
+- **Grep-first is a rule about source. Item data gets read in full** — comps, exports, order rows, a pasted page. The judgment dash exists to provide lives in the rows: a title carrying "New Batt" or "for parts" moves a price further than any statistic computed over the set, and no regex sees it. Read, then compute. (Calibration, 2026-07-27: a regex over 1,126 lines of pasted sold comps produced percentiles, a $140 recommendation, and a year-filter that silently dropped the one identical-config sale in the set. Geoff caught it by looking at the page.)
 
 ## Scripts (`scripts/`)
 - Default to dry-run; require `--confirm` to write (not `--apply`)
@@ -95,7 +108,7 @@ The global ceremony table governs; dash's tuning:
 ---
 
 ## Session Rituals
-- **Start:** react to Geoff's opening prompt — don't pre-fetch issues or run diagnostics unless asked.
+- **Start:** react to Geoff's opening prompt — don't pre-fetch issues or run diagnostics unless asked. **This holds all session, not only at the open.** When something breaks mid-task, report what broke and what it costs, then let Geoff pick between fixing it and routing around it. An infrastructure detour is a proposal; the work he sat down to do is the work.
 - **Checkpoint and close:** `land-is-the-close` — invoke the org `land` skill; dash's fills (version surfaces, log, deploy rail) live in `.land.toml`. Geoff saying "checkpoint" mid-session lands the chunk the same way.
 - Memory is dead here (`memory-not-durable`): durable knowledge goes to the doc-split homes above, never memory.
 
@@ -104,4 +117,5 @@ The global ceremony table governs; dash's tuning:
 ## Bug & Enhancement Tracking
 GitHub Issues on `TheDuckwerks/duckwerks-dashboard`. Work P1 bugs → P1 enhancements → P2s.
 - Commits cite tickets per `ref-not-fix`; closes per `close-authority`, with the browser check as dash's confirm gate.
+- **A ticket to another repo files on a reproduction, not a hypothesis.** The org's finder-reports-the-bug protocol assumes the finding is established; a ticket spends the receiving seat's attention the moment it lands. Reproduce it, then file it. (Calibration, 2026-07-27: `duckwerks-ops` #115 filed on a 60-second-old read of an nginx 504, corrected and downgraded seven minutes later once the real cause surfaced upstream.)
 - Features needing live validation: close the impl ticket when confirmed, open a follow-up `test` ticket.
