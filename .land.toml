@@ -1,9 +1,13 @@
-# .land.toml -- dash's fills for the org `land` ritual (config/skills/land).
-# The skill holds the beats; this holds the commands. Empty = skip that beat.
+# .land.toml -- dash's project manifest. The org `land` ritual (config/skills/land)
+# reads most of it; the SessionStart hook reads [project].spine. The tools hold the
+# mechanism, this holds dash's facts. Empty = skip that beat.
 
 [project]
 name    = "duckwerks-dashboard"
 tracker = "TheDuckwerks/duckwerks-dashboard"
+# README is the public portfolio front page, so the agent's read-first doc is the
+# docs landing. The SessionStart hook injects this instead of README.md.
+spine   = "docs/index.md"
 
 [version]
 command = "npm version {level} --no-git-tag-version"
