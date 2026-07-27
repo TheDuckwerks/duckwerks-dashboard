@@ -1,0 +1,28 @@
+{
+  "item_name": "Apple iMac 21.5\" Retina 4K Late 2015 Fan, Heat Sink, Vent and Cable Bundle (A1418 / EMC 2833)",
+  "slug": "imac-2015-4k-cooling-parts",
+  "created": "2026-07-27",
+  "phases": {
+    "intake": {
+      "done": false,
+      "data": {
+        "status": "STUB — folder staged, nothing worked yet",
+        "donor_machine": "iMac 21.5\" Retina 4K, Late 2015 — A1418, EMC 2833, iMac16,2, serial C02QW9KFGG78",
+        "contents": "Fan assembly, heat sink, vent tubes, internal cables, screws",
+        "working_status": "Donor machine was in perfect working condition when the display cracked.",
+        "cost": 0,
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "why_bundled": "Individually these are low-value; as one small-parts lot they are worth listing and still ship cheap. Geoff was open to collapsing this into the power board listing if three listings is too many.",
+        "needed": "Inventory of exactly what is in the pile, photos, comps, category ID"
+      }
+    },
+    "gap_analysis": { "done": false, "data": null },
+    "comp_terms":   { "done": false, "data": null },
+    "comp_data":    { "done": false, "data": null },
+    "pricing":      { "done": false, "data": null },
+    "copy":         { "done": false, "data": null },
+    "metadata":     { "done": false, "data": null },
+    "listing":      { "done": false, "data": null }
+  }
+}

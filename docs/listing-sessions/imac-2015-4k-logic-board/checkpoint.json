@@ -1,0 +1,64 @@
+{
+  "item_name": "Apple iMac 21.5\" Retina 4K Late 2015 Logic Board (A1418 / EMC 2833)",
+  "slug": "imac-2015-4k-logic-board",
+  "created": "2026-07-27",
+  "phases": {
+    "intake": {
+      "done": true,
+      "data": {
+        "donor_machine": "iMac 21.5\" Retina 4K, Late 2015 — A1418, EMC 2833, iMac16,2",
+        "donor_serial": "C02QW9KFGG78",
+        "board_serial": "C02551300WSGQRXAA",
+        "cpu": "Intel Core i5 3.1 GHz quad-core (i5-5675R, Broadwell) with Iris Pro 6200 graphics",
+        "cpu_source": "Read directly off the CPU label on the board — stamped 3.1G. Not inferred. everymac narrowed the serial to i5 3.1 or i7 3.3; the label settled it.",
+        "ram": "8 GB LPDDR3, four soldered Samsung modules. Confirmed by Geoff visually. Not slotted, not upgradeable — the board carries CPU and RAM as one fixed unit.",
+        "ram_part": "Samsung K4E6E304EE-EGCF, date code 546 (week 46 of 2015, mid-November) — consistent with a Late 2015 build, so the memory is original to the machine.",
+        "working_status": "Donor machine was in perfect working condition when the display cracked. Board pulled from a fully functional machine, not a dead one.",
+        "why_parted_out": "Screen physically cracked; Geoff pulled the drive and disassembled the rest.",
+        "cost": 0,
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "batch_note": "One of three listings split from a single parted-out iMac. Siblings: imac-2015-4k-power-board, imac-2015-4k-cooling-parts. Rear shell deliberately retired to Geoff's DIY pile, not listed — too bulky and low-value to ship under baked-in free shipping.",
+        "title_hints": "Lead with A1418 / EMC 2833 / i5 3.1GHz / 8GB. Repair buyers search the model and EMC, and the Iris Pro 6200 is the better iGPU of that generation and worth naming."
+      }
+    },
+    "gap_analysis": {
+      "done": true,
+      "data": {
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "selling_points": [
+          "Pulled from a fully working machine, display cracked — not an untested or dead-machine board",
+          "Iris Pro 6200, the better integrated GPU of that generation",
+          "Board serial C02551300WSGQRXAA is listable so a buyer can verify",
+          "RAM date code matches the build, so the board is original to the machine"
+        ],
+        "ram_density_check": "Samsung K4E6E304xx is a 16 Gb package = 2 GB per chip. Four chips = 8 GB, which independently confirms Geoff's recollection and rules out 16 GB (that would need 32 Gb chips). 8 GB was the standard build on the 4K 21.5\" Late 2015 with 16 GB as the BTO.",
+        "shipping": "Small and light, ships cheap in a padded box with antistatic wrap. Free shipping baked into price per house style costs little here, unlike the shell.",
+        "open_items": [
+          "Comps not run — terms proposed, nothing pulled",
+          "Photos needed: board front, board back, CPU label showing 3.1G, port cluster",
+          "eBay category ID needed for Apple desktop replacement parts / motherboards; docs/ebay-category-map.json currently only holds disc golf accessories and printers"
+        ]
+      }
+    },
+    "comp_terms": {
+      "done": true,
+      "data": {
+        "terms": [
+          "iMac A1418 logic board",
+          "EMC 2833 logic board",
+          "iMac 21.5 logic board 3.1"
+        ],
+        "rationale": "Deliberately short. eBay AND-matches every word in the title, so long queries return almost nothing — the MacBook run proved this. The broad first term pulls 2012-2017 A1418 boards for pool depth and gets filtered by year from the titles; the EMC term is the sharp one since parts sellers list it.",
+        "how_to_run": "SerpAPI cannot fetch sold listings any more (see GOTCHAS, eBay login wall). Run each on eBay logged in, filter to Sold, sort by Ended Recently, then Cmd+A / Cmd+C the page into comps.txt. All three into one file is fine.",
+        "expectation": "Expect a thin pool. Parts boards move slowly. Under 5 usable comps triggers the skill's thin-pool protocol and conservative pricing."
+      }
+    },
+    "comp_data":    { "done": false, "data": null },
+    "pricing":      { "done": false, "data": null },
+    "copy":         { "done": false, "data": null },
+    "metadata":     { "done": false, "data": null },
+    "listing":      { "done": false, "data": null }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "item_name": "Apple iMac 21.5\" Retina 4K Late 2015 Power Supply Board (A1418 / EMC 2833)",
+  "slug": "imac-2015-4k-power-board",
+  "created": "2026-07-27",
+  "phases": {
+    "intake": {
+      "done": false,
+      "data": {
+        "status": "STUB — folder staged, nothing worked yet",
+        "donor_machine": "iMac 21.5\" Retina 4K, Late 2015 — A1418, EMC 2833, iMac16,2, serial C02QW9KFGG78",
+        "working_status": "Donor machine was in perfect working condition when the display cracked. Everything pulled from it is working-condition, not salvage.",
+        "cost": 0,
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "why_its_own_listing": "PSUs on this generation are a known failure part with real standalone demand, and it ships small. Bundling it with the shell would have buried it under shipping cost.",
+        "needed": "Part number off the board, photos, comps, category ID"
+      }
+    },
+    "gap_analysis": { "done": false, "data": null },
+    "comp_terms":   { "done": false, "data": null },
+    "comp_data":    { "done": false, "data": null },
+    "pricing":      { "done": false, "data": null },
+    "copy":         { "done": false, "data": null },
+    "metadata":     { "done": false, "data": null },
+    "listing":      { "done": false, "data": null }
+  }
+}
