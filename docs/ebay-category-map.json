@@ -13,18 +13,14 @@
     "Computers > Apple Laptops": {
       "ebay_category_id": "111422",
       "conditions": {
-        "Used - Excellent": "USED_EXCELLENT",
-        "Used - Good": "USED_GOOD",
-        "Used - Acceptable": "USED_ACCEPTABLE",
+        "Used": "USED_EXCELLENT",
         "For Parts": "FOR_PARTS_OR_NOT_WORKING"
       }
     },
     "Computers > Apple Desktops & All-In-Ones": {
       "ebay_category_id": "111418",
       "conditions": {
-        "Used - Excellent": "USED_EXCELLENT",
-        "Used - Good": "USED_GOOD",
-        "Used - Acceptable": "USED_ACCEPTABLE",
+        "Used": "USED_EXCELLENT",
         "For Parts": "FOR_PARTS_OR_NOT_WORKING"
       }
     },
