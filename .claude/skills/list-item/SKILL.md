@@ -31,7 +31,7 @@ Load these two files at the start of every session — they govern all copy and 
 
 Each session folder contains:
 - `checkpoint.json` — phase state, written after each completed phase
-- `comps.txt` — comp data file, written automatically by the skill after API fetch
+- `comps.json` — pulled sold comps in the `listings[]` shape, from the `pull-sold-comps.js` extractor (Phase 4)
 - `listing.md` — final ready-to-post output, written at Phase 8
 - `photos/` — drop item photos here (jpg/png) before Phase 8; skill reads and uploads to eBay EPS at post time
 
@@ -96,29 +96,24 @@ Output: the exact search string(s) to use. Save to checkpoint. Then immediately 
 The pull, per confirmed search term:
 
 1. Geoff runs the term on eBay, filters to **Sold**, sorts by **Ended Recently**.
-2. Cmd+A, Cmd+C, paste into `docs/listing-sessions/<slug>/comps.txt`. Raw page text, no cleanup — the page carries date, title, price, and shipping in a consistent pattern.
-3. All terms go into the one file; separate them at parse time.
+2. In that logged-in tab, click the **Pull Sold Comps** bookmarklet (generated from `.claude/skills/list-item/pull-sold-comps.js`). It reads the live `s-card` DOM, copies a `listings[]` JSON array to the clipboard, and alerts the count. Fallback if the bookmarklet isn't installed: open DevTools console (Cmd+Opt+J) and paste the file's contents — same result, count in the console.
+3. Paste the JSON into `docs/listing-sessions/<slug>/comps.json`. Multiple search terms: concatenate the arrays into the one file.
 
-**Then read the file. All of it, top to bottom, before parsing or computing anything.** That read is the phase — a parser converts the page into rows, and the rows are not the comps. What matters lives in the title text: a "New Batt" or "new screen" marks a different product at a different tier, "for parts" and "cracked" mark the floor rather than the market, and eBay's own structured year/spec fields are frequently wrong (2013 chips tagged 2015, a 13" machine listed as 14.5"). A statistic computed before that read is a number about the wrong set.
+The extractor emits the exact shape `/api/comps/analyze` consumes (`server/comps.js:117` — `query, title, condition, sold_price, shipping, total_landed, sale_type, end_date, listing_status, source`), a drop-in for what SerpAPI's `/search` used to return. The extractor gates on a real "Sold" caption, so its logged count is the receipt for how many the page held — do not assert a count by eye. If the count reads 0 or drops far below the page, eBay reworked the card markup: re-pull one card's `outerHTML` and re-map the selectors in `pull-sold-comps.js`, don't trust a partial pull.
 
-Write the parsed rows alongside the raw paste, and report to Geoff how many entries parsed out of how many the page held. A parse that silently drops rows is the failure mode to catch here.
-
-Save file reference to checkpoint. Proceed to Phase 5.
+Save the `comps.json` reference to checkpoint. Proceed to Phase 5.
 
 ### Phase 5 — Pricing
-Price off the rows read in Phase 4, using `docs/gear-comp-research.md` rules.
+The analysis runs in the engine, not here. POST the pulled comps to `/api/comps/analyze` exactly as the SerpAPI flow did — only the source of `listings` changed.
 
-Build the comparison set by title, not by field. Drop what does not comp — wrong year, parts-only, damaged, lots — and separate the tiers before taking any range: a refurbished or repaired unit sits above the market, a broken one below, and a median across all three describes nothing. Name the rows you excluded and why, so Geoff can see what left the set. A filter that reads a structured field instead of the title will drop the closest match in the file without saying so.
+POST `https://dash.pond.duckwerks.com/api/comps/analyze`
+```json
+{ "item": { "name": "<intake item name>", "hints": { <intake + gap_analysis facts> }, "listings": [ <comps.json contents> ] } }
+```
 
-Output:
-- Comp range: floor / midpoint / ceiling, each traceable to named rows
-- The nearest-config sales, quoted by title and landed price — these carry more weight than the range
-- Recommended list price, with the rationale stated against those rows
-- Confidence level (thin pool, stale comps, etc.)
+It returns `{ name, analysis, csv }`: the analysis paragraph (price range, outliers, recommended list + floor) and the CSV block, produced against `docs/gear-comp-research.md` server-side. Present the analysis and the recommended price to Geoff verbatim; do not re-analyze or override the engine's read in the skill.
 
-Sanity-check the recommendation against the item's own flaws before presenting it. If the number lands near the top of the range while the item carries the defects the top-of-range sellers fixed, the set is wrong, not the market.
-
-User confirms or overrides. Save confirmed price to checkpoint.
+Geoff confirms or overrides the price. Save the confirmed price and the returned `csv` to checkpoint.
 
 ### Phase 6 — Copy
 Write using `docs/listing-style.md` rules:
