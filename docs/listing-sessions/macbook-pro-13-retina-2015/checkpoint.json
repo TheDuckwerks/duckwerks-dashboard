@@ -66,20 +66,21 @@
     "comp_data": {
       "done": true,
       "data": {
-        "file": "comps.txt",
-        "source": "Hand-pulled. SerpAPI's eBay sold search is dead — eBay gated sold listings behind login, see GOTCHAS. Geoff ran the search logged in and pasted the raw page text; 54 sold entries parsed out of it.",
+        "file": "comps.json",
+        "source": "Pulled via the pull-sold-comps.js DOM extractor (bookmarklet) in a logged-in eBay Sold tab, then POSTed to /api/comps/analyze. Drop-in listings[] replacing the dead SerpAPI /search (login wall, #168).",
         "search_used": "MacBook Pro A1502, filtered to Sold, sorted Ended Recently",
-        "pool": "54 sold entries, ~5 day window",
-        "caution": "eBay's structured spec fields on these listings are unreliable — several listings tagged 2015 carry an i5-4210U (a 2013 chip), and one is listed as a 14.5-inch MacBook. Read the titles, not the facets."
+        "pool": "60 sold entries",
+        "caution": "eBay structured spec fields are unreliable; read titles not facets. Pool spans 2013/2014/2015 A1502 variants plus stray A1706/A1708, parts-only through clean units."
       }
     },
     "pricing": {
       "done": true,
       "data": {
-        "list_price": 110,
-        "min_offer": 85,
+        "list_price": 100,
+        "min_offer": 75,
         "best_offer": true,
         "confidence": "good",
+        "engine_rerun": "2026-07-27: fresh 60-row extractor pull re-run through /api/comps/analyze independently landed $110 (floor ~$100, ceiling ~$130). Geoff set list to $100.",
         "tiers_observed": {
           "parts_only_2015": "$41-80 landed, median $51",
           "base_working": "$80-96 landed — 2.7GHz, 8GB, 120-256GB",
@@ -93,16 +94,64 @@
       }
     },
     "copy": {
-      "done": false,
+      "done": true,
       "data": {
-        "status": "DRAFTED, NOT APPROVED — Geoff never gave a go on this text",
+        "approved": "2026-07-27",
         "title": "Apple MacBook Pro 13 Retina Early 2015 A1502 i5 2.9GHz 8GB 512GB SSD Monterey",
         "title_chars": 77,
-        "description": "This was my home desktop replacement for years and it never left the house, so the aluminum body and keyboard are in genuinely good shape. I wiped it, did a clean install of Monterey, and left it sitting on the out of box setup screen so it is ready to go for whoever ends up with it. This is also the last year Apple used the scissor switch keyboard before the butterfly generation, which is the reason a lot of people go looking for this specific model.\n\nModel | MacBook Pro 13 inch Retina, Early 2015 (A1502, MacBookPro12,1)\nProcessor | Intel Core i5 2.9 GHz, the top i5 offered in this model\nMemory | 8 GB\nStorage | 512 GB Apple PCIe SSD, original, reports as 500.28 GB\nOperating System | macOS 12 Monterey, clean install, at first time setup screen\nPorts | HDMI, 2x USB 3.0, SD card reader, 2x Thunderbolt 2\nIncluded | Laptop and a third party MagSafe 2 charger\n\nScreen | Anti reflective coating wear, commonly called staingate. Visible, not severe, does not affect use. No dead pixels.\nBattery | 1,205 cycles, reports Service Recommended. Runs at full performance on wall power. Plan on replacing it if you need to work unplugged.\nCosmetic | Rubber feet on the bottom case are missing. Body is otherwise clean.\nCharger | Third party MagSafe 2, not an Apple original.\nNot included | No original box or packaging materials.\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
-        "condition_field": "Fully functional 13 inch Retina MacBook Pro, Early 2015, A1502. Clean install of macOS Monterey, sitting at the out of box setup screen. Original 512 GB Apple SSD and 8 GB of memory, nothing has been swapped or retrofitted.\n\nFlaws, all honest: the anti reflective screen coating shows staingate wear, visible but not severe and it does not affect usability. No dead pixels. Battery has 1,205 cycles and reports Service Recommended, so it runs at full performance plugged in but will need replacing for untethered use. The rubber feet on the bottom case are missing. Ships with a third party MagSafe 2 charger rather than an Apple original, and there is no box or original packaging."
+        "description": "I used this as a stationary desktop replacement and it never traveled, so the body and keyboard are in good condition. It has been wiped and clean-installed with macOS Monterey, left at the out of box setup screen. Early 2015 is the last year of the scissor switch keyboard before the butterfly generation, a common reason buyers seek out this specific model.\n\nModel | MacBook Pro 13 inch Retina, Early 2015 (A1502, MacBookPro12,1)\nProcessor | Intel Core i5 2.9 GHz, the top i5 offered in this model\nMemory | 8 GB\nStorage | 512 GB Apple PCIe SSD, original, reports as 500.28 GB\nOperating System | macOS 12 Monterey, clean install, at first time setup screen\nPorts | HDMI, 2x USB 3.0, SD card reader, 2x Thunderbolt 2\nIncluded | Laptop and a third party MagSafe 2 charger\n\nScreen | Anti reflective coating wear, commonly called staingate. Visible, not severe, does not affect use. No dead pixels.\nBattery | 1,205 cycles, reports Service Recommended. Full performance on wall power, will need replacement for untethered use.\nCosmetic | Rubber feet on the bottom case are missing. Body is otherwise clean.\nCharger | Third party MagSafe 2, not an Apple original.\nNot included | No original box or packaging materials.\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Fully functional 13 inch Retina MacBook Pro, Early 2015, A1502. Clean install of macOS Monterey at the out of box setup screen. Original 512 GB Apple SSD and 8 GB memory, nothing swapped or retrofitted.\n\nCondition notes: the anti reflective screen coating shows staingate wear, visible but not severe, does not affect usability. No dead pixels. Battery has 1,205 cycles and reports Service Recommended, so full performance on wall power but a replacement will be needed for untethered use. The rubber feet on the bottom case are missing. Ships with a third party MagSafe 2 charger rather than an Apple original. No box or original packaging."
       }
     },
-    "metadata":     { "done": false, "data": null },
-    "listing":      { "done": false, "data": null }
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > Apple Laptops",
+        "ebay_category_id": "111422",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 100,
+        "min_offer": 75,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping, ground service, ~4-5 lbs packed, no original box",
+        "returns": "Free returns (account default pinned policy)",
+        "item_specifics": {
+          "Brand": "Apple",
+          "Type": "Laptop",
+          "Series": "MacBook Pro",
+          "Model": "Apple MacBook Pro A1502",
+          "MPN": "A1502",
+          "Release Year": "2015",
+          "Screen Size": "13 in",
+          "Maximum Resolution": "2560 x 1600",
+          "Processor": "Intel Core i5",
+          "Processor Speed": "2.9 GHz",
+          "RAM Size": "8 GB",
+          "SSD Capacity": "512 GB",
+          "Hard Drive Capacity": "512 GB",
+          "Storage Type": "SSD (Solid State Drive)",
+          "GPU": "Intel Iris Graphics 6100",
+          "Graphics Processing Type": "Integrated/On-Board Graphics",
+          "Color": "Silver",
+          "Operating System": "macOS Monterey",
+          "Charger Included": "Yes",
+          "Features": "Backlit Keyboard, Bluetooth, Wi-Fi"
+        },
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "sku": "DW-macbook-pro-13-retina-2015"
+      }
+    },
+    "listing": {
+      "done": true,
+      "data": {
+        "file": "listing.md",
+        "listingId": "168568782448",
+        "url": "https://ebay.com/itm/168568782448",
+        "posted": "2026-07-27",
+        "photos": 11
+      }
+    }
   }
 }
