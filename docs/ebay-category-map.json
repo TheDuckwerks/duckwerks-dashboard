@@ -24,6 +24,27 @@
         "For Parts": "FOR_PARTS_OR_NOT_WORKING"
       }
     },
+    "Computers > Computer Motherboards": {
+      "ebay_category_id": "1244",
+      "conditions": {
+        "Used": "USED_EXCELLENT",
+        "For Parts": "FOR_PARTS_OR_NOT_WORKING"
+      }
+    },
+    "Computers > Computer Power Supplies": {
+      "ebay_category_id": "42017",
+      "conditions": {
+        "Used": "USED_EXCELLENT",
+        "For Parts": "FOR_PARTS_OR_NOT_WORKING"
+      }
+    },
+    "Computers > CPU Fans & Heat Sinks": {
+      "ebay_category_id": "131486",
+      "conditions": {
+        "Used": "USED_EXCELLENT",
+        "For Parts": "FOR_PARTS_OR_NOT_WORKING"
+      }
+    },
     "Electronics > Printers": {
       "ebay_category_id": "1245",
       "conditions": {
