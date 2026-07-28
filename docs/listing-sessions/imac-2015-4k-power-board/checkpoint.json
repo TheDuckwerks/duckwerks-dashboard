@@ -4,24 +4,108 @@
   "created": "2026-07-27",
   "phases": {
     "intake": {
-      "done": false,
+      "done": true,
       "data": {
-        "status": "STUB — folder staged, nothing worked yet",
-        "donor_machine": "iMac 21.5\" Retina 4K, Late 2015 — A1418, EMC 2833, iMac16,2, serial C02QW9KFGG78",
-        "working_status": "Donor machine was in perfect working condition when the display cracked. Everything pulled from it is working-condition, not salvage.",
+        "part": "185W power supply board, Apple OEM. Marked APA007 (Acbel Polytech), cross-referenced as Delta ADP-185BF. Read off the board label in IMG_7706.",
+        "electrical": "Input 100-240V 50/60Hz 3.0A; output +12V 15.4A (~185W)",
+        "donor_machine": "iMac 21.5\" Retina 4K, Late 2015 (A1418, EMC 2833, iMac16,2, serial C02QW9KFGG78)",
+        "working_status": "Donor machine was working normally until the display cracked; genuine OEM part from a working machine, not bench tested since removal",
+        "fits": "Apple iMac 21.5\" A1418, model years 2012-2019 per the comp pool (same 185W board across the generation)",
         "cost": 0,
         "lot_id": 15,
-        "lot_name": "OldApple",
-        "why_its_own_listing": "PSUs on this generation are a known failure part with real standalone demand, and it ships small. Bundling it with the shell would have buried it under shipping cost.",
-        "needed": "Part number off the board, photos, comps, category ID"
+        "lot_name": "OldApple"
       }
     },
-    "gap_analysis": { "done": false, "data": null },
-    "comp_terms":   { "done": false, "data": null },
-    "comp_data":    { "done": false, "data": null },
-    "pricing":      { "done": false, "data": null },
-    "copy":         { "done": false, "data": null },
-    "metadata":     { "done": false, "data": null },
-    "listing":      { "done": false, "data": null }
+    "gap_analysis": {
+      "done": true,
+      "data": {
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "selling_points": [
+          "Genuine Apple 185W OEM board, marked APA007, pulled from a working machine",
+          "Fits A1418 21.5-inch iMacs broadly (2012-2019), wide buyer base",
+          "Ships small and light, ~1 lb in a padded box"
+        ],
+        "shipping": "Small padded box, ~1 lb, free shipping baked into price",
+        "condition_note": "Working when the machine was disassembled, not bench tested after removal. Do not claim tested."
+      }
+    },
+    "comp_terms": {
+      "done": true,
+      "data": {
+        "terms": ["iMac A1418 power supply", "APA007"],
+        "rationale": "Broad term for pool depth; APA007 is the sharp model number. Second term was mostly duplicates of the first.",
+        "how_to_run": "pull-sold-comps.js extractor (bookmarklet) in a logged-in eBay Sold tab, paste into comps.json."
+      }
+    },
+    "comp_data": {
+      "done": true,
+      "data": {
+        "file": "comps.json",
+        "source": "pull-sold-comps.js extractor (bookmarklet), POSTed to /api/comps/analyze",
+        "search_used": "iMac A1418 power supply, filtered Sold, sorted Ended Recently",
+        "pool": "51 pulled, ~25 usable on the A1418 185W APA007/ADP-185BF part; rest are wrong parts (27\" A1419 300W, A2388 143W, LVDS cable, 143W charger)"
+      }
+    },
+    "pricing": {
+      "done": true,
+      "data": {
+        "list_price": 25,
+        "min_offer": 18,
+        "best_offer": true,
+        "confidence": "good, deep commodity pool",
+        "engine_rec": "2026-07-27 /api/comps/analyze: recommended $28, but that overshoots its own scale (named the pre-owned ceiling at $25, then added a soft provenance premium into the aftermarket-new band). Geoff caught it.",
+        "decision": "Geoff set list $25 (top of the genuine OEM pre-owned cluster, priced to move), min offer $18. Provenance premium discounted because the board is untested since pull."
+      }
+    },
+    "copy": {
+      "done": true,
+      "data": {
+        "approved": "2026-07-27",
+        "title": "Apple iMac 21.5 A1418 185W Power Supply APA007 ADP-185BF 2012-2019 OEM Pull",
+        "title_chars": 75,
+        "description": "This is the 185W power supply board from a 21.5 inch iMac, A1418, pulled from a Late 2015 Retina 4K that was working normally until the display cracked. It is the genuine Apple part, not aftermarket. Apple used the same 185W board across A1418 iMacs from 2012 through 2019, so it fits a wide range of these machines.\n\nPart | 185W power supply, Apple OEM, marked APA007 (Acbel), also sold as Delta ADP-185BF\nOutput | +12V, 15.4A (185W)\nInput | 100-240V, 50/60Hz, 3.0A\nFits | Apple iMac 21.5 inch A1418, model years 2012 to 2019\nPulled From | iMac 21.5 Retina 4K, Late 2015 (EMC 2833, iMac16,2)\nCondition | Working when the machine was disassembled, not bench tested after removal\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Genuine Apple 185W power supply board for the 21.5 inch iMac A1418, marked APA007 (Acbel), the same unit also sold as Delta ADP-185BF. Output +12V 15.4A, input 100-240V. Pulled from a Late 2015 Retina 4K iMac that was working normally until the display cracked, so it is a genuine OEM part from a working machine rather than a dead-unit salvage. It has not been bench tested after removal. Fits A1418 21.5 inch iMacs across the 2012 to 2019 range, check your existing board number to confirm."
+      }
+    },
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > Computer Power Supplies",
+        "ebay_category_id": "42017",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 25,
+        "min_offer": 18,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping, small padded box, ~1 lb",
+        "returns": "Free returns (account default pinned policy)",
+        "item_specifics": {
+          "Brand": "Apple",
+          "Type": "Power Supply / PSU",
+          "MPN": "APA007",
+          "Model": "iMac 21.5\" A1418",
+          "Output Power": "185 W",
+          "Output Voltage": "12 V",
+          "Manufacturer": "Acbel Polytech",
+          "Compatible Brand": "For Apple",
+          "Compatible Product Line": "Apple iMac"
+        },
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "sku": "DW-imac-2015-4k-power-board"
+      }
+    },
+    "listing": {
+      "done": true,
+      "data": {
+        "file": "listing.md",
+        "listingId": "168569071894",
+        "url": "https://ebay.com/itm/168569071894",
+        "posted": "2026-07-27",
+        "photos": 4
+      }
+    }
   }
 }

@@ -55,10 +55,76 @@
         "expectation": "Expect a thin pool. Parts boards move slowly. Under 5 usable comps triggers the skill's thin-pool protocol and conservative pricing."
       }
     },
-    "comp_data":    { "done": false, "data": null },
-    "pricing":      { "done": false, "data": null },
-    "copy":         { "done": false, "data": null },
-    "metadata":     { "done": false, "data": null },
-    "listing":      { "done": false, "data": null }
+    "comp_data": {
+      "done": true,
+      "data": {
+        "file": "comps.json",
+        "source": "pull-sold-comps.js extractor (bookmarklet) in a logged-in eBay Sold tab, POSTed to /api/comps/analyze.",
+        "search_used": "iMac A1418 logic board, filtered Sold, sorted Ended Recently",
+        "pool": "57 pulled, ~7 usable on the 820-00431-A family (EMC 2833, Late 2015 4K); rest are wrong-generation boards (2012/2013/2014, 2015 non-4K, 2017), read titles not facets"
+      }
+    },
+    "pricing": {
+      "done": true,
+      "data": {
+        "list_price": 50,
+        "min_offer": 37,
+        "best_offer": true,
+        "confidence": "thin pool, parts board",
+        "engine_rec": "2026-07-27 /api/comps/analyze: $65 list, $45 floor. Usable 8GB i5-5675R comps landed ~$35-70; confirmed-working provenance + listable serial push upper half.",
+        "decision": "Geoff set list to $50, min offer $37 (75%)."
+      }
+    },
+    "copy": {
+      "done": true,
+      "data": {
+        "approved": "2026-07-27",
+        "title": "Apple iMac 21.5 Retina 4K Late 2015 Logic Board A1418 EMC 2833 i5 3.1GHz 8GB",
+        "title_chars": 76,
+        "description": "This logic board came out of a 21.5 inch Retina 4K iMac, Late 2015, that was working normally until the display cracked. I pulled the drive and parted the rest out, so this is a board from a known-good machine rather than an untested or dead-unit pull. The board serial is listed below if you want to verify it.\n\nModel | iMac 21.5 inch Retina 4K, Late 2015 (A1418, EMC 2833, iMac16,2)\nProcessor | Intel Core i5-5675R 3.1 GHz quad core, read off the CPU label\nGraphics | Iris Pro 6200 integrated\nMemory | 8 GB LPDDR3, soldered to the board, CPU and memory are one fixed unit on this model\nBoard Serial | C02551300WSGQRXAA\nCondition | Working when the machine was disassembled, not bench tested after removal\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Apple iMac logic board, 21.5 inch Retina 4K, Late 2015, A1418, EMC 2833. Intel Core i5-5675R 3.1 GHz with Iris Pro 6200 graphics and 8 GB of soldered LPDDR3. The board came out of a machine that was working normally until the display cracked, so it is a known-good pull rather than a salvage from a dead unit. It has not been bench tested after removal. Board serial C02551300WSGQRXAA is provided for verification. Sold as a replacement or repair part.",
+        "board_number_note": "The 820-00xxx-A board number is not printed anywhere Geoff could find on this board; deliberately omitted rather than guessed."
+      }
+    },
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > Computer Motherboards",
+        "ebay_category_id": "1244",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 50,
+        "min_offer": 37,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping, small padded box with antistatic wrap, ~1 lb",
+        "returns": "Free returns (account default pinned policy)",
+        "item_specifics": {
+          "Brand": "Apple",
+          "Type": "Motherboard / Logic Board",
+          "Model": "iMac 21.5\" A1418 Late 2015 4K",
+          "MPN": "Does Not Apply",
+          "Compatible CPU Brand": "Intel",
+          "Processor": "Intel Core i5-5675R",
+          "Processor Speed": "3.1 GHz",
+          "Memory Type": "LPDDR3",
+          "Installed Memory": "8 GB",
+          "Compatible Product Line": "Apple iMac"
+        },
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "sku": "DW-imac-2015-4k-logic-board"
+      }
+    },
+    "listing": {
+      "done": true,
+      "data": {
+        "file": "listing.md",
+        "listingId": "168569044838",
+        "url": "https://ebay.com/itm/168569044838",
+        "posted": "2026-07-27",
+        "photos": 5
+      }
+    }
   }
 }

@@ -4,25 +4,100 @@
   "created": "2026-07-27",
   "phases": {
     "intake": {
-      "done": false,
+      "done": true,
       "data": {
-        "status": "STUB — folder staged, nothing worked yet",
-        "donor_machine": "iMac 21.5\" Retina 4K, Late 2015 — A1418, EMC 2833, iMac16,2, serial C02QW9KFGG78",
-        "contents": "Fan assembly, heat sink, vent tubes, internal cables, screws",
-        "working_status": "Donor machine was in perfect working condition when the display cracked.",
+        "contents": "CPU blower fan with cable, CPU heat sink (copper heatpipe + fins), left and right plastic air shrouds, plastic bracket with cable. Inventoried from IMG_7708 (whole-lot shot); rest of the photos are closeups.",
+        "fan_part": "The 21.5\" A1418 Late 2015 4K CPU fan is Apple 610-00122 / 923-00563 (identified by the confirmed machine model, not read off a label on the fan itself)",
+        "donor_machine": "iMac 21.5\" Retina 4K, Late 2015 (A1418, EMC 2833, iMac16,2, serial C02QW9KFGG78)",
+        "working_status": "Donor machine was working normally until the display cracked; parts not tested after removal",
         "cost": 0,
         "lot_id": 15,
-        "lot_name": "OldApple",
-        "why_bundled": "Individually these are low-value; as one small-parts lot they are worth listing and still ship cheap. Geoff was open to collapsing this into the power board listing if three listings is too many.",
-        "needed": "Inventory of exactly what is in the pile, photos, comps, category ID"
+        "lot_name": "OldApple"
       }
     },
-    "gap_analysis": { "done": false, "data": null },
-    "comp_terms":   { "done": false, "data": null },
-    "comp_data":    { "done": false, "data": null },
-    "pricing":      { "done": false, "data": null },
-    "copy":         { "done": false, "data": null },
-    "metadata":     { "done": false, "data": null },
-    "listing":      { "done": false, "data": null }
+    "gap_analysis": {
+      "done": true,
+      "data": {
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "why_bundled": "Individually low-value; as one lot the fan carries the demand and the heat sink / shrouds / bracket sweeten it for a repair buyer who wants the complete cooling assembly.",
+        "shipping": "Small padded box, ~1 lb, free shipping baked into price"
+      }
+    },
+    "comp_terms": {
+      "done": true,
+      "data": {
+        "terms": ["iMac A1418 fan", "iMac 21.5 heatsink"],
+        "rationale": "Fan is the demand driver. No direct comp exists for the exact bundle, so the fan pool anchors it."
+      }
+    },
+    "comp_data": {
+      "done": true,
+      "data": {
+        "file": "comps.json",
+        "source": "pull-sold-comps.js extractor (bookmarklet), two pulls merged with jq -s add into one valid array",
+        "search_used": "iMac A1418 fan (+ a second pull), filtered Sold, sorted Ended Recently",
+        "pool": "143 pulled, but heavily polluted: eBay padded the thin Sold page with 'related' sold items (27\" A1419 fans, APA007 power supplies, logic boards, LCD screens, whole machines, cables). Usable signal is the 21.5\" A1418 CPU fans (610-00122 / 923-00563) landing ~$12-17 and A1418 heat sinks ~$7-15.",
+        "gotcha": "Thin Sold pulls get hydrated with related sold listings the extractor cannot filter (they are genuine sold items, just the wrong part). Triage titles before pricing."
+      }
+    },
+    "pricing": {
+      "done": true,
+      "data": {
+        "list_price": 25,
+        "min_offer": 18,
+        "best_offer": true,
+        "confidence": "judgment call, no direct comp for the bundle",
+        "basis": "Fan comps $12-17, heat sink $7-15, shrouds/bracket makeweight. Bundle sits a touch above fan-alone for the complete-assembly convenience. Not sent to /analyze: no direct comp exists, so the engine would estimate the same as this read.",
+        "decision": "Geoff set $25, min offer $18."
+      }
+    },
+    "copy": {
+      "done": true,
+      "data": {
+        "approved": "2026-07-27",
+        "title": "Apple iMac 21.5 A1418 Late 2015 4K Cooling Fan Heatsink Shroud Bundle 610-00122",
+        "title_chars": 79,
+        "description": "This is the internal cooling assembly pulled from a 21.5 inch Retina 4K iMac, A1418, Late 2015, that was working normally until the display cracked. It is a bundle of the cooling parts, useful for a repair where you need the fan, heat sink, or the air shrouds without sourcing each one separately.\n\nIncluded | CPU blower fan with cable, CPU heat sink (copper heatpipe and fins), left and right air shrouds, plastic bracket with cable\nFan | The 21.5 inch A1418 Late 2015 4K CPU fan, Apple 610-00122 / 923-00563\nPulled From | iMac 21.5 Retina 4K, Late 2015 (A1418, EMC 2833, iMac16,2)\nCondition | Working when the machine was disassembled, not tested after removal\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Bundle of internal cooling parts pulled from a 21.5 inch Retina 4K iMac, A1418, Late 2015 (EMC 2833). Includes the CPU blower fan with cable (Apple 610-00122 / 923-00563), the CPU heat sink with copper heatpipe, the left and right plastic air shrouds, and a plastic bracket with cable. Everything came out of a machine that was working normally until the display cracked. Parts have not been tested after removal. Sold as replacement or repair parts."
+      }
+    },
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > CPU Fans & Heat Sinks",
+        "ebay_category_id": "131486",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 25,
+        "min_offer": 18,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping, small padded box, ~1 lb",
+        "returns": "Free returns (account default pinned policy)",
+        "item_specifics": {
+          "Brand": "Apple",
+          "Type": "CPU Fan with Heat Sink",
+          "MPN": "610-00122",
+          "Model": "iMac 21.5\" A1418 Late 2015 4K",
+          "Compatible Brand": "For Apple",
+          "Compatible Product Line": "Apple iMac",
+          "Cooling Type": "Air"
+        },
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "sku": "DW-imac-2015-4k-cooling-parts"
+      }
+    },
+    "listing": {
+      "done": true,
+      "data": {
+        "file": "listing.md",
+        "listingId": "168569129672",
+        "url": "https://ebay.com/itm/168569129672",
+        "posted": "2026-07-27",
+        "photos": 6
+      }
+    }
   }
 }

@@ -1,0 +1,125 @@
+{
+  "item_name": "Apple MacBook Pro 13\" A1278 2011 Core i7 2.7GHz 8GB 500GB",
+  "slug": "macbook-pro-13-a1278-2011",
+  "created": "2026-07-27",
+  "phases": {
+    "intake": {
+      "done": true,
+      "data": {
+        "model": "MacBook Pro 13-inch, A1278 (unibody, 2011). The 2.7 GHz i7 (i7-2620M) is the Early 2011 top 13-inch configuration (MacBookPro8,1).",
+        "cpu": "Intel Core i7 2.7 GHz (i7-2620M), the uncommon i7 config; most 13\" 2011s are i5",
+        "ram": "8 GB",
+        "storage": "500 GB stock hard drive (5400 rpm HDD, not an SSD)",
+        "os": "macOS 10.13 High Sierra (the maximum this model supports)",
+        "optical": "Built-in CD/DVD SuperDrive, tested and working",
+        "battery": "Health reads Normal, 812 cycles",
+        "cosmetic": "Great cosmetic condition (visible in photos)",
+        "included": "OEM Apple charger with the grounded 3-prong extension",
+        "flaws": "None reported",
+        "cost": 0,
+        "lot_id": 15,
+        "lot_name": "OldApple"
+      }
+    },
+    "gap_analysis": {
+      "done": true,
+      "data": {
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "selling_points": [
+          "Rare i7 2.7GHz config (most 13\" 2011s are i5)",
+          "Working SuperDrive, increasingly wanted on these",
+          "OEM charger included",
+          "Clean cosmetics, battery still reads Normal"
+        ],
+        "honest_limits": [
+          "Stock 500GB HDD, not SSD (buyer may want to swap)",
+          "Maxes at High Sierra 10.13, no modern macOS"
+        ],
+        "shipping": "~4-5 lbs packed, ground service, free shipping baked into price"
+      }
+    },
+    "comp_terms": {
+      "done": true,
+      "data": {
+        "terms": ["MacBook Pro A1278 2011", "MacBook Pro A1278 2011 i7"],
+        "rationale": "Broad term for pool depth; the i7 term tests whether the 2.7GHz i7 earns a premium over the i5 base."
+      }
+    },
+    "comp_data": {
+      "done": true,
+      "data": {
+        "file": "comps.json",
+        "source": "pull-sold-comps.js extractor (bookmarklet), POSTed to /api/comps/analyze",
+        "search_used": "MacBook Pro A1278 2011, filtered Sold, sorted Ended Recently",
+        "pool": "60 pulled; working private-seller units cluster $60-100, SSD i5 push $100-130, parts-only floor $20-50"
+      }
+    },
+    "pricing": {
+      "done": true,
+      "data": {
+        "list_price": 90,
+        "min_offer": 67,
+        "best_offer": true,
+        "confidence": "good",
+        "engine_rec": "2026-07-27 /api/comps/analyze: $90 list, $75 floor. Two direct matches (Early 2011 i7 2.7/8GB/500GB HDD, Grade C) landed $67-72; ours is cleaner with OEM charger + working SuperDrive, a step above. i7 HDD ceiling $93.50-99.98.",
+        "decision": "Geoff set list $90, min offer $67 (75%)."
+      }
+    },
+    "copy": {
+      "done": true,
+      "data": {
+        "approved": "2026-07-27",
+        "title": "Apple MacBook Pro 13 A1278 Early 2011 Core i7 2.7GHz 8GB 500GB HDD High Sierra",
+        "title_chars": 78,
+        "description": "This is the less common i7 version of the 2011 13 inch MacBook Pro. Most of these shipped with an i5, so the 2.7 GHz Core i7 gives it more headroom than the typical A1278. It is fully functional, cosmetically clean, and comes with the original Apple charger.\n\nModel | MacBook Pro 13 inch, A1278, Early 2011 (MacBookPro8,1)\nProcessor | Intel Core i7 2.7 GHz (i7-2620M), the uncommon i7 option for this model\nMemory | 8 GB\nStorage | 500 GB hard drive, 5400 rpm\nOperating System | macOS 10.13 High Sierra, the maximum this model runs\nOptical Drive | Built in CD and DVD SuperDrive, tested and working\nBattery | Health reads Normal, 812 cycles\nIncluded | Laptop and the original Apple charger with the grounded extension cord\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Fully functional 13 inch MacBook Pro, A1278, Early 2011, the uncommon Core i7 2.7 GHz configuration. 8 GB memory, 500 GB stock hard drive, running macOS High Sierra. The built in SuperDrive is tested and working. Battery health reads Normal with 812 cycles. Cosmetically clean with no notable flaws. Includes the original Apple charger. This model tops out at High Sierra and uses a spinning hard drive rather than an SSD, both normal for its year."
+      }
+    },
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > Apple Laptops",
+        "ebay_category_id": "111422",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 90,
+        "min_offer": 67,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping, ground service, ~4-5 lbs packed",
+        "returns": "Free returns (account default pinned policy)",
+        "item_specifics": {
+          "Brand": "Apple",
+          "Type": "Laptop",
+          "Series": "MacBook Pro",
+          "Model": "Apple MacBook Pro A1278",
+          "MPN": "A1278",
+          "Release Year": "2011",
+          "Screen Size": "13 in",
+          "Processor": "Intel Core i7",
+          "Processor Speed": "2.7 GHz",
+          "RAM Size": "8 GB",
+          "Hard Drive Capacity": "500 GB",
+          "Storage Type": "HDD",
+          "Operating System": "macOS High Sierra",
+          "Color": "Silver",
+          "Features": "Optical Drive, Backlit Keyboard"
+        },
+        "lot_id": 15,
+        "lot_name": "OldApple",
+        "sku": "DW-macbook-pro-13-a1278-2011"
+      }
+    },
+    "listing": {
+      "done": true,
+      "data": {
+        "file": "listing.md",
+        "listingId": "168569158977",
+        "url": "https://ebay.com/itm/168569158977",
+        "posted": "2026-07-27",
+        "photos": 12
+      }
+    }
+  }
+}
