@@ -1,6 +1,20 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-27 (22:10) — Apple batch cleared: four more listings, whole lot out the door
+
+Continued straight from the MacBook (prior entry) and posted the remaining four, one at a time as Geoff drove, each extractor-pull -> `/api/comps/analyze` -> priced -> posted, verified in-browser:
+- **iMac 21.5 4K Late 2015 logic board** (820-00431-A family, i5-5675R), $50, `168569044838`
+- **iMac 21.5 4K power supply** (APA007 185W, part read off the board label), $25, `168569071894`
+- **iMac 21.5 4K cooling bundle** (fan/heatsink/shrouds), $25, `168569129672`
+- **MacBook Pro 13 A1278 Early 2011** (rare i7 2.7GHz, 500GB HDD), $90, `168569158977`
+
+Five total this session; the parted-out iMac is liquidated across three listings and nothing from the OldApple lot is left unlisted.
+
+- **Category map grew three entries**, each grabbed off a live listing URL: Computer Motherboards `1244`, Power Supplies `42017`, CPU Fans & Heat Sinks `131486`. Condition enum `USED_EXCELLENT` displays as plain "Used" and posted clean on every category.
+- **Two pricing judgments overrode the engine.** On the power supply the engine recommended $28 while naming its own pre-owned ceiling at $25; Geoff caught the contradiction and we set $25. On the cooling bundle there is no direct comp, so rather than send a hydrated-junk pull to `/analyze` we triaged the fan comps by hand and set $25. The engine is a tool in the loop, not the decider.
+- **New GOTCHAS:** eBay pads a thin Sold page with "related" sold items the extractor can't filter (they pass the sold-caption gate), so thin pulls need title triage before pricing; two pulls pasted into one file are invalid JSON, merge with `jq -s add`.
+
 ### 2026-07-27 (19:10) — First listing through the rebuilt comp path: MacBook posted live
 
 Ran the stuck MacBook Pro 13" 2015 A1502 the whole way through to prove the extractor path on a real item, one item as Geoff chose. Pulled 60 fresh sold comps via the bookmarklet, POSTed to `/api/comps/analyze` (the engine independently landed the same $110 the last session reached by hand; Geoff set list to $100), toned the drafted copy off its folksy register and dropped the self-congratulatory "flaws, all honest," assembled metadata, and posted live: eBay listingId `168568782448`, 11 photos, verified in-browser by Geoff (condition, item specifics, description, gallery all correct). Checkpoint is complete through phase 8. Commits `24c65ec`, `001a05c`.
