@@ -1,6 +1,16 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-07-27 (22:45) — Stuck-towel diagnostic: the comp settled a price argument neither of us won
+
+Geoff surfaced a chronic non-mover (Bask Kaleidoscope disc golf towel, `DW-BASKKALTOWEL`, listing `168349612758`): 85 days, ~5k impressions, 12 views last month, 0 sold, and he had just cut it $3 to $13.99. Worked it as a diagnostic, not a build.
+
+- **The framing that held up: low CTR off high impressions is a tile problem, not automatically a price problem.** The click is won or lost on the search tile (price + title + thumbnail), and aggregate impressions-vs-views can't tell you which of the three is stuck. My first pass contradicted itself (claimed price-in-the-tile meant price wasn't the lever, when visible-price is exactly what makes it a lever); Geoff caught it.
+- **Then the comp settled it against both our guesses.** Pulled sold "disc golf towel" (53 rows, `tmp/DGtowel.json`): sublimated / microfiber-waffle / art towels clear **$16-21** (Discmania/Latitude waffle $21, Axiom sublimated $16-20). The towel was at $13.99, already *under* market. So Geoff's price-too-high theory and my price-isn't-the-lever theory were both wrong; the data said underpriced.
+- **Real diagnosis: it is a commodity in a generic-search, brand-trust grid.** Bask and Kaleidoscope are an event Geoff ran and an unknown maker, worth nothing as search terms (an early "lead with the artist/design proper nouns" suggestion was wrong for exactly that reason). Everything that sells is Discmania/Latitude/Axiom/Innova. The only real search asset is the **Innova** sponsorship printed on the towel itself.
+- **Actions:** retitled Innova-led (`Innova Disc Golf Towel Microfiber Waffle Sublimated Art 15x23 Large Quick Dry`), repriced $13.99 -> **$16.99** (undo the cut, still under the branded waffle towels), Best Offer floor $13, via `POST /api/ebay/update-item` (description and existing photos untouched, HTTP 200). Geoff added a bright white-background gallery shot to replace the dark flat-lay. The photo is the real lever; the retitle and reprice are free wins.
+- **The test:** watch views over the next couple weeks. CTR climbs = the tile was the problem and it is fixed; still flat with a good photo + Innova title + fair price = the demand isn't there for this design, not a listing to out-optimize.
+
 ### 2026-07-27 (22:10) — Apple batch cleared: four more listings, whole lot out the door
 
 Continued straight from the MacBook (prior entry) and posted the remaining four, one at a time as Geoff drove, each extractor-pull -> `/api/comps/analyze` -> priced -> posted, verified in-browser:
