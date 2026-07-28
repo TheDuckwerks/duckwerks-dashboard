@@ -1,7 +1,12 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
-### 2026-07-27 (17:20) — Sold-comp DOM extractor: list-item runs comps again (ref #168)
+### 2026-07-27 (19:10) — First listing through the rebuilt comp path: MacBook posted live
+
+Ran the stuck MacBook Pro 13" 2015 A1502 the whole way through to prove the extractor path on a real item, one item as Geoff chose. Pulled 60 fresh sold comps via the bookmarklet, POSTed to `/api/comps/analyze` (the engine independently landed the same $110 the last session reached by hand; Geoff set list to $100), toned the drafted copy off its folksy register and dropped the self-congratulatory "flaws, all honest," assembled metadata, and posted live: eBay listingId `168568782448`, 11 photos, verified in-browser by Geoff (condition, item specifics, description, gallery all correct). Checkpoint is complete through phase 8. Commits `24c65ec`, `001a05c`.
+
+- **Condition-map fix:** eBay's Apple Laptops/Desktops categories have a single Used condition, not the Used-Excellent/Good/Acceptable grades (refurb-only). Collapsed the map to `Used -> USED_EXCELLENT`, which displays as plain "Used" and posted clean. The disc pipeline's existing use of that enum was the precedent that made the call safe.
+- **Left:** the other Apple items (2011 A1278, iMac parts) stay parked; Geoff is posting one at a time as he shoots photos.
 
 Built the piece that unblocks comps with SerpAPI's sold path walled. `.claude/skills/list-item/pull-sold-comps.js` reads the live `s-card` DOM in a logged-in eBay sold-results tab and emits the exact `listings[]` shape `/api/comps/analyze` already consumes, a drop-in for what SerpAPI's `/search` used to return. Runs as the "Pull Sold Comps" bookmarklet (one click, count via alert) or a console paste; copies JSON to the clipboard for `docs/listing-sessions/<slug>/comps.json`. list-item Phase 4 pulls; Phase 5 POSTs to `/api/comps/analyze` unchanged — the analysis stays in the engine, nothing re-analyzed in the skill. Verified live on two real searches (52-row 2011 MBP logic board, 60-row 2020 MBP; auction + BIN both parsed), and the 52-row payload POSTed to `/analyze` returned a real analysis + CSV (HTTP 200) with the engine filtering wrong-model boards itself. Commit `712423f`; GOTCHAS comp-research follow-on added.
 
