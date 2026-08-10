@@ -88,6 +88,12 @@ Look for "Can't open PID file" or a climbing restart counter. Root cause: the `P
 
 ---
 
+## Printing (Zebra label printer)
+
+**2026-08-10: the Zebra's IP is dynamic, not reserved — it drifts on router events, and `ZEBRA_PRINTER_IP` in `.env` doesn't follow it.** `server/print.js` connects by raw IP over TCP 9100; there's no mDNS/hostname fallback. After the NUC→MCA substrate cutover (unrelated to the router itself, but the printer picked up a fresh DHCP lease around the same time), the printer moved from `192.168.68.105` (documented in ops's `LAN-DEVICES.md`) to `.107`, and printing silently failed until diagnosed — no error in the app, just a dead TCP connect from print.js's perspective. Confirmed via `ip neigh show` after a ping sweep of the subnet from the box, matching the printer's known MAC (`00:07:4d:ad:eb:45`). Fixed by patching `ZEBRA_PRINTER_IP` in the box's `.env` (a persisted write-root, survives deploys). Filed `duckwerks-ops#176` to give the printer a DHCP reservation like MCA's own, so this stops recurring — until that lands, a "prints aren't coming out" report means check `GET /api/print/status` against the printer's live IP (ARP sweep from the box) before assuming app-side breakage.
+
+---
+
 ## Comp research (SerpAPI)
 
 **2026-03-29/30: eBay's own APIs are a dead end for comp research; SerpAPI is the only path that worked.** Puppeteer scraping (headless, `headless: 'new'`, and headed) all hit eBay's bot-detection challenge page; a direct fetch with browser headers just got eBay's CSR shell (0 items in the raw HTML); the Finding API's `findCompletedItems` returned error 10001 (access not enabled for the App ID). Switched to SerpAPI's eBay engine (`show_only=Sold`) in `server/comps.js`, which returns real sold listings with a `sold_date` field. Don't re-attempt a native eBay scrape, Browse API, or Finding API for comps; it's already been tried and blocked.

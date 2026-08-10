@@ -1,6 +1,16 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-08-10 (11:55) — Zebra label printer diagnostic: IP drifted after the MCA cutover
+
+Geoff reported no label prints since the NUC→MCA switch, unconfirmed which side broke. Diagnostic, no repo change.
+
+- **`server/print.js` connects by raw IP over TCP 9100 — no hostname fallback**, so a lease change is invisible to the app until a print silently fails. `ZEBRA_PRINTER_IP` in the box's `.env` still pointed at `192.168.68.105` (the IP recorded in ops's `LAN-DEVICES.md`); confirmed dead from the box (`no route to host`, no ARP entry).
+- **Found the printer's real IP by MAC, not by guessing.** Pinged the /24 from `duckops@mca.lan` to populate the ARP table, then matched the Zebra's known MAC (`00:07:4d:ad:eb:45`) to `192.168.68.107`. Confirmed reachable on 9100.
+- **Fixed:** patched `.env` on the box to `.107`, `pm2 restart duckwerks --update-env`, confirmed via `GET /api/print/status`. Geoff test-printed a label, live label printing works again. No repo change, no version bump, no deploy (app-side config only).
+- **Filed [`duckwerks-ops#176`](https://github.com/TheDuckwerks/duckwerks-ops/issues/176)** to give the printer a DHCP reservation on the Flint (same pattern as MCA's own), so the IP stops drifting. Until that lands, GOTCHAS has the diagnostic recipe for the next "prints aren't coming out."
+- **Noticed in passing, not fixed:** `docs/index.md` still describes production as the Intel NUC at `fedora.local`; ops confirms the substrate moved to MCA (`mca.lan`) and the NUC is retired. Worth a follow-up pass to correct the spine.
+
 ### 2026-07-27 (22:45) — Stuck-towel diagnostic: the comp settled a price argument neither of us won
 
 Geoff surfaced a chronic non-mover (Bask Kaleidoscope disc golf towel, `DW-BASKKALTOWEL`, listing `168349612758`): 85 days, ~5k impressions, 12 views last month, 0 sold, and he had just cut it $3 to $13.99. Worked it as a diagnostic, not a build.
