@@ -18,22 +18,21 @@ The CMS/analytics/comp tool behind Duckwerks Music — the inventory, listing, o
 
 `public/v2/index.html` is a short shell (~240 lines). View and modal content lives in the partials (`public/v2/partials/`), not the shell.
 
-## The NUC
+## The box
 
-Production is an Intel NUC at `fedora.local`. Claude has SSH access and uses it directly.
+Production is MCA at `mca.lan`, the org's substrate host (the Intel NUC that ran this before is retired, powered off 2026-07-30). Claude has SSH access and uses it directly.
 
-- **SSH:** `ssh duckops@fedora.local` — duckops is the NUC's operating principal (owns `/srv`, pm2, the db); `geoff@` is the human's rescue account, not the ops rail.
+- **SSH:** `ssh duckops@mca.lan` — duckops is the box's operating principal (owns `/srv`, pm2, the db); `geoff@` is the human's rescue account, not the ops rail.
 - **App (live):** `/srv/duckwerks/dash/current` — the active release (PM2 `duckwerks`, fork, `:3000`). Releases live under `/srv/duckwerks/dash/releases/<ts>/`; `current` symlinks the live one.
 - **Database:** `/srv/duckwerks/dash/data/duckwerks.db` is the source of truth (persistent dir, symlinked into each release). The local `data/duckwerks.db` is stale and useless — never query it. Use `scripts/db.sh`, which targets the real one.
-- The old checkout `/home/geoff/projects/duckwerksdash` is a **retired fallback** — runs nothing; don't deploy or query there.
 
-Served at **`dash.pond.duckwerks.com`**, a pond-class nginx vhost: LAN-allowlisted, no remote access. Being on the LAN is the access gate, so dash builds no auth of its own. Ops owns the box and the paved road: [NUC topology](/Users/Shared/duckwerks/projects/duckwerks-ops/docs/infra/NUC-TOPOLOGY.md), [ingress](/Users/Shared/duckwerks/projects/duckwerks-ops/docs/standards/ingress.md).
+Served at **`dash.pond.duckwerks.com`**, a pond-class nginx vhost: LAN-allowlisted, no remote access. Being on the LAN is the access gate, so dash builds no auth of its own. Ops owns the box and the paved road: [substrate topology](/Users/Shared/duckwerks/projects/duckwerks-ops/docs/infra/SUBSTRATE-TOPOLOGY.md), [ingress](/Users/Shared/duckwerks/projects/duckwerks-ops/docs/standards/ingress.md).
 
 ## Deploy
 
-The Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerks-ops/infra-scripts/ship duckwerks` — gitignore-filtered rsync to a timestamped release, `npm ci --omit=dev` on the NUC, write-roots symlinked in, atomic swap, PM2 reload, health check. Ops owns the rail; dash owns `ecosystem.config.js` (which process, which script, which env). Full procedure: [`deploy.md`](deploy.md).
+The Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerks-ops/infra-scripts/ship duckwerks` — gitignore-filtered rsync to a timestamped release, `npm ci --omit=dev` on the box, write-roots symlinked in, atomic swap, PM2 reload, health check. Ops owns the rail; dash owns `ecosystem.config.js` (which process, which script, which env). Full procedure: [`deploy.md`](deploy.md).
 
-**The rail refuses a dirty tree (no override), so the flow is commit → ship.** A deploy always reflects a commit; there is no ship-the-working-tree-to-test path. `npm ci` on the NUC rebuilds node_modules from the lockfile, which is why the native `better-sqlite3` binary comes out correct and why node_modules is never shipped. Push is history and GitHub backup; it never touches the deploy.
+**The rail refuses a dirty tree (no override), so the flow is commit → ship.** A deploy always reflects a commit; there is no ship-the-working-tree-to-test path. `npm ci` on the box rebuilds node_modules from the lockfile, which is why the native `better-sqlite3` binary comes out correct and why node_modules is never shipped. Push is history and GitHub backup; it never touches the deploy.
 
 **Code swaps, state persists.** Each deploy replaces the release dir, so runtime writes must land in a declared write-root or they vanish on the next one. Dash's write-roots are declared in Ops's `substrate.ini` (`roots = data public/dg-photos`, plus `.env`): the model links them into each release and the backup guard covers them. A new runtime write path means a new `roots` entry in the model — an ask to Duck Ops, not a script edit. Undeclared means unlinked and unbacked.
 
@@ -50,7 +49,7 @@ The Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerks-ops/infr
 - Default to dry-run; require `--confirm` to write (not `--apply`).
 - Dry-run caches results to a local JSON file; `--confirm` reads the cache and applies — no second API round trip. If no cache exists when `--confirm` is passed, fetch fresh and apply in one shot.
 - Use `AND col IS NULL` (or equivalent) on UPDATE statements to make writes idempotent.
-- `scripts/db.sh "<sql>"` runs the sqlite3 CLI against the NUC db. Never `node -e` — better-sqlite3 never closes the handle, so the process hangs (see GOTCHAS).
+- `scripts/db.sh "<sql>"` runs the sqlite3 CLI against the box's db. Never `node -e` — better-sqlite3 never closes the handle, so the process hangs (see GOTCHAS).
 
 ## The rest of the docs
 

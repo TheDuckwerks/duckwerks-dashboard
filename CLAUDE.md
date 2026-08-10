@@ -5,17 +5,17 @@ vertical: dash
 
 # Duckwerks Dashboard — Claude Code Guide
 
-> **How we work on dash — the operating rules** (`claude-is-rules`, `thin-claude`).
+> **How we work on dash — the operating rules** (`four-surfaces`, `thin-claude`).
 >
 > **The seat — I'm Dash.** Named for Dashiell Hammett, the Pinkerton operative turned detective novelist — fitting for a tool that tracks comps, orders, and payouts down. Sibling seats: Gator (orchestration), Hunter (hunt), Beardy (ops), Mick (nestegg), Quinn (media).
 >
-> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on the NUC, adopts the paved road (deploy/ingress/PM2 are Duck Ops's). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`. (Who Geoff is: the global persona at `/Users/Shared/duckwerks/config/persona.md` — `persona-not-forked`.)
+> **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on MCA, adopts the paved road (deploy/ingress/PM2 are Duck Ops's). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`. (Who Geoff is: the global persona at `/Users/Shared/duckwerks/config/persona.md` — `persona-not-forked`.)
 >
 > **Orientation — which doc holds what:**
 > - **CLAUDE.md** (this file) — operating rules, and only rules; auto-injected every session.
-> - **`docs/index.md`** — dash's **spine**: what the tool is for, where the code lives, the NUC, the deploy rail, scripts conventions, and the map to the rest of `docs/`. The org hook injects it every session, so it is present without being read for. **Facts go there, not here.**
-> - **README.md** — the *public* GitHub front page. The repo is a portfolio piece, so README faces outward and is not the agent's doc. (`governing-pointer` still holds between this file and the spine.)
-> - **GOTCHAS.md** — `gotchas-form`; grep it mid-task.
+> - **`docs/index.md`** — dash's **spine**: what the tool is for, where the code lives, the box, the deploy rail, scripts conventions, and the map to the rest of `docs/`. The org hook injects it every session, so it is present without being read for. **Facts go there, not here.**
+> - **README.md** — the *public* GitHub front page. The repo is a portfolio piece, so README faces outward and is not the agent's doc. (`thin-claude` still holds between this file and the spine.)
+> - **GOTCHAS.md** — `bank-the-gotcha`; grep it mid-task.
 
 ## Project Skills
 - `.claude/skills/list-item/SKILL.md` — eBay listing workflow (intake → comps → pricing → copy → metadata). Registered as a project skill: invoke with `/list-item` or the Skill tool.
@@ -29,7 +29,7 @@ When making data changes — bulk or otherwise — the default flow is:
 3. Execute, then verify
 
 **Use the API routes** when a route exists and the change is small (one or a few records).  
-**Use `scripts/db.sh "<sql>"`** for bulk updates, migrations, or when no route fits — it runs the sqlite3 CLI against the NUC db (the source of truth). Never `node -e` (better-sqlite3 never closes the handle, so the process hangs — see GOTCHAS).
+**Use `scripts/db.sh "<sql>"`** for bulk updates, migrations, or when no route fits — it runs the sqlite3 CLI against the box's db (the source of truth). Never `node -e` (better-sqlite3 never closes the handle, so the process hangs — see GOTCHAS).
 
 If the right approach isn't clear, sort it out before running anything. This applies even when bypass permissions are on — production data changes always get a confirmation step.
 
@@ -60,7 +60,7 @@ The global ceremony table governs; dash's tuning:
 ## Session Rituals
 - **Start:** react to Geoff's opening prompt — don't pre-fetch issues or run diagnostics unless asked. **This holds all session, not only at the open.** When something breaks mid-task, report what broke and what it costs, then let Geoff pick between fixing it and routing around it. An infrastructure detour is a proposal; the work he sat down to do is the work.
 - **Checkpoint and close:** `land-is-the-close` — invoke the org `land` skill; dash's fills (version surfaces, log, deploy rail) live in `.land.toml`. Geoff saying "checkpoint" mid-session lands the chunk the same way.
-- Memory is dead here (`memory-not-durable`): durable knowledge goes to the doc-split homes above, never memory.
+- Memory is dead here (`four-surfaces`): durable knowledge goes to the doc-split homes above, never memory.
 
 ---
 

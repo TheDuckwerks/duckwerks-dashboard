@@ -197,4 +197,4 @@ On error: show the error message and tell the user what to fix. Do not mark list
 https://dash.pond.duckwerks.com
 ```
 
-Local network only. NUC must be reachable. Use `https://dash.pond.duckwerks.com` — port 3000 is firewalled off-box, so the nginx vhost is the only path.
+Local network only. The box (MCA) must be reachable. Use `https://dash.pond.duckwerks.com` — port 3000 is firewalled off-box, so the nginx vhost is the only path.

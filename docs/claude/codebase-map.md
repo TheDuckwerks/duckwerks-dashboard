@@ -30,10 +30,9 @@
 
 ## Scripts
 
-- `scripts/db.sh` — sanctioned SQLite access (sqlite3 CLI against the NUC db; never `node -e`). See [GOTCHAS](../../GOTCHAS.md#database-sqlite)
-- `scripts/deploy.sh` — deploy to the NUC (Duck Ops rsync-artifact standard): ship committed tree → `npm ci` on NUC → symlink state → atomic swap → PM2 reload → health check. See [`../deploy.md`](../deploy.md)
+- `scripts/db.sh` — sanctioned SQLite access (sqlite3 CLI against the box's db; never `node -e`). See [GOTCHAS](../../GOTCHAS.md#database-sqlite)
+- Deploy has no script in this repo — Ops's `ship duckwerks` rail (rsync-artifact standard): ship committed tree → `npm ci` on the box → symlink state → atomic swap → PM2 reload → health check. See [`../deploy.md`](../deploy.md). `scripts/deploy.sh` and `scripts/deploy-nuc.sh` are both retired and no longer exist.
 - `ecosystem.config.js` (repo root) — PM2 process definition (`duckwerks`, fork, `:3000`, cwd = `/srv/duckwerks/dash/current`)
-- `scripts/deploy-nuc.sh` — **retired** (old git-pull flow); superseded by `deploy.sh`
 - `scripts/bulk-list-discs.js` — bulk eBay lister; idempotent (safe to re-run)
 - `scripts/README.md` — index of all active scripts with usage examples
 - `data/ebay-tokens.json` — eBay OAuth tokens (never commit)

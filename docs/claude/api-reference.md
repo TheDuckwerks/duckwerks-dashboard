@@ -56,7 +56,7 @@ All credentials injected server-side from `.env` — never exposed to the browse
 - `GET /api/catalog-intake/next-disc-num` — next sequential `DWG-NNN` number (from the `inventory` table)
 - `GET /api/catalog-intake/manufacturers` · `/molds` · `/plastics` — lookup lists from `flight_numbers` / `disc_plastics`
 - `POST /api/catalog-intake/disc` — upsert a disc: writes the `inventory` blob AND mints its `items` row (name materialized via `resolveDiscTitle`, status `Prepping`) — item coupled at intake (#134)
-- `POST /api/catalog-intake/refresh-titles?confirm=` — re-materialize `items.name = resolveDiscTitle(blob)` for every non-Sold disc after a `generateDiscTitle` template change; dry-run unless `confirm=true`, returns the diff. CLI wrapper: `scripts/refresh-disc-titles.js` (run on the NUC)
+- `POST /api/catalog-intake/refresh-titles?confirm=` — re-materialize `items.name = resolveDiscTitle(blob)` for every non-Sold disc after a `generateDiscTitle` template change; dry-run unless `confirm=true`, returns the diff. CLI wrapper: `scripts/refresh-disc-titles.js` (run on the box)
 
 **server/flight-numbers.js** (mounted at `/api/flight-numbers`)
 - `GET /api/flight-numbers?manufacturer=&mold=` — flight-number lookup by normalized manufacturer/mold key. Returns `{ found: false }` or `{ found: true, speed, glide, turn, fade, stability }`

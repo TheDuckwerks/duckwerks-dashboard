@@ -11,11 +11,6 @@ node scripts/bulk-list-discs.js --ids 293-310 --update                    # upda
 node scripts/bulk-list-discs.js --ids 293-310 --photos-only               # replace photos only
 ```
 
-**`deploy.sh`** — Deploy to the NUC (Duck Ops rsync-artifact standard). See [`docs/deploy.md`](../docs/deploy.md).
-```
-./scripts/deploy.sh
-```
-
 **`ebay-traffic-merge.js`** — Merge an offline eBay Seller Hub traffic-report CSV export with DB SKU + price data. Unrelated to the live `POST /api/ebay/traffic` route (analytics.js); this is for CSV exports pulled outside the app.
 ```
 node scripts/ebay-traffic-merge.js path/to/report.csv
@@ -39,9 +34,9 @@ node scripts/ebay-traffic-merge.js path/to/report.csv
 
 **`assign-lot.js`** — Assign a range of items to a lot ID.
 
-**`refresh-disc-titles.js`** — Re-materialize `items.name` for non-Sold discs after a `generateDiscTitle` template change (#134). Dry-run by default; `--confirm` writes, `--push` syncs eBay. Runs on the NUC (`:3000` isn't LAN-exposed):
+**`refresh-disc-titles.js`** — Re-materialize `items.name` for non-Sold discs after a `generateDiscTitle` template change (#134). Dry-run by default; `--confirm` writes, `--push` syncs eBay. Runs on the box (`:3000` isn't LAN-exposed):
 ```
-ssh geoff@fedora.local "cd /srv/duckwerks/dash/current && node scripts/refresh-disc-titles.js --confirm"
+ssh duckops@mca.lan "cd /srv/duckwerks/dash/current && node scripts/refresh-disc-titles.js --confirm"
 ```
 
 **`update-site-fees.js`** — Update site fee config in the DB.
