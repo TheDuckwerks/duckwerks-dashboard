@@ -1,6 +1,15 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+### 2026-08-10 (16:20) — CLAUDE.md squared against the collapsed constitution + NUC→MCA doc pass
+
+Closed `#169` (open since 2026-08-02, filed from Gator when the org constitution collapsed 77→55 rules). Nested it: light spec at `docs/specs/2026-08-10-constitution-and-mca-doc-alignment.md`, no repo behavior change.
+
+- **Four retired rule-slug citations in CLAUDE.md**, current since 07-27 predates the 08-02 collapse: `claude-is-rules`→`four-surfaces`, `governing-pointer`→`thin-claude`, `gotchas-form`→`bank-the-gotcha`, `memory-not-durable`→`four-surfaces`. `gander --doc` doesn't catch this class of drift (it validates known statement text, not free-floating slug citations), so it had passed clean the whole time it was wrong. Also confirmed CLAUDE.md doesn't restate any of the 17 register rules (now `density`, per-turn) or the 7 build convictions (now `config/HOW-WE-BUILD.md`) that left the always-loaded layer in the same collapse — clean.
+- **NUC→MCA, live docs only.** Found while diagnosing the Zebra printer earlier today: production moved to MCA (`mca.lan`) back on 2026-07-30, but CLAUDE.md, docs/index.md, deploy.md, the list-item skill, codebase-map.md, api-reference.md, and scripts/README.md all still described the retired NUC (`fedora.local`). Fixed all seven. Left `docs/plans/*` and `docs/specs/*` alone on purpose — they're dated records of what was true when written, not living facts.
+- **Found in passing:** `scripts/deploy.sh` and `scripts/deploy-nuc.sh` were both retired (the latter explicitly, the former silently when dash moved onto the Ops `ship` rail) but codebase-map.md and scripts/README.md still documented them as live scripts. Neither exists on disk. Removed the dead entries. Also fixed scripts/README's `refresh-disc-titles.js` example: it SSH'd as `geoff@fedora.local`, wrong on both host and principal (index.md's own NUC section already established `duckops@` as the ops account, `geoff@` is rescue-only).
+- Doc-only, no version bump, no deploy.
+
 ### 2026-08-10 (11:55) — Zebra label printer diagnostic: IP drifted after the MCA cutover
 
 Geoff reported no label prints since the NUC→MCA switch, unconfirmed which side broke. Diagnostic, no repo change.
