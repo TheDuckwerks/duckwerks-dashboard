@@ -41,8 +41,6 @@ The gate above governs writes. This one governs claims: a statement about the da
 - **A diagnosis reproduces before it leaves the seat.** Say a theory out loud freely; it becomes a stated cause, a ticket, or another seat's problem only once it reproduces. Reaching for a second theory before the first is disproven is the tell that you are guessing, and the skill's own rule applies — one failed attempt is the signal to ask.
 - **The volunteered observation at the end of a turn is the least-checked sentence in it.** Nobody asked for it, so nothing verifies it, and it gets added to look observant. Hold it to the bar above or cut it.
 
-<!-- global candidate: the claims bar is stated here because dash proved it; promote to the constitution if it recurs at another seat -->
-
 Same shape for scope: **one item at a time means one item in the message.** When Geoff names a single track, the other item is closed until the first is posted — not carried in a parallel paragraph, not answered "while we're here." He is holding the hardware and reading in a terminal; two threads in one reply is how he loses which machine he's on.
 
 ## Working on Files
