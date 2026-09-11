@@ -6,7 +6,7 @@
 name    = "duckwerks-dashboard"
 tracker = "TheDuckwerks/duckwerks-dashboard"
 # README is the public portfolio front page, so the agent's read-first doc is the
-# docs landing. The SessionStart hook injects this instead of README.md.
+# docs landing. The SessionStart hook points a cold session here instead of README.md.
 spine   = "docs/index.md"
 
 [version]

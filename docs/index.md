@@ -1,12 +1,40 @@
 # Duckwerks Dashboard — the spine
 
-The read-first orientation doc for anyone working on dash, injected into every session by the org's SessionStart hook (declared as `spine` in `.land.toml`). The [README](../README.md) is the public GitHub front page and faces outward; this faces the work. Rules for how we work here live in [CLAUDE.md](../CLAUDE.md); this holds the facts.
+The read-first orientation doc for anyone working on dash, the SessionStart hook points a cold session at (declared as `spine` in `.land.toml`). The [README](../README.md) is the public GitHub front page and faces outward; this faces the work. Rules for how we work here live in [CLAUDE.md](../CLAUDE.md); this holds the facts.
 
 ## What it is
 
 The CMS/analytics/comp tool behind Duckwerks Music — the inventory, listing, order, and shipping engine for Geoff's eBay and Reverb selling. Alpine.js frontend, Express server, SQLite.
 
 **What it's for right now:** a sell-down engine, not a collector's catalog. Geoff is windowing a long-accumulated collection down to what he keeps — music gear, tech, comics, doodads already moved; the 400+ disc-golf collection is the active vertical (down to ~50 throwers + ~50 true keepers). Disc golf is the current *focus*, not the shape of the tool: it handles a pedal, a comic, or a console the same way. Build category logic to generalize, never to enshrine discs.
+
+## Stack
+
+**Alpine.js** frontend (a ~240-line shell plus partials), **Express** server, **SQLite** via
+`better-sqlite3`, Node 22. Production is **MCA** at `mca.lan` under **PM2**, shipped on Duck
+Ops's node-app rail. eBay and Reverb are the external surfaces.
+
+## Commands
+
+```sh
+/Users/Shared/duckwerks/projects/duckwerks-ops/infra-scripts/ship duckwerks   # the default
+npm start                       # local dev on :3000 -- big projects only
+scripts/db.sh "<sql>"           # the box's db; never node -e, it hangs
+pm2 reload duckwerks            # after a rollback pointer swap
+```
+
+**Default is ship to production**: fix, commit, ship, then tell Geoff to refresh
+`dash.pond.duckwerks.com`. The rail refuses a dirty tree, so a deploy always reflects a
+commit. Don't tell him to look until the health check passes.
+
+## Where to look
+
+- **File-by-file roles:** [`claude/codebase-map.md`](claude/codebase-map.md) ·
+  **endpoints, env, schema:** [`claude/api-reference.md`](claude/api-reference.md) ·
+  **Alpine architecture:** [`claude/frontend-reference.md`](claude/frontend-reference.md)
+- [**GOTCHAS**](../GOTCHAS.md) — dated war-stories; grep mid-task.
+- [**Deploy**](deploy.md) — the full release procedure. [**Session log**](session-log.md) ·
+  [**Specs**](specs/) · [**Plans**](plans/).
 
 ## Where the code is
 
@@ -20,7 +48,7 @@ The CMS/analytics/comp tool behind Duckwerks Music — the inventory, listing, o
 
 ## The box
 
-Production is MCA at `mca.lan`, the org's substrate host (the Intel NUC that ran this before is retired, powered off 2026-07-30). Claude has SSH access and uses it directly.
+Production is MCA at `mca.lan`, the org's substrate host. Claude has SSH access and uses it directly.
 
 - **SSH:** `ssh duckops@mca.lan` — duckops is the box's operating principal (owns `/srv`, pm2, the db); `geoff@` is the human's rescue account, not the ops rail.
 - **App (live):** `/srv/duckwerks/dash/current` — the active release (PM2 `duckwerks`, fork, `:3000`). Releases live under `/srv/duckwerks/dash/releases/<ts>/`; `current` symlinks the live one.
@@ -49,7 +77,7 @@ The Duck Ops node-app rail: `/Users/Shared/duckwerks/projects/duckwerks-ops/infr
 - Default to dry-run; require `--confirm` to write (not `--apply`).
 - Dry-run caches results to a local JSON file; `--confirm` reads the cache and applies — no second API round trip. If no cache exists when `--confirm` is passed, fetch fresh and apply in one shot.
 - Use `AND col IS NULL` (or equivalent) on UPDATE statements to make writes idempotent.
-- `scripts/db.sh "<sql>"` runs the sqlite3 CLI against the box's db. Never `node -e` — better-sqlite3 never closes the handle, so the process hangs (see GOTCHAS).
+- `scripts/db.sh "<sql>"` is the db door; the `node -e` hang is in GOTCHAS.
 
 ## The rest of the docs
 
