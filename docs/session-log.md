@@ -1,6 +1,10 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+## 2026-09-21 - Pi instruction entry (v2.0.61)
+
+Moved Dash's project instructions into `AGENTS.md` and loaded its list-item skill through the shared Pi route. The public README remains the outward page; `docs/index.md` remains the agent's cold spine. No dashboard behavior changed.
+
 ### 2026-08-10 (16:20) — CLAUDE.md squared against the collapsed constitution + NUC→MCA doc pass
 
 Closed `#169` (open since 2026-08-02, filed from Gator when the org constitution collapsed 77→55 rules). Nested it: light spec at `docs/specs/2026-08-10-constitution-and-mca-doc-alignment.md`, no repo behavior change.
