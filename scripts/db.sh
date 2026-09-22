@@ -11,7 +11,7 @@
 #   scripts/db.sh --local "SELECT count(*) FROM items;"
 #   echo "SELECT ..." | scripts/db.sh
 #
-# Writes still follow the data-ops protocol in CLAUDE.md: SELECT first, state the
+# Writes still follow the data-ops protocol in AGENTS.md: SELECT first, state the
 # change, get confirmation, then run the UPDATE. This wrapper is the how, not a
 # bypass of the confirm step.
 set -euo pipefail

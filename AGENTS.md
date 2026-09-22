@@ -3,7 +3,7 @@ seat: Dash
 vertical: dash
 ---
 
-# Duckwerks Dashboard — Claude Code Guide
+# Duckwerks Dashboard — Dash's Working Guide
 
 > **How we work on dash — the operating rules** (`four-surfaces`, `thin-claude`).
 >
@@ -12,13 +12,13 @@ vertical: dash
 > **Org place:** **Dash is a first-class singleton vertical** (no shared product/code with anything). **It IS a Duck Ops citizen** — runs on MCA, adopts the paved road (deploy/ingress/PM2 are Duck Ops's). Org map: `/Users/Shared/duckwerks/gator/INVENTORY.md`. (Who Geoff is: the global persona at `/Users/Shared/duckwerks/config/persona.md` — `persona-not-forked`.)
 >
 > **Orientation — which doc holds what:**
-> - **CLAUDE.md** (this file) — operating rules, and only rules; auto-injected every session.
-> - **`docs/index.md`** — dash's **spine**: what the tool is for, where the code lives, the box, the deploy rail, scripts conventions, and the map to the rest of `docs/`. The org hook injects it every session, so it is present without being read for. **Facts go there, not here.**
+> - **AGENTS.md** (this file) — operating rules, and only rules; loaded with the project instructions.
+> - **`docs/index.md`** — dash's **spine**: what the tool is for, where the code lives, the box, the deploy rail, scripts conventions, and the map to the rest of `docs/`. The org hook points a cold session to it. **Facts go there, not here.**
 > - **README.md** — the *public* GitHub front page. The repo is a portfolio piece, so README faces outward and is not the agent's doc. (`thin-claude` still holds between this file and the spine.)
 > - **GOTCHAS.md** — `bank-the-gotcha`; grep it mid-task.
 
 ## Project Skills
-- `.claude/skills/list-item/SKILL.md` — eBay listing workflow (intake → comps → pricing → copy → metadata). Registered as a project skill: invoke with `/list-item` or the Skill tool.
+- `.claude/skills/list-item/SKILL.md` — eBay listing workflow (intake → comps → pricing → copy → metadata). Pi discovers it through `.pi/skills`; use the loaded project skill when listing an item.
 - Session files live in `docs/listing-sessions/<slug>/` (checkpoint.json, comps.txt, listing.md)
 
 ## Direct Data Operations

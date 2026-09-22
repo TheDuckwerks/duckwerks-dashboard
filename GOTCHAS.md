@@ -1,12 +1,12 @@
 # GOTCHAS — Duckwerks Dashboard
 
-> Dated operational war-stories, sectioned by subsystem. Grep this mid-task; don't read it cover-to-cover. The pattern: *what bit us, why the weird workaround exists.* When something bites, add an entry here — not inline in CLAUDE.md.
+> Dated operational war-stories, sectioned by subsystem. Grep this mid-task; don't read it cover-to-cover. The pattern: *what bit us, why the weird workaround exists.* When something bites, add an entry here — not inline in AGENTS.md.
 
 ---
 
 ## Database (SQLite)
 
-**`node -e` with better-sqlite3 hangs the process.** better-sqlite3 never closes the db handle on its own, so a `node -e "..."` inline script opens the database and then never exits — the process hangs and has to be killed. Use `scripts/db.sh "<sql>"` instead: it shells out to the `sqlite3` CLI (which exits cleanly) against the NUC database (the source of truth). `--local` hits the stale local copy. Writes still follow the confirm protocol in CLAUDE.md — the wrapper is the *how*, not a bypass.
+**`node -e` with better-sqlite3 hangs the process.** better-sqlite3 never closes the db handle on its own, so a `node -e "..."` inline script opens the database and then never exits — the process hangs and has to be killed. Use `scripts/db.sh "<sql>"` instead: it shells out to the `sqlite3` CLI (which exits cleanly) against the NUC database (the source of truth). `--local` hits the stale local copy. Writes still follow the confirm protocol in AGENTS.md — the wrapper is the *how*, not a bypass.
 
 **The local `data/duckwerks.db` is stale and useless.** The NUC copy at `/srv/duckwerks/dash/data/duckwerks.db` (symlinked as `data/` into each release) is the source of truth. `scripts/db.sh` targets it by default for exactly this reason; never reason from the local file.
 

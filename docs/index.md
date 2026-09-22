@@ -1,6 +1,6 @@
 # Duckwerks Dashboard — the spine
 
-The read-first orientation doc for anyone working on dash, the SessionStart hook points a cold session at (declared as `spine` in `.land.toml`). The [README](../README.md) is the public GitHub front page and faces outward; this faces the work. Rules for how we work here live in [CLAUDE.md](../CLAUDE.md); this holds the facts.
+The read-first orientation doc for anyone working on dash, the SessionStart hook points a cold session at (declared as `spine` in `.land.toml`). The [README](../README.md) is the public GitHub front page and faces outward; this faces the work. Rules for how we work here live in [AGENTS.md](../AGENTS.md); this holds the facts.
 
 ## What it is
 
@@ -48,7 +48,7 @@ commit. Don't tell him to look until the health check passes.
 
 ## The box
 
-Production is MCA at `mca.lan`, the org's substrate host. Claude has SSH access and uses it directly.
+Production is MCA at `mca.lan`, the org's substrate host. Agents have SSH access and use it directly.
 
 - **SSH:** `ssh duckops@mca.lan` — duckops is the box's operating principal (owns `/srv`, pm2, the db); `geoff@` is the human's rescue account, not the ops rail.
 - **App (live):** `/srv/duckwerks/dash/current` — the active release (PM2 `duckwerks`, fork, `:3000`). Releases live under `/srv/duckwerks/dash/releases/<ts>/`; `current` symlinks the live one.
