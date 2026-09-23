@@ -1,6 +1,10 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+## 2026-09-22 - Constitutional binding alignment (v2.0.62)
+
+Rebound Dash's project instructions to the normalized global constitution under dashboard #170. Preserved the public README/agent-spine split and the existing local product and verification boundaries. No dashboard behavior changed; the patch version accompanies this land.
+
 ## 2026-09-21 - Pi instruction entry (v2.0.61)
 
 Moved Dash's project instructions into `AGENTS.md` and loaded its list-item skill through the shared Pi route. The public README remains the outward page; `docs/index.md` remains the agent's cold spine. No dashboard behavior changed.

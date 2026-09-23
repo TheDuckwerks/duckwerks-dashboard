@@ -1,6 +1,6 @@
 // ── Duckwerks v2 — Config ─────────────────────────────────────────────────────
 
-const APP_VERSION = '2.0.61';
+const APP_VERSION = '2.0.62';
 
 // Stale-listing thresholds (catalog stale report, #151): a listing is stale when
 // it has been up STALE_DOM_DAYS+ with <= STALE_MAX_VIEWS views in the 30-day window
