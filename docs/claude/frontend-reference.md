@@ -207,7 +207,7 @@ Two-step pipeline: **search** raw listings → **analyze** with Claude.
 - `minPrice`: 60% of current list price
 
 **Search** (`POST /api/comps/search`):
-- eBay: SerpAPI `engine=ebay`, `show_only=Sold`, optional `_udlo` (min price). Up to 50 results.
+- eBay: Trawl `GET /ebay/v1/sold` (`site=EBAY_US`, optional `min_price`). Up to 100 newest sales, 1 credit per call.
 - Reverb: Puppeteer + stealth plugin scrape of `reverb.com/marketplace?show_only_sold=true`. First page only (~20-30 listings). Requires `CHROME_PATH` in `.env`.
 - Both sources parallel per item; items parallel across each other.
 

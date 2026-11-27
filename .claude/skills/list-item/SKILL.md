@@ -91,9 +91,15 @@ Output: the exact search string(s) to use. Save to checkpoint. Then immediately 
 
 ### Phase 4 — Comp Data
 
-**Sold comps are a manual pull by Geoff.** eBay serves sold listings only to a logged-in browser session, so every automated path — `/api/comps/search`, SerpAPI, the COMP tab — returns a clean, successful, empty result. It is not a bug in dash, an API key, or a search term. GOTCHAS carries the diagnosis under Comp research and #168 tracks the reopen; do not spend a session rediscovering it.
+**Sold comps come from `/api/comps/search`, backed by Trawl** (GOTCHAS, Comp research). POST each confirmed search term:
 
-The pull, per confirmed search term:
+```json
+{ "items": [{ "name": "<item>", "searchQuery": "<term>", "minPrice": 20 }] }
+```
+
+to `https://dash.pond.duckwerks.com/api/comps/search`. Each result's `listings[]` is the input to Phase 5. Save it to `docs/listing-sessions/<slug>/comps.json`. Up to 100 newest sales per term; every word must appear in the title, so a term that comes back thin is too specific. Read the rows before pricing: `OBO` prices are asking prices, not accepted offers, and titles carry "for parts" or bundle signals no statistic sees. A non-empty `errors` array means the source failed, not that there are zero comps.
+
+**Fallback, if Trawl is down or out of credits: a manual pull by Geoff** from a logged-in eBay tab, per confirmed search term:
 
 1. Geoff runs the term on eBay, filters to **Sold**, sorts by **Ended Recently**.
 2. In that logged-in tab, click the **Pull Sold Comps** bookmarklet (generated from `.claude/skills/list-item/pull-sold-comps.js`). It reads the live `s-card` DOM, copies a `listings[]` JSON array to the clipboard, and alerts the count. Fallback if the bookmarklet isn't installed: open DevTools console (Cmd+Opt+J) and paste the file's contents — same result, count in the console.
@@ -104,7 +110,7 @@ The extractor emits the exact shape `/api/comps/analyze` consumes (`server/comps
 Save the `comps.json` reference to checkpoint. Proceed to Phase 5.
 
 ### Phase 5 — Pricing
-The analysis runs in the engine, not here. POST the pulled comps to `/api/comps/analyze` exactly as the SerpAPI flow did — only the source of `listings` changed.
+The analysis runs in the engine, not here. POST the Phase 4 `listings` to `/api/comps/analyze`.
 
 POST `https://dash.pond.duckwerks.com/api/comps/analyze`
 ```json

@@ -15,7 +15,7 @@ _side by side comparison of v.1 to v2.0_
 - **Profit math:** site-aware fee calculation for eBay, Reverb, and Facebook; earnings-after-fees per item; estimate vs. actual throughout.
 - **Shipping:** EasyPost rates (USPS, UPS, FedEx), one-click label purchase, tracking capture, and auto-mark-shipped. Combine multiple same-buyer orders onto one label with shipping split across items.
 - **Marketplace sync:** eBay (OAuth with auto-refresh, orders awaiting shipment, tracking push, listing import and diff) and Reverb (orders, direct ship, listing sync).
-- **Comp research:** pulls sold-price comps from eBay (SerpAPI) and Reverb (headless scrape), then has Claude analyze them into a narrative plus a structured CSV.
+- **Comp research:** pulls sold-price comps from eBay (via trawl.dev) and Reverb (headless scrape), then has Claude analyze them into a narrative plus a structured CSV.
 - **Analytics:** per-listing views, impressions, and CTR, all sortable; a momentum chart showing gross and net by marketplace over a rolling window.
 - **Disc-golf intake:** flight-number lookup seeded from a 1,918-disc table auto-fills listings; bulk eBay lister creates Inventory API listings from a catalog.
 
@@ -30,7 +30,7 @@ _side by side comparison of v.1 to v2.0_
 | Database | SQLite via `better-sqlite3` |
 | Shipping | EasyPost API |
 | Marketplaces | Reverb API, eBay Sell Fulfillment + Inventory API |
-| Comp research | SerpAPI, Puppeteer, Claude API |
+| Comp research | trawl.dev, Puppeteer, Claude API |
 
 ---
 
@@ -41,7 +41,7 @@ npm install
 npm start    # http://localhost:3000
 ```
 
-Requires a `.env` with EasyPost tokens, eBay OAuth credentials, a from-address, and (for comp research) a SerpAPI key, an Anthropic API key, and a local Chrome path. The full variable list is in [`docs/claude/api-reference.md`](docs/claude/api-reference.md).
+Requires a `.env` with EasyPost tokens, eBay OAuth credentials, a from-address, and (for comp research) a Trawl API key, an Anthropic API key, and a local Chrome path. The full variable list is in [`docs/claude/api-reference.md`](docs/claude/api-reference.md).
 
 ---
 

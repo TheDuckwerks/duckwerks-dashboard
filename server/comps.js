@@ -5,7 +5,7 @@ const fs         = require('fs');
 const path       = require('path');
 const { spawn }  = require('child_process');
 const CHROME_PATH = process.env.CHROME_PATH;
-const SERPAPI     = 'https://serpapi.com/search.json';
+const TRAWL_SOLD  = 'https://api.trawl.dev/ebay/v1/sold';
 const anthropic   = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const COMP_WORKFLOW = fs.readFileSync(
@@ -88,45 +88,38 @@ router.post('/search', async (req, res) => {
   }
 });
 
+// eBay sold comps via trawl.dev (SerpAPI's sold filter hit eBay's login wall,
+// #168). One page = up to 100 sales, newest first, 1 credit; empty is free.
+// Title must contain every query word. "Best Offer" rows carry the LISTED
+// price, not the accepted offer — eBay doesn't publish it outside collectibles.
 async function searchItem(item) {
   const { name, searchQuery, minPrice } = item;
-  const params = new URLSearchParams({
-    engine:      'ebay',
-    ebay_domain: 'ebay.com',
-    _nkw:        searchQuery || name,
-    show_only:   'Sold',
-    _ipg:        '50',
-    api_key:     process.env.SERPAPI_API_KEY,
-  });
-  if (minPrice) {
-    params.set('_udlo', String(minPrice));
-  }
+  const params = new URLSearchParams({ query: searchQuery || name, site: 'EBAY_US' });
+  if (minPrice) params.set('min_price', String(minPrice));
 
-  const res = await fetch(`${SERPAPI}?${params}`);
+  const res = await fetch(`${TRAWL_SOLD}?${params}`, {
+    headers: { 'x-api-key': process.env.TRAWL_API_KEY || '' },
+  });
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`SerpAPI error for "${name}": ${res.status} — ${text}`);
+    throw new Error(`Trawl ${res.status} for "${name}": ${text}`);
   }
 
   const data = await res.json();
-  // SerpAPI reports engine-level failures as HTTP 200 + an `error` field
-  // (seen 2026-07-09: eBay engine returning empty for every query) — surface it
-  if (data.error && !(data.organic_results || []).length) {
-    throw new Error(`SerpAPI: ${data.error}`);
-  }
-  const listings = (data.organic_results || []).map(i => {
-    const price    = i.price?.extracted || 0;
-    const shipping = typeof i.shipping === 'object' ? (i.shipping.extracted || 0) : 0;
-    const saleType = i.bids != null ? 'Auction' : 'BIN';
+  const listings = (data.results || []).map(i => {
+    const price    = Number(i.sale_price) || 0;
+    const shipping = Number(i.shipping_price) || 0;
+    const saleType = i.buying_format === 'Auction' ? 'Auction'
+                   : i.buying_format === 'Best Offer' ? 'OBO' : 'BIN';
     return {
       query:          name,
       title:          i.title,
-      condition:      i.condition || '',
+      condition:      i.condition_raw || i.condition || '',
       sold_price:     price,
       shipping,
       total_landed:   +(price + shipping).toFixed(2),
       sale_type:      saleType,
-      end_date:       i.sold_date || '',
+      end_date:       (i.date_sold || '').slice(0, 10),
       listing_status: 'sold',
       source:         'eBay',
     };

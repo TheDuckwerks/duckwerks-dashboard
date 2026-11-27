@@ -15,7 +15,7 @@
 - `server/shipments.js` — `/api/shipments` CRUD
 - `server/label.js` — provider-agnostic label routes (`/api/label/*`)
 - `server/print.js` — label print (`POST /api/print/label`) → raw TCP socket to Zebra ZD420D at `ZEBRA_PRINTER_IP:9100`
-- `server/comps.js` — comp research (`/api/comps/*`) — SerpAPI + Puppeteer + Claude
+- `server/comps.js` — comp research (`/api/comps/*`) — Trawl + Puppeteer + Claude
 - `server/reverb.js` — Reverb proxy (`/api/reverb/*`)
 - `server/ebay-auth.js` — eBay OAuth (one-time setup + auto-refresh)
 - `server/ebay.js` — eBay Sell Fulfillment + Inventory API (`/api/ebay/*`); includes `POST /api/ebay/migrate-listing` and `GET /api/ebay/offer`
