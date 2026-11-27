@@ -15,7 +15,7 @@
       "done": true,
       "data": {
         "lot_name": "PC-Parts",
-        "lot_id": null,
+        "lot_id": 16,
         "note": "lot to be created; cost basis must be set on the item after posting (list-item writes cost 0)"
       }
     },
@@ -77,7 +77,7 @@
           "Voltage": "1.35 V",
           "Color": "Black"
         },
-        "lot_id": null,
+        "lot_id": 16,
         "lot_name": "PC-Parts",
         "sku": "DW-corsair-vengeance-lpx-16gb-3000",
         "cost_basis": 60

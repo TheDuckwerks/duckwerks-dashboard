@@ -15,7 +15,7 @@
       "done": true,
       "data": {
         "lot_name": "PC-Parts",
-        "lot_id": null,
+        "lot_id": 16,
         "note": "lot to be created; cost basis must be set on the item after posting (list-item writes cost 0)"
       }
     },
@@ -72,7 +72,7 @@
           "Memory Type": "DDR4",
           "Number of Memory Slots": "4"
         },
-        "lot_id": null,
+        "lot_id": 16,
         "lot_name": "PC-Parts",
         "sku": "DW-asrock-b550m-pro4",
         "cost_basis": 40

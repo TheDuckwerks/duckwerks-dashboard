@@ -15,7 +15,7 @@
       "done": true,
       "data": {
         "lot_name": "PC-Parts",
-        "lot_id": null,
+        "lot_id": 16,
         "note": "lot to be created; cost basis must be set on the item after posting (list-item writes cost 0)"
       }
     },
@@ -73,7 +73,7 @@
           "L3 Cache": "32 MB",
           "Thermal Design Power": "65 W"
         },
-        "lot_id": null,
+        "lot_id": 16,
         "lot_name": "PC-Parts",
         "sku": "DW-amd-ryzen-5-5600",
         "cost_basis": 100
