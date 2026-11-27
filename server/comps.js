@@ -97,9 +97,18 @@ async function searchItem(item) {
   const params = new URLSearchParams({ query: searchQuery || name, site: 'EBAY_US' });
   if (minPrice) params.set('min_price', String(minPrice));
 
-  const res = await fetch(`${TRAWL_SOLD}?${params}`, {
-    headers: { 'x-api-key': process.env.TRAWL_API_KEY || '' },
-  });
+  // /search fans items out in parallel; the free plan allows 2 req/s. A 429
+  // WITH Retry-After is that per-second limit (free, retry); without it the
+  // month's credits are gone (don't retry).
+  let res;
+  for (let attempt = 0; ; attempt++) {
+    res = await fetch(`${TRAWL_SOLD}?${params}`, {
+      headers: { 'x-api-key': process.env.TRAWL_API_KEY || '' },
+    });
+    const wait = res.status === 429 && Number(res.headers.get('retry-after'));
+    if (!wait || attempt >= 5) break;
+    await new Promise(r => setTimeout(r, wait * 1000 + Math.random() * 500));
+  }
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Trawl ${res.status} for "${name}": ${text}`);
