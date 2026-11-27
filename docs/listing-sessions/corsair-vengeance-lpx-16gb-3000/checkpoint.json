@@ -1,0 +1,91 @@
+{
+  "item_name": "Corsair Vengeance LPX 16GB (2x8GB) DDR4 3000",
+  "slug": "corsair-vengeance-lpx-16gb-3000",
+  "created": "2026-11-26",
+  "phases": {
+    "intake": {
+      "done": true,
+      "data": {
+        "description": "Corsair Vengeance LPX 16GB (2x8GB) DDR4 3000",
+        "condition": "used, tested working, pulled from a working system",
+        "cost_basis": 60
+      }
+    },
+    "gap_analysis": {
+      "done": true,
+      "data": {
+        "lot_name": "PC-Parts",
+        "lot_id": null,
+        "note": "lot to be created; cost basis must be set on the item after posting (list-item writes cost 0)"
+      }
+    },
+    "comp_terms": {
+      "done": true,
+      "data": [
+        "CMK16GX4M2B3000C15",
+        "vengeance lpx 16gb 3000"
+      ]
+    },
+    "comp_data": {
+      "done": true,
+      "data": {
+        "file": "comps.json",
+        "source": "trawl",
+        "pulled": "2026-11-26"
+      }
+    },
+    "pricing": {
+      "done": true,
+      "data": {
+        "price": 70,
+        "min_offer": 52
+      }
+    },
+    "copy": {
+      "done": true,
+      "data": {
+        "title": "Corsair Vengeance LPX 16GB (2x8GB) DDR4 3000MHz CL15 CMK16GX4M2B3000C15",
+        "description": "A matched pair from a working test build, two 8GB sticks for 16GB total. Ran at its full rated 3000MHz with XMP enabled and passed a full memtest. Vengeance LPX is the low profile kit that clears big air coolers.\n\nBrand | Corsair\nModel | Vengeance LPX CMK16GX4M2B3000C15\nCapacity | 16GB (2x8GB)\nType | DDR4 desktop DIMM, 288-pin\nSpeed | 3000MHz\nTimings | 15-17-17-35\nVoltage | 1.35V\nColor | Black\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Used, tested working, pulled from a working system. Ran at rated 3000MHz XMP and passed memtest. Matched 2-stick kit."
+      }
+    },
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > Memory (RAM)",
+        "ebay_category_id": "170083",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 70,
+        "min_offer": 52,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping (account default policy)",
+        "returns": "Account default return policy",
+        "item_specifics": {
+          "Brand": "Corsair",
+          "Product Line": "Vengeance LPX",
+          "MPN": "CMK16GX4M2B3000C15",
+          "Capacity per Module": "8 GB",
+          "Total Capacity": "16 GB",
+          "Number of Modules": "2",
+          "Type": "DDR4 SDRAM",
+          "Bus Speed": "PC4-24000 (DDR4-3000)",
+          "Form Factor": "DIMM",
+          "Number of Pins": "288",
+          "CAS Latency": "15",
+          "Voltage": "1.35 V",
+          "Color": "Black"
+        },
+        "lot_id": null,
+        "lot_name": "PC-Parts",
+        "sku": "DW-corsair-vengeance-lpx-16gb-3000",
+        "cost_basis": 60
+      }
+    },
+    "listing": {
+      "done": false,
+      "data": null
+    }
+  }
+}

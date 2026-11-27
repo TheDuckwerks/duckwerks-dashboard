@@ -1,0 +1,86 @@
+{
+  "item_name": "ASRock B550M Pro4 Motherboard",
+  "slug": "asrock-b550m-pro4",
+  "created": "2026-11-26",
+  "phases": {
+    "intake": {
+      "done": true,
+      "data": {
+        "description": "ASRock B550M Pro4 Motherboard",
+        "condition": "used, tested working, pulled from a working system",
+        "cost_basis": 40
+      }
+    },
+    "gap_analysis": {
+      "done": true,
+      "data": {
+        "lot_name": "PC-Parts",
+        "lot_id": null,
+        "note": "lot to be created; cost basis must be set on the item after posting (list-item writes cost 0)"
+      }
+    },
+    "comp_terms": {
+      "done": true,
+      "data": [
+        "asrock b550m pro4"
+      ]
+    },
+    "comp_data": {
+      "done": true,
+      "data": {
+        "file": "comps.json",
+        "source": "trawl",
+        "pulled": "2026-11-26"
+      }
+    },
+    "pricing": {
+      "done": true,
+      "data": {
+        "price": 75,
+        "min_offer": 56
+      }
+    },
+    "copy": {
+      "done": true,
+      "data": {
+        "title": "ASRock B550M Pro4 AM4 mATX Motherboard DDR4 PCIe 4.0 with Box and I/O Shield",
+        "description": "Pulled from a working Ryzen system I built for testing, and it ran without a hitch the whole time. The B550M Pro4 is a solid, no-nonsense Micro ATX board for Ryzen 3000 and 5000 builds, with PCIe 4.0 and room for two NVMe drives. Comes with the original box and I/O shield.\n\nBrand | ASRock\nModel | B550M Pro4\nSocket | AM4\nChipset | AMD B550\nForm Factor | Micro ATX\nMemory | 4x DDR4 DIMM\nStorage | 2x M.2, 6x SATA\nIncluded | Motherboard, I/O shield, original box\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Used, tested working, pulled from a working system. Includes original box and I/O shield. No SATA cables or other accessories."
+      }
+    },
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > Computer Motherboards",
+        "ebay_category_id": "1244",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 75,
+        "min_offer": 56,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping (account default policy)",
+        "returns": "Account default return policy",
+        "item_specifics": {
+          "Brand": "ASRock",
+          "Model": "B550M Pro4",
+          "MPN": "B550M Pro4",
+          "Socket Type": "AM4",
+          "Chipset Manufacturer": "AMD",
+          "Chipset": "AMD B550",
+          "Form Factor": "Micro ATX",
+          "Memory Type": "DDR4",
+          "Number of Memory Slots": "4"
+        },
+        "lot_id": null,
+        "lot_name": "PC-Parts",
+        "sku": "DW-asrock-b550m-pro4",
+        "cost_basis": 40
+      }
+    },
+    "listing": {
+      "done": false,
+      "data": null
+    }
+  }
+}

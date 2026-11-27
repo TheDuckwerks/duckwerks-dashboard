@@ -1,0 +1,90 @@
+{
+  "item_name": "MSI GeForce GT 710 1GB",
+  "slug": "msi-gt710",
+  "created": "2026-11-26",
+  "phases": {
+    "intake": {
+      "done": true,
+      "data": {
+        "description": "MSI GeForce GT 710 1GB",
+        "condition": "used, tested working, pulled from a working system",
+        "cost_basis": 10
+      }
+    },
+    "gap_analysis": {
+      "done": true,
+      "data": {
+        "lot_name": "PC-Parts",
+        "lot_id": null,
+        "note": "lot to be created; cost basis must be set on the item after posting (list-item writes cost 0)"
+      }
+    },
+    "comp_terms": {
+      "done": true,
+      "data": [
+        "msi gt 710"
+      ]
+    },
+    "comp_data": {
+      "done": true,
+      "data": {
+        "file": "comps.json",
+        "source": "trawl",
+        "pulled": "2026-11-26"
+      }
+    },
+    "pricing": {
+      "done": true,
+      "data": {
+        "price": 25,
+        "min_offer": 18
+      }
+    },
+    "copy": {
+      "done": true,
+      "data": {
+        "title": "MSI GeForce GT 710 1GB DDR3 1GD3H Graphics Card HDMI DVI VGA Fanless Silent",
+        "description": "Pulled from a working system where it ran display duty. A simple, silent, fanless card that's perfect for adding video outputs to an office PC or a home server. Three outputs and no extra power cable needed.\n\nBrand | MSI\nModel | GT 710 1GD3H LP\nMemory | 1GB DDR3\nInterface | PCIe x16\nOutputs | HDMI, DVI-D, VGA\nCooling | Passive heatsink, fanless\nBracket | Full height (low profile bracket not included)\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Used, tested working, pulled from a working system. Card only, full height bracket installed. Low profile bracket not included."
+      }
+    },
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > Graphics/Video Cards",
+        "ebay_category_id": "27386",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 25,
+        "min_offer": 18,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping (account default policy)",
+        "returns": "Account default return policy",
+        "item_specifics": {
+          "Brand": "MSI",
+          "Chipset Manufacturer": "NVIDIA",
+          "Chipset/GPU Model": "NVIDIA GeForce GT 710",
+          "MPN": "GT 710 1GD3H LP",
+          "Memory Size": "1 GB",
+          "Memory Type": "DDR3",
+          "Connectors": [
+            "HDMI",
+            "DVI",
+            "VGA"
+          ],
+          "Compatible Slot": "PCI Express x16",
+          "Cooling Component Included": "Heatsink"
+        },
+        "lot_id": null,
+        "lot_name": "PC-Parts",
+        "sku": "DW-msi-gt710",
+        "cost_basis": 10
+      }
+    },
+    "listing": {
+      "done": false,
+      "data": null
+    }
+  }
+}

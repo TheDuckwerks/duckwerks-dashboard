@@ -1,0 +1,87 @@
+{
+  "item_name": "AMD Ryzen 5 5600 CPU",
+  "slug": "amd-ryzen-5-5600",
+  "created": "2026-11-26",
+  "phases": {
+    "intake": {
+      "done": true,
+      "data": {
+        "description": "AMD Ryzen 5 5600 CPU",
+        "condition": "used, tested working, pulled from a working system",
+        "cost_basis": 100
+      }
+    },
+    "gap_analysis": {
+      "done": true,
+      "data": {
+        "lot_name": "PC-Parts",
+        "lot_id": null,
+        "note": "lot to be created; cost basis must be set on the item after posting (list-item writes cost 0)"
+      }
+    },
+    "comp_terms": {
+      "done": true,
+      "data": [
+        "ryzen 5 5600"
+      ]
+    },
+    "comp_data": {
+      "done": true,
+      "data": {
+        "file": "comps.json",
+        "source": "trawl",
+        "pulled": "2026-11-26"
+      }
+    },
+    "pricing": {
+      "done": true,
+      "data": {
+        "price": 120,
+        "min_offer": 90
+      }
+    },
+    "copy": {
+      "done": true,
+      "data": {
+        "title": "AMD Ryzen 5 5600 6-Core 12-Thread AM4 CPU with Wraith Stealth Cooler and Box",
+        "description": "Pulled from a working test build. The Ryzen 5 5600 is still one of the best value chips on AM4, six Zen 3 cores that handle gaming and everyday work easily. Includes the original box and the Wraith Stealth cooler it shipped with.\n\nBrand | AMD\nModel | Ryzen 5 5600 (100-100000927BOX)\nCores / Threads | 6 / 12\nClock | 3.5GHz base, 4.4GHz boost\nCache | 32MB L3\nTDP | 65W\nSocket | AM4\nIncluded | CPU, Wraith Stealth cooler, original box\n\nAll my listings ship with free shipping for your ease, none of this $30 shipping on a 1 pound item. I price my listings fairly but please feel free to make an offer.\n\nSold As Is.",
+        "condition_field": "Used, tested working, pulled from a working system. Includes original box and stock Wraith Stealth cooler. No integrated graphics, a graphics card is required."
+      }
+    },
+    "metadata": {
+      "done": true,
+      "data": {
+        "category": "Computers > CPUs/Processors",
+        "ebay_category_id": "164",
+        "ebay_condition_id": "USED_EXCELLENT",
+        "condition": "Used",
+        "price": 120,
+        "min_offer": 90,
+        "format": "Fixed Price",
+        "duration": "GTC",
+        "shipping": "Free shipping (account default policy)",
+        "returns": "Account default return policy",
+        "item_specifics": {
+          "Brand": "AMD",
+          "Product Line": "AMD Ryzen 5",
+          "Model": "AMD Ryzen 5 5600",
+          "MPN": "100-100000927BOX",
+          "Socket Type": "AM4",
+          "Number of Cores": "6",
+          "Clock Speed": "3.5 GHz",
+          "Max. Turbo Frequency": "4.4 GHz",
+          "L3 Cache": "32 MB",
+          "Thermal Design Power": "65 W"
+        },
+        "lot_id": null,
+        "lot_name": "PC-Parts",
+        "sku": "DW-amd-ryzen-5-5600",
+        "cost_basis": 100
+      }
+    },
+    "listing": {
+      "done": false,
+      "data": null
+    }
+  }
+}

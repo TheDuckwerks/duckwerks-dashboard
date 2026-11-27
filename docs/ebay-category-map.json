@@ -53,6 +53,27 @@
         "Used - Acceptable": "USED_ACCEPTABLE",
         "For Parts": "FOR_PARTS_OR_NOT_WORKING"
       }
+    },
+    "Computers > CPUs/Processors": {
+      "ebay_category_id": "164",
+      "conditions": {
+        "Used": "USED_EXCELLENT",
+        "For Parts": "FOR_PARTS_OR_NOT_WORKING"
+      }
+    },
+    "Computers > Graphics/Video Cards": {
+      "ebay_category_id": "27386",
+      "conditions": {
+        "Used": "USED_EXCELLENT",
+        "For Parts": "FOR_PARTS_OR_NOT_WORKING"
+      }
+    },
+    "Computers > Memory (RAM)": {
+      "ebay_category_id": "170083",
+      "conditions": {
+        "Used": "USED_EXCELLENT",
+        "For Parts": "FOR_PARTS_OR_NOT_WORKING"
+      }
     }
   }
 }
