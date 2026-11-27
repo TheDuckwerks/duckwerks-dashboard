@@ -1,10 +1,10 @@
 // pull-sold-comps.js — extract eBay sold comps from a logged-in browser tab.
 //
-// WHY THIS EXISTS: eBay serves sold listings only to a logged-in session, so
-// SerpAPI's scraper (the old /api/comps/search path) gets the login wall and
-// returns a successful empty result forever (GOTCHAS "Comp research", #168).
-// This runs in YOUR session, reads the live DOM, and emits the exact listings[]
-// shape /api/comps/analyze already consumes — a drop-in for what SerpAPI returned.
+// WHY THIS EXISTS: the fallback sold-comp source. /api/comps/search uses Trawl
+// (since 2026-11-26); if Trawl is down or out of credits, this runs in a
+// logged-in eBay session, reads the live DOM, and emits the same listings[]
+// shape /api/comps/search returns. Also useful as a cross-check: eBay's search
+// matches item specifics, Trawl's matches titles only (GOTCHAS "Comp research").
 //
 // USE: on an eBay sold-results page (filter Sold, sort Ended Recently), run this
 // against the live DOM one of two ways — either the installed "Pull Sold Comps"
