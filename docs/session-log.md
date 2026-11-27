@@ -1,6 +1,18 @@
 # Session Log
 _Most recent first. Update this at the end of every session._
 
+## 2026-11-26 - eBay sold comps via Trawl (v2.0.63)
+
+SerpAPI's sold filter had been dead since July (eBay login wall, #168), leaving sold comps as a manual bookmarklet pull. Nested a trial of trawl.dev's eBay sold-listings API and swapped it in.
+
+- **`searchItem()` (`server/comps.js`) now calls Trawl `/ebay/v1/sold`** with `TRAWL_API_KEY` (added to the box `.env`), emitting the same `listings[]` shape, so `/api/comps/analyze`, the COMP tab and the list-item skill are unchanged downstream. SerpAPI is gone from dash. Best Offer sales map to `sale_type: OBO`; their price is the listed price, not the accepted offer (eBay doesn't publish it outside collectibles).
+- **Free plan is 250 credits/month and 2 requests/second.** `/search` fans items out in parallel, so the first live run 429'd on two of four items; it now retries on a 429 that carries `Retry-After`, and fails through on one without (credits spent).
+- **Verified against eBay itself**, by driving the logged-in Chrome extension profile with `pull-sold-comps.js` on `CMK16GX4M2B3000C15`: of 85 shared sales, 82 matched price to the cent. Trawl missed 30 of 119 eBay sales because it matches titles only and those titles lacked the part number; eBay's broader match also pulled in wrong-capacity kits. Recorded as search-term guidance in the list-item skill's Phase 3, not GOTCHAS.
+- **Comps banked for the next listing batch:** `docs/listing-sessions/{asrock-b550m-pro4,amd-ryzen-5-5600,msi-gt710,corsair-vengeance-lpx-16gb-3000}/comps.json`, 100 sales each, pulled 2026-11-26. The skill reuses an existing `comps.json` instead of spending credits. Open question for that batch: the RAM label says 16GB (2x8GB) where Geoff remembered 32GB (2x16GB).
+- The bookmarklet stays as the fallback if Trawl goes the way of SerpAPI. #168 left closed; commits reference it.
+
+- Nest cleared at land: Trawl confirmed as the sold-comp source.
+
 ## 2026-09-22 - Constitutional binding alignment (v2.0.62)
 
 Rebound Dash's project instructions to the normalized global constitution under dashboard #170. Preserved the public README/agent-spine split and the existing local product and verification boundaries. No dashboard behavior changed; the patch version accompanies this land.

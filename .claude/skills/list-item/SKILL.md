@@ -31,7 +31,7 @@ Load these two files at the start of every session — they govern all copy and 
 
 Each session folder contains:
 - `checkpoint.json` — phase state, written after each completed phase
-- `comps.json` — pulled sold comps in the `listings[]` shape, from the `pull-sold-comps.js` extractor (Phase 4)
+- `comps.json` — sold comps in the `listings[]` shape from `/api/comps/search` (Phase 4). If it already exists, reuse it rather than spending Trawl credits; re-pull only if it's stale or the search terms changed
 - `listing.md` — final ready-to-post output, written at Phase 8
 - `photos/` — drop item photos here (jpg/png) before Phase 8; skill reads and uploads to eBay EPS at post time
 
@@ -86,6 +86,11 @@ Output a brief "here's what I know, here's what I'm assuming" summary and confir
 
 ### Phase 3 — Comp Search Terms
 Propose 2-3 eBay search term variants. Explain the tradeoffs (broad vs. specific). User confirms or edits.
+
+**Trawl matches titles only, word for word.** eBay's own search also matches item specifics, Trawl's doesn't, so plan terms around what sellers put in titles:
+- **Never search a part number alone.** Measured 2026-11-26 on `CMK16GX4M2B3000C15` against a logged-in eBay pull: of 119 eBay sales in the same window, 30 were missed because the title left the part number out. Pair it with a descriptive term (`vengeance lpx 16gb 3000`) and merge.
+- **Variant suffixes are different words.** `CMK16GX4M2B3000C15` does not match `...C15W` or `...C15R` (colour variants); search the variant explicitly if it's the same product.
+- Where both sources had a sale, prices agreed (82 of 85 to the cent). The gap is coverage, not accuracy, and eBay's broader match also drags in wrong-capacity and wrong-speed kits, so read titles either way.
 
 Output: the exact search string(s) to use. Save to checkpoint. Then immediately proceed to Phase 4 — no manual step needed.
 
